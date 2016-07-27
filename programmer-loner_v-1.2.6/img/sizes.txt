@@ -1,0 +1,2 @@
+blue_button02 and blue_button03 - 190x45
+Texts_buttons - 30xp Arial
