@@ -2,6 +2,8 @@
 
 
 var deleteProg = false;
+var dev = 1.15;
+var addDev = 0.07;
 
 //Class button
 var button = function (name, x, y, xt, yt, width, height, text, font, action, typeAction, type, img, over) {
@@ -93,9 +95,14 @@ levelsMaps[0].map = JSON.parse(levelsMaps[0].map);
 					if(i < 0) {
 						i = 0;
 					}
-		    	    objButtons.push(new button(mapsGame[i].name, WIDTH/2 - 150, 40 + (i*60), WIDTH/2 -40, 65 + (i*pas - 5), 300, 40, mapsGame[i].name, "30px Arial", "free", "position", "menu", buttonImages[0], false));
+		    	    objButtons.push(new button(mapsGame[i].name, WIDTH/2 - 150, 40 + (i*60), WIDTH/2 -40, 65 + (i*65)/dev, 300, 40, mapsGame[i].name, "30px Arial", "free", "position", "menu", buttonImages[0], false));
 		    	    tranTexts[0].ru.push({name: mapsGame[i].name, tran: mapsGame[i].name});
 		    	    tranTexts[1].en.push({name: mapsGame[i].name, tran: mapsGame[i].name});
+		        }
+		        if(dev < 1.08) {
+		        	dev = 1.08;
+		        }else {
+		        	dev -= 0.02;
 		        }
 
 			    setTimeout(function () {

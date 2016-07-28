@@ -31,6 +31,8 @@ var stopGame = false;
 var viewDis = 64;
 var devText = 1.15;
 
+var xP = 0, yP = 0;
+
 //select
 var select = {
 	x: -64,
@@ -160,6 +162,24 @@ function drawScene() {
 		    }
 		}
 		ctx.restore();
+
+		if(gameConfig[0].position == "mapEditor" && clicked == true) {
+			loop1:
+			for(let j = 0; j < levelsPar[0].size; j++) {
+				loop2:
+				for(let l = 0; l < levelsPar[0].size; l++) {
+				    if(xP >= TILE_SIZE * j + movAddX && xP <= TILE_SIZE * j + movAddX + TILE_SIZE &&  yP >= TILE_SIZE * l + movAddY && yP <= TILE_SIZE * l + movAddY + TILE_SIZE) {
+				    	for(let p = 0; p < selectsEdit.length; p++) {
+				    		if(selectsEdit[p].sel == true) {
+				    			selectsEdit[p].num;
+				    			levelsMaps[0].map[j][l].img = selectsEdit[p].num;
+				    	        //return;
+				    		}
+				    	}
+				    }
+			    }
+			}
+		}
 	}
 
 	if(clicked == true && gameConfig[0].position != "mapEditor") {
@@ -171,9 +191,9 @@ function drawScene() {
 		ctx.font = "40px cursive";
 		ctx.fillStyle = "#fff";
 		if(gameConfig[0].leng == "en") {
-		    ctx.fillText("Save...", WIDTH/2 - 25, 40);
+		    ctx.fillText("Save...", WIDTH/2 - 25, HEIGHT/2);
 	    }else {
-	    	ctx.fillText("Сохранение...", WIDTH/2 - 90, 40);
+	    	ctx.fillText("Сохранение...", WIDTH/2 - 90, HEIGHT/2);
 	    }
 		ctx.restore();
 	}
@@ -252,11 +272,6 @@ canvas.onmousedown = function (e) {
 	clicked = true;
 	select.x = e.clientX;
 	select.y = e.clientY;
-
-	let x = e.clientX;
-	let y = e.clientY;
-
-	//Select objs
 }
 canvas.onmouseup = function (e) {
 	clicked = false;

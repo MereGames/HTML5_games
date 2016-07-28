@@ -11,7 +11,7 @@
 
 //Constants:
 const TILE_SIZE = 64;
-const NUM_MENU = 2, NUM_BUTTONS = 9, NUM_GROUND = 8;
+const NUM_MENU = 2, NUM_BUTTONS = 9, NUM_GROUND = 10;
 const WIDTH = (TILE_SIZE*14), HEIGHT = (TILE_SIZE*8);
 
 //Canvas
@@ -129,6 +129,23 @@ function startGame() {
 		var dat = JSON.parse(localStorage.getItem("save_main"));
 		gameConfig[0].leng = dat[0].leng;
 		lengGame(dat[0].leng);
+		mapsGame = dat[1].gameMaps;
+		dev = dat[1].dev;
+		if(mapsGame.length > 0) {
+		    for(let i = 0; i < mapsGame.length; i++) {
+					if(i < 0) {
+						i = 0;
+					}
+		    	    objButtons.push(new button(mapsGame[i].name, WIDTH/2 - 150, 40 + (i*60), WIDTH/2 -40, 65 + (i*65)/dev, 300, 40, mapsGame[i].name, "30px Arial", "free", "position", "menu", buttonImages[0], false));
+		    	    tranTexts[0].ru.push({name: mapsGame[i].name, tran: mapsGame[i].name});
+		    	    tranTexts[1].en.push({name: mapsGame[i].name, tran: mapsGame[i].name});
+		    }
+		        if(dev < 1.08) {
+		        	dev = 1.08;
+		        }else {
+		        	dev -= 0.02;
+		        }
+		    }
 		console.log("load save!");
 	}else {
 		console.log("dont have this save!");
@@ -267,7 +284,7 @@ function drawMenu() {
 		    objButtons[17].draw();
 
 		    for(let i = 0; i < mapsGame.length; i++) {
-		    for(let j = 0; j < objButtons.length; j++) {
+		    for(let j = endButton; j < objButtons.length; j++) {
 		    	if(objButtons[j] != null) {
 		    		if(objButtons[j].name == "map_" + i) {
 		    			objButtons[j].draw();
@@ -490,6 +507,9 @@ function moveEvent(e) {
 	let x = e.clientX;
 	let y = e.clientY;
 
+	xP = e.clientX;
+	yP = e.clientY;
+
 	if(gameConfig[0].position != "logo" && gameConfig[0].pre_position == "none") {
 		if(gameConfig[0].position == "menu") {
 			for(let i = 0; i < objButtons.length; i++) {
@@ -648,21 +668,7 @@ function clickEvent(e) {
 			}
 		}
 		}else if(gameConfig[0].position == "mapEditor" && editMap == true) {
-			loop1:
-			for(let j = 0; j < levelsPar[0].size; j++) {
-				loop2:
-				for(let l = 0; l < levelsPar[0].size; l++) {
-				    if(x >= TILE_SIZE * j + movAddX && x <= TILE_SIZE * j + movAddX + TILE_SIZE &&  y >= TILE_SIZE * l + movAddY && y <= TILE_SIZE * l + movAddY + TILE_SIZE) {
-				    	for(let p = 0; p < selectsEdit.length; p++) {
-				    		if(selectsEdit[p].sel == true) {
-				    			selectsEdit[p].num;
-				    			levelsMaps[0].map[j][l].img = selectsEdit[p].num;
-				    	        return;
-				    		}
-				    	}
-				    }
-			    }
-			}
+			//
 		}
 	}else {
 		for(let i = 0; i < objButtons.length; i++) {
@@ -697,7 +703,10 @@ function delMaps() {
 	mapsGame = [];
 	for(let i = endButton; i < objButtons.length; i++) {
 	    objButtons.splice(i, i);
+	    tranTexts[0].ru.splice(i, i);
+	    tranTexts[1].en.splice(i, i);
 	}
+	dev = 1.15;
 }
 
 function checkPosMouse(x, y, xo, yo, width, height) {
