@@ -1,0 +1,24 @@
+body {
+	background: #000;
+	margin: 0;
+}
+/*====Вид холста=====*/
+#main, canvas {
+	background: rgb(0,153,255);
+	margin: 0;
+	padding: 0;
+	display: block;
+	overflow: hidden;
+}
+#canvas_game {
+	width: 854px;
+	height: 480px;
+	position: absolute;
+}
+#textLoading {
+	margin: 0;
+	font: 30px Arial;
+	position: absolute;
+	top: 220px;
+	right: 320px;
+}

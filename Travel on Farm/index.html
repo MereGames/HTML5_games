@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+  <!--=================Голова документа head=================-->
+  <head>
+    <title id="gameTitle">Животные на ферме</title>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+	<meta name="description" content="Двигайся вдоль фермы, перепрыгивай через препятствия, пользуйся портативным оружием для уничтожения преград на своем пути, чтобы проехать как можно дальше! 6+">
+	<meta http-equiv="Cache-control" content="NO-CACHE">
+	<link rel="shortcut icon" sizes="256x256" href="icon-256.png" />
+	<link rel="stylesheet" href="main_style.css" />
+	
+  </head>
+  
+  <!--===============Тело документа====================-->
+  <body>
+  
+  <div id="vk_api_transport"></div>
+<script type="text/javascript">
+  window.vkAsyncInit = function() {
+    VK.init({
+      apiId: 5485475
+    });
+  };
+
+  setTimeout(function() {
+    var el = document.createElement("script");
+    el.type = "text/javascript";
+    el.src = "https://vk.com/js/api/openapi.js";
+    el.async = true;
+    document.getElementById("vk_api_transport").appendChild(el);
+  }, 0);
+</script>
+  
+  <div id="vk_api_transport"></div>
+    
+    <noscript>Извините, но ваш браузер не поддерживает скрипты!</noscript>
+	
+	<!--=================Главный блок==================-->
+    <div id="main">
+	  
+	  <!--=======Блок холста============-->
+	  <div id="canvas_game">
+	  
+	    <p id="textLoading">Загрузка... <span id="prozent">0</span>%</p>
+	    
+		<!-- ============ Именно здесь рисуется вся игра... ================== -->
+		<canvas id="main_canvas" width="854" height="480">
+			<h1>Ваш браузер не поддерживает по всей видимости HTML5 . Попробуйте обновить свой ​​браузер до последней версии. <a href="http://www.whatbrowser.org">Что такое браузер?</a>
+			<br/><br/><a href="http://www.microsoft.com/windows/internet-explorer/default.aspx">Microsoft Internet Explorer</a><br/>
+			<a href="http://www.mozilla.com/firefox/">Mozilla Firefox</a><br/>
+			<a href="http://www.google.com/chrome/">Google Chrome</a><br/>
+			<a href="http://www.apple.com/safari/download/">Apple Safari</a><br/>
+			<a href="http://www.google.com/chromeframe">Google Chrome Frame для Internet Explorer</a><br/></h1>
+		</canvas>
+		
+	  </div>
+	  
+	</div>
+	
+  <script src="https://vk.com/js/api/xd_connection.js?2"  type="text/javascript"></script>
+  
+  
+  <script src="obj_script.js" defer type="text/javascript"></script>
+  <script src="vk_api.js" defer type="text/javascript"></script>
+  
+  
+  <script src="player_script.js" defer type="text/javascript"></script>
+  <script src="collision.js" defer type="text/javascript"></script>
+  <script src="script.js" defer type="text/javascript"></script>
+  
+  <php>
+      header('Cache-Control: no-cache, no-store, must-revalidate');
+      header('Pragma: no-cache');
+      header('Expires: 0');
+	  
+	  header('Last-Modified: '. gmdate('D, d M Y H:i:s', time()) . ' GMT');
+      header('Expires: '. gmdate('D, d M Y H:i:s', time()) . ' GMT');
+      header("Cache-Control: no-cache, must-revalidate");
+      header("Pragma: no-cache"); 
+  </php>
+	
+  
+  
+  </body>
+</html>
