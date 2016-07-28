@@ -36,7 +36,8 @@ var tranTexts = [
                {name: "on", tran: ""},
                {name: "off", tran: ""},
                {name: "on", tran: ""},
-               {name: "saveMap", tran: "Сохр. карту"}
+               {name: "saveMap", tran: "Сохр. карту"},
+               {name: "deleteMaps", tran: "Удалить карты"}
             ]
     },
     //Englend
@@ -58,7 +59,8 @@ var tranTexts = [
                {name: "on", tran: ""},
                {name: "off", tran: ""},
                {name: "on", tran: ""},
-               {name: "saveMap", tran: "Save map"}
+               {name: "saveMap", tran: "Save map"},
+               {name: "deleteMaps", tran: "Delete maps"}
     		]
     }
 ];

@@ -1,6 +1,8 @@
 //@ Classes for Big War: The origin of the war
 
 
+var deleteProg = false;
+
 //Class button
 var button = function (name, x, y, xt, yt, width, height, text, font, action, typeAction, type, img, over) {
 	this.x = x;
@@ -100,6 +102,10 @@ levelsMaps[0].map = JSON.parse(levelsMaps[0].map);
 				    gameSave = false;
 			    }, 1500);
 		    }
+		}else if(this.typeAction == "del") {
+			delMaps();
+			deleteProg = true;
+			return;
 		}
 	}
 }

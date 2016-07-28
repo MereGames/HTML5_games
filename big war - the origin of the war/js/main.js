@@ -11,7 +11,7 @@
 
 //Constants:
 const TILE_SIZE = 64;
-const NUM_MENU = 2, NUM_BUTTONS = 9, NUM_GROUND = 2;
+const NUM_MENU = 2, NUM_BUTTONS = 9, NUM_GROUND = 8;
 const WIDTH = (TILE_SIZE*14), HEIGHT = (TILE_SIZE*8);
 
 //Canvas
@@ -26,7 +26,6 @@ musik.play();
 
 //Time for save_data.js
 var timeSave = 800;
-var endButton = 17;
 
 //Menu Images in menuImages
 //Buttons Images in buttonImages
@@ -56,6 +55,9 @@ for(let num = 0; num < NUM_GROUND; num++) {
 
 for(let i = 0; i < groundImages.length; i++) {
 	selectsEdit.push({num: i, sel: false});
+	if(i == 0) {
+		selectsEdit[i].sel = true;
+	}
 }
 
 
@@ -98,8 +100,12 @@ var objButtons = [
     //on - off - 15
     new button("onOff", 550, 300, WIDTH/2 - 80, HEIGHT/2 - 12, 30, 30, "", "30px Arial", "", "onOff", "menu", buttonImages[8], false),
     //Save map - 16
-    new button("saveMap", WIDTH/2 - 85, HEIGHT/2 + 22, WIDTH/2 - 70, HEIGHT/2 + 50, 170, 40, "Save map", "30px Arial", "", "save", "menu", buttonImages[0], false)
+    new button("saveMap", WIDTH/2 - 85, HEIGHT/2 + 22, WIDTH/2 - 70, HEIGHT/2 + 50, 170, 40, "Save map", "30px Arial", "", "save", "menu", buttonImages[0], false),
+    //delet - 17
+    new button("deleteMaps", WIDTH/2 + 240, HEIGHT/2 - 230, WIDTH/2 + 240, HEIGHT/2 - 200, 180, 40, "Delete maps", "30px Arial", "", "del", "menu", buttonImages[0], false)
 ];
+
+var endButton = objButtons.length;
 
 //img pre_posiiotns
 var pre_pos = new Image();
@@ -197,16 +203,19 @@ function updateMenu() {
 		if(gameConfig[0].pre_position == "none" || gameConfig[0].pre_position == "_menu") {
 			document.body.style.cursor = "default";
 		    for(let t = 0; t < objButtons.length; t++) {
+		    	try {
 		            if(objButtons[t].over == true) {
 			            document.body.style.cursor = "pointer";
 			            return;
 		            }else {
 			            document.body.style.cursor = "default";
 		           }
-	        }
+	        }catch (err) {};
+	    }
 	    }else {
 	    	document.body.style.cursor = "default";
 		    for(let t = 0; t < objButtons.length; t++) {
+		    	if(objButtons[t] != null) {
 			// --------------------------------------------------------------
 			    if(objButtons[t].name == "cross" || objButtons[t].name == "leftLeng" || objButtons[t].name == "rightLeng" || objButtons[t].name == "on" || objButtons[t].name == "off" || objButtons[t].name == "low" || objButtons[t].name == "hard" || objButtons[t].name == "onOff") {
 		            if(objButtons[t].over == true) {
@@ -215,6 +224,7 @@ function updateMenu() {
 		            }else {
 			            document.body.style.cursor = "default";
 		            }
+		        }
 		    }
 	    }
 	}
@@ -254,13 +264,16 @@ function drawMenu() {
 		    ctx.drawImage(menuImages[0], 0, 0, WIDTH, HEIGHT);
 
 		    objButtons[10].draw();
+		    objButtons[17].draw();
 
 		    for(let i = 0; i < mapsGame.length; i++) {
 		    for(let j = 0; j < objButtons.length; j++) {
+		    	if(objButtons[j] != null) {
 		    		if(objButtons[j].name == "map_" + i) {
 		    			objButtons[j].draw();
 		    		}
 		    	}
+		    }
 		    }
 	    }
 
@@ -428,6 +441,7 @@ function lengGame(leng) {
 		gameConfig[0].leng = "ru";
 		//buttons
 		for(let i = 0; i < objButtons.length; i++) {
+			if(objButtons[i] != null) {
 			if(objButtons[i].name == tranTexts[0].ru[i].name) {
 				objButtons[i].text = tranTexts[0].ru[i].tran;
 				//---------------------======--------------
@@ -436,10 +450,12 @@ function lengGame(leng) {
 				}
 			}
 		}
+	}
 	}else if(leng == "en") {
 		gameConfig[0].leng = "en";
 		//buttons
 		for(let i = 0; i < objButtons.length; i++) {
+			if(objButtons[i] != null) {
 			if(objButtons[i].name == tranTexts[1].en[i].name) {
 				objButtons[i].text = tranTexts[1].en[i].tran;
 				// -------------------========--------------
@@ -448,6 +464,7 @@ function lengGame(leng) {
 				}
 			}
 		}
+	}
 	}
 }
 
@@ -476,12 +493,14 @@ function moveEvent(e) {
 	if(gameConfig[0].position != "logo" && gameConfig[0].pre_position == "none") {
 		if(gameConfig[0].position == "menu") {
 			for(let i = 0; i < objButtons.length; i++) {
+				if(objButtons[i] != null) {
 				if(checkPosMouse(x, y, objButtons[i].x, objButtons[i].y, objButtons[i].width, objButtons[i].height) && objButtons[i].text != "") {
 					objButtons[i].over = true;
 				}else {
 					objButtons[i].over = false;
 				}
 			}
+		}
 		}else if(gameConfig[0].position == "levels") {
 			if(checkPosMouse(x, y, objButtons[10].x, objButtons[10].y, objButtons[10].width, objButtons[10].height)) {
 					objButtons[10].over = true;
@@ -539,6 +558,11 @@ function moveEvent(e) {
 			}else {
 				objButtons[10].over = false;
 			}
+			if(checkPosMouse(x, y, objButtons[17].x, objButtons[17].y, objButtons[17].width, objButtons[17].height)) {
+				objButtons[17].over = true;
+			}else {
+				objButtons[17].over = false;
+			}
 
 			//Select box
 			if(clicked == true) {
@@ -547,6 +571,7 @@ function moveEvent(e) {
 	        }
 		}
 	}else {
+		try {
 		for(let i = 0; i < objButtons.length; i++) {
 			// ---------------------------------------------
 				if(checkPosMouse(x, y, objButtons[i].x, objButtons[i].y, objButtons[i].width, objButtons[i].height)) {
@@ -558,7 +583,7 @@ function moveEvent(e) {
 						if(objButtons[i].name == "cross") {
 					    objButtons[i].over = true;
 				    }
-			}else if(gameConfig[0].pre_position == "_menu") {
+			}else if(gameConfig[0].pre_position == "_menu" && gameConfig[0].position != "freeGame") {
 						if(objButtons[i].name == "cross" || objButtons[i].name == "menu" || objButtons[i].name == "settings_menu" || objButtons[i].name == "saveMap") {
 					        if(objButtons[i].name == "saveMap" && gameConfig[0].position == "mapEditor") {
 					            objButtons[i].over = true;
@@ -571,7 +596,8 @@ function moveEvent(e) {
 					  objButtons[i].over = false;
 				  }
 		}
-	}
+	}catch (err) {};
+}
 }
 
 //Clicks
@@ -580,7 +606,9 @@ function clickEvent(e) {
 	let y = e.clientY;
 
 	for(let r = 0; r < objButtons.length; r++) {
-		objButtons[r].over = false;
+		if(objButtons[r] != null) {
+		    objButtons[r].over = false;
+	    }
 	}
 
 	if(gameConfig[0].position != "logo" && gameConfig[0].pre_position == "none") {
@@ -592,6 +620,7 @@ function clickEvent(e) {
 			}
 		}else if(gameConfig[0].position == "levels") {
 			for(let i = 10; i < objButtons.length; i++) {
+				if(objButtons[i] != null) {
 				if(checkPosMouse(x, y, objButtons[i].x, objButtons[i].y, objButtons[i].width, objButtons[i].height)) {
 					objButtons[i].activ();
 				}
@@ -603,17 +632,21 @@ function clickEvent(e) {
 					loadLocation(1000);
 				}
 			}
+		}
 		}else if(gameConfig[0].position == "freeGame") {
 			for(let i = 10; i < objButtons.length; i++) {
+				if(objButtons[i] != null && objButtons[i].name != "menu" && objButtons[i].name != "settings_menu") {
 				if(checkPosMouse(x, y, objButtons[i].x, objButtons[i].y, objButtons[i].width, objButtons[i].height)) {
 					if(i >= endButton) {
 					    idMap = i - endButton;
 					    objButtons[i].activ();
 					    return;
+				    }else {
+				    	objButtons[i].activ();
 				    }
-					objButtons[i].activ();
 				}
 			}
+		}
 		}else if(gameConfig[0].position == "mapEditor" && editMap == true) {
 			loop1:
 			for(let j = 0; j < levelsPar[0].size; j++) {
@@ -633,6 +666,7 @@ function clickEvent(e) {
 		}
 	}else {
 		for(let i = 0; i < objButtons.length; i++) {
+			if(objButtons[i] != null) {
 			// -------------------------------------------------
 				if(checkPosMouse(x, y, objButtons[i].x, objButtons[i].y, objButtons[i].width, objButtons[i].height)) {
 					if(gameConfig[0].pre_position == "settings") {
@@ -654,6 +688,15 @@ function clickEvent(e) {
 				    }
 				}
 		}
+	}
+	}
+}
+
+function delMaps() {
+	deleteProg = true;
+	mapsGame = [];
+	for(let i = endButton; i < objButtons.length; i++) {
+	    objButtons.splice(i, i);
 	}
 }
 

@@ -29,6 +29,7 @@ var xT = 100;
 
 var stopGame = false;
 var viewDis = 64;
+var devText = 1.15;
 
 //select
 var select = {
@@ -130,6 +131,19 @@ function drawScene() {
 		ctx.save();
 		ctx.font = "30px Arial";
 		for(let i = 0; i < groundImages.length; i++) {
+			if(i == 2) {
+				devText  = 1.22;
+			}else if(i == 0 || i == 1){
+				devText = 1.15;
+			}else if(i == 3) {
+				devText = 1.23;
+			}else if(i == 4) {
+				devText = 1.26;
+			}else if(i == 5) {
+				devText = 1.27;
+			}else if(i == 6) {
+				devText = 1.29;
+			}
 			if(selectsEdit[i].sel == false) {
 			    ctx.strokeStyle = "#000000";
 		    }else {
@@ -137,7 +151,7 @@ function drawScene() {
 		    }
 			if(i >= 1) {
 			    ctx.drawImage(groundImages[i], xS * (i + 1), 40);
-			    ctx.fillText(i, xT * (i + 1)/1.15, 30);
+			    ctx.fillText(i, xT * (i + 1)/devText, 30);
 			    ctx.strokeRect(xS * (i + 1), 40, 64, 64);
 		    }else {
 		    	ctx.drawImage(groundImages[i], xS, 40);
