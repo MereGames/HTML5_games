@@ -21,8 +21,8 @@ var obj_system = {
 	
 	speedFon: 0.5,
 	
-	appId: 5485475,
-	appSecret: "zmaV11FtFZSTL0ZvSfJG",
+	appId: 0000000,
+	appSecret: "secret",
 	appInsel: true,
 
     //Игрок
