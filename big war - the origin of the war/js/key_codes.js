@@ -1,4 +1,6 @@
-
+//@ key_codes.js for Big War: The origin of the war
+//@ Author - Mere Games or Rodion Kraynov
+//@ Site - http://meregames.ru
 
 var keyCodes = [
     {name: "Esc", code: 27},
@@ -12,5 +14,6 @@ var keyCodes = [
     {name: "7", code: 55},
     {name: "8", code: 56},
     {name: "9", code: 57},
+    {name: "Ctrl", code: 17}
 ];
 

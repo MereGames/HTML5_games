@@ -9,6 +9,7 @@ var saveGame = setInterval(function () {
 var updateData = setInterval(function () {
 	dataForSave = [
         {leng: gameConfig[0].leng},
-        {gameMaps: mapsGame, dev: dev}
+        {gameMaps: mapsGame, dev: dev},
+        {levels: levels}
     ];
 }, 100);

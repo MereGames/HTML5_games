@@ -4,22 +4,22 @@
 
 
 
-const SPEED_MAP = 6;
+const SPEED_MAP = 10;
 
 var levelsPar = [
-    {level: 0, size: 128, dif: "none", tum: true},
-    {level: 1, size: 40, dif: "easy", tum: true},
-    {level: 2, size: 40, dif: "easy", tum: true},
-    {level: 3, size: 64, dif: "easy", tum: true},
-    {level: 4, size: 64, dif: "easy", tum: true},
-    {level: 5, size: 64, dif: "normal", tum: true},
-    {level: 6, size: 80, dif: "normal", tum: true},
-    {level: 7, size: 80, dif: "normal", tum: true},
-    {level: 8, size: 80, dif: "normal", tum: true},
-    {level: 9, size: 80, dif: "normal", tum: true},
-    {level: 10, size: 128, dif: "hard", tum: true},
-    {level: 11, size: 128, dif: "hard", tum: true},
-    {level: 12, size: 128, dif: "hard", tum: true}
+    {level: 0, size: 50, dif: "none", tum: true},
+    {level: 1, size: 30, dif: "easy", tum: true},
+    {level: 2, size: 30, dif: "easy", tum: true},
+    {level: 3, size: 50, dif: "easy", tum: true},
+    {level: 4, size: 50, dif: "easy", tum: true},
+    {level: 5, size: 60, dif: "normal", tum: true},
+    {level: 6, size: 70, dif: "normal", tum: true},
+    {level: 7, size: 70, dif: "normal", tum: true},
+    {level: 8, size: 70, dif: "normal", tum: true},
+    {level: 9, size: 70, dif: "normal", tum: true},
+    {level: 10, size: 90, dif: "hard", tum: true},
+    {level: 11, size: 90, dif: "hard", tum: true},
+    {level: 12, size: 90, dif: "hard", tum: true}
 ];
 
 var selectsEdit = [];
@@ -28,8 +28,9 @@ var xS = 75;
 var xT = 100;
 
 var stopGame = false;
-var viewDis = 64;
+var viewDis = 128;
 var devText = 1.15;
+
 
 var xP = 0, yP = 0;
 
@@ -52,11 +53,11 @@ var select = {
 var clicked = false;
 var editMap = false;
 
-var movAddX = 64, movAddY = 64;
+var movAddX = -64, movAddY = -64;
 
 var sceneObjs = [];
 
-
+//Maps
 for(let i = 0; i < levelsPar.length; i++) {
 	let arrLin = [];
 	for(let u = 0;u < levelsPar[i].size; u++) {
@@ -83,21 +84,40 @@ sceneObjs.push(levelsPar, levelsMaps);
 function drawScene() {
 	if(gameConfig[0].position == "level" || gameConfig[0].endLoad == "level") {
 		loop1:
-		for(let k = 0; k < 40; k++) {
+		for(let k = 0; k < levelsPar[select_level].size; k++) {
 			loop2:
-			for(let l = 0; l < 40; l++) {
-				if(levelsMaps[select_level].map[k][l].tum == true && TILE_SIZE * k + movAddX > -viewDis && TILE_SIZE * k + movAddX < WIDTH + viewDis && TILE_SIZE * l + movAddY > -viewDis && TILE_SIZE * l + movAddY < HEIGHT + viewDis) {
-					ctx.drawImage(groundImages[levelsMaps[select_level].map[k][l].img], TILE_SIZE * k + movAddX, TILE_SIZE * l + movAddY, TILE_SIZE, TILE_SIZE);
+			for(let l = 0; l < levelsPar[select_level].size; l++) {
+				if(levelsMaps[select_level].map[k][l].tum == true && TILE_SIZE * k - movAddX > -viewDis && TILE_SIZE * k - movAddX < WIDTH + viewDis && TILE_SIZE * l - movAddY > -viewDis && TILE_SIZE * l - movAddY < HEIGHT + viewDis) {
+					ctx.drawImage(groundImages[levelsMaps[select_level].map[k][l].img], TILE_SIZE * k - movAddX, TILE_SIZE * l - movAddY, TILE_SIZE, TILE_SIZE);
 					ctx.save();
 					ctx.fillStyle = "#000";
 					ctx.globalAlpha = 0.5;
-					ctx.fillRect(TILE_SIZE * k + movAddX, TILE_SIZE * l + movAddY, TILE_SIZE, TILE_SIZE);
+					ctx.fillRect(TILE_SIZE * k - movAddX, TILE_SIZE * l - movAddY, TILE_SIZE, TILE_SIZE);
 					ctx.restore();
-				}else if(TILE_SIZE * k + movAddX > -viewDis && TILE_SIZE * k + movAddX < WIDTH + viewDis && TILE_SIZE * l + movAddY > -viewDis && TILE_SIZE * l + movAddY < HEIGHT + viewDis){
-					ctx.drawImage(groundImages[levelsMaps[select_level].map[k][l].img], TILE_SIZE * k + movAddX, TILE_SIZE * l + movAddY, TILE_SIZE, TILE_SIZE);
+				}else if(TILE_SIZE * k - movAddX > -viewDis && TILE_SIZE * k - movAddX < WIDTH + viewDis && TILE_SIZE * l - movAddY > -viewDis && TILE_SIZE * l - movAddY < HEIGHT + viewDis){
+					ctx.drawImage(groundImages[levelsMaps[select_level].map[k][l].img], TILE_SIZE * k - movAddX, TILE_SIZE * l - movAddY, TILE_SIZE, TILE_SIZE);
 				}
 		    }
 		}
+
+		//Objects
+	    objBaze.draw();
+	    if(objectsGame.length > 0) {
+	    	for(let n = 0; n < objectsGame.length; n++) {
+	    		if(objectsGame[n].map == idMap) {
+	    	        objectsGame[n].draw();
+	    	    }
+	        }
+	    }
+
+
+        //Update
+	    if(gameConfig[0].pre_position != "_menu") {
+	        collisionsObjects();
+	        moveObjects();
+	        killObjects();
+	    }
+	    
 	}else if(gameConfig[0].position == "free" || gameConfig[0].endLoad == "free") {
 		loop1:
 		for(let k = 0; k < mapsGame[idMap].map.length; k++) {
@@ -106,30 +126,54 @@ function drawScene() {
 				if(mapsGame[idMap].map[k][l].img == -1) {
 					continue loop1;
 				}
-				if(mapsGame[idMap].map[k][l].tum == true && TILE_SIZE * k + movAddX > -viewDis && TILE_SIZE * k + movAddX < WIDTH + viewDis && TILE_SIZE * l + movAddY > -viewDis && TILE_SIZE * l + movAddY < HEIGHT + viewDis) {
-					ctx.drawImage(groundImages[mapsGame[idMap].map[k][l].img], TILE_SIZE * k + movAddX, TILE_SIZE * l + movAddY, TILE_SIZE, TILE_SIZE);
+				if(mapsGame[idMap].map[k][l].tum == true && TILE_SIZE * k - movAddX > -viewDis && TILE_SIZE * k - movAddX < WIDTH + viewDis && TILE_SIZE * l - movAddY > -viewDis && TILE_SIZE * l - movAddY < HEIGHT + viewDis) {
+					ctx.drawImage(groundImages[mapsGame[idMap].map[k][l].img], TILE_SIZE * k - movAddX, TILE_SIZE * l - movAddY, TILE_SIZE, TILE_SIZE);
 					ctx.save();
 					ctx.fillStyle = "#000";
 					ctx.globalAlpha = 0.4;
-					ctx.fillRect(TILE_SIZE * k + movAddX, TILE_SIZE * l + movAddY, TILE_SIZE, TILE_SIZE);
+					ctx.fillRect(TILE_SIZE * k - movAddX, TILE_SIZE * l - movAddY, TILE_SIZE, TILE_SIZE);
 					ctx.restore();
-				}else if(TILE_SIZE * k + movAddX > -viewDis && TILE_SIZE * k + movAddX < WIDTH + viewDis && TILE_SIZE * l + movAddY > -viewDis && TILE_SIZE * l + movAddY < HEIGHT + viewDis){
-					ctx.drawImage(groundImages[mapsGame[idMap].map[k][l].img], TILE_SIZE * k + movAddX, TILE_SIZE * l + movAddY, TILE_SIZE, TILE_SIZE);
+				}else if(TILE_SIZE * k - movAddX > -viewDis && TILE_SIZE * k - movAddX < WIDTH + viewDis && TILE_SIZE * l - movAddY > -viewDis && TILE_SIZE * l - movAddY < HEIGHT + viewDis){
+					ctx.drawImage(groundImages[mapsGame[idMap].map[k][l].img], TILE_SIZE * k - movAddX, TILE_SIZE * l - movAddY, TILE_SIZE, TILE_SIZE);
 				}
 		    }
 		}
+
+		//Objects
+	    objBaze.draw();
+	    if(objectsGame.length > 0) {
+	    	for(let n = 0; n < objectsGame.length; n++) {
+	    		if(objectsGame[n].map == idMap) {
+	    	        objectsGame[n].draw();
+	    	    }
+	        }
+	    }
+
+	    //Update
+	    if(gameConfig[0].pre_position != "_menu") {
+	        collisionsObjects();
+	        moveObjects();
+	        killObjects();
+	    }
+
+	    //Map Editor
 	}else if(gameConfig[0].position == "mapEditor" || gameConfig[0].endLoad == "mapEditor") {
 		loop1:
 		for(let k = 0; k < levelsPar[0].size; k++) {
 			loop2:
 			for(let l = 0; l < levelsPar[0].size; l++) {
-	            if(TILE_SIZE * k + movAddX > -viewDis && TILE_SIZE * k + movAddX < WIDTH + viewDis && TILE_SIZE * l + movAddY > -viewDis && TILE_SIZE * l + movAddY < HEIGHT + viewDis){
-					ctx.drawImage(groundImages[levelsMaps[0].map[k][l].img], TILE_SIZE * k + movAddX, TILE_SIZE * l + movAddY, TILE_SIZE, TILE_SIZE);
+	            if(TILE_SIZE * k - movAddX > -viewDis && TILE_SIZE * k - movAddX < WIDTH + viewDis && TILE_SIZE * l - movAddY > -viewDis && TILE_SIZE * l - movAddY < HEIGHT + viewDis){
+					ctx.drawImage(groundImages[levelsMaps[0].map[k][l].img], TILE_SIZE * k - movAddX, TILE_SIZE * l - movAddY, TILE_SIZE, TILE_SIZE);
 				}
 		    }
 		}
 
+		//Objects
+	    objBaze.draw();
 
+
+        
+        //Text and nums on editor img
 		ctx.save();
 		ctx.font = "30px Arial";
 		for(let i = 0; i < groundImages.length; i++) {
@@ -163,17 +207,17 @@ function drawScene() {
 		}
 		ctx.restore();
 
+		//Editor image
 		if(gameConfig[0].position == "mapEditor" && clicked == true) {
 			loop1:
 			for(let j = 0; j < levelsPar[0].size; j++) {
 				loop2:
 				for(let l = 0; l < levelsPar[0].size; l++) {
-				    if(xP >= TILE_SIZE * j + movAddX && xP <= TILE_SIZE * j + movAddX + TILE_SIZE &&  yP >= TILE_SIZE * l + movAddY && yP <= TILE_SIZE * l + movAddY + TILE_SIZE) {
+				    if(xP >= TILE_SIZE * j - movAddX && xP <= TILE_SIZE * j - movAddX + TILE_SIZE &&  yP >= TILE_SIZE * l - movAddY && yP <= TILE_SIZE * l - movAddY + TILE_SIZE) {
 				    	for(let p = 0; p < selectsEdit.length; p++) {
 				    		if(selectsEdit[p].sel == true) {
 				    			selectsEdit[p].num;
-				    			levelsMaps[0].map[j][l].img = selectsEdit[p].num;
-				    	        //return;
+				    		    levelsMaps[0].map[j][l].img = selectsEdit[p].num;
 				    		}
 				    	}
 				    }
@@ -182,10 +226,7 @@ function drawScene() {
 		}
 	}
 
-	if(clicked == true && gameConfig[0].position != "mapEditor") {
-		select.draw();
-	}
-
+	//Save text
 	if(gameSave == true) {
 		ctx.save();
 		ctx.font = "40px cursive";
@@ -211,18 +252,20 @@ function updateScene() {
 }
 
 
+//Move map
 function moveMap(pos) {
-	if(pos == "left" && movAddX < TILE_SIZE) {
-		movAddX += SPEED_MAP;
-	}else if(pos == "right" && movAddX > -(levelsPar[select_level].size * TILE_SIZE + TILE_SIZE - WIDTH)) {
+	if(pos == "left" && movAddX > -TILE_SIZE) {
 		movAddX -= SPEED_MAP;
-	}else if(pos == "down" && movAddY > -(levelsPar[select_level].size * TILE_SIZE + TILE_SIZE - HEIGHT)) {
-		movAddY -= SPEED_MAP;
-	}else if(pos == "top" && movAddY < TILE_SIZE) {
+	}else if(pos == "right" && movAddX < (levelsPar[select_level].size * TILE_SIZE + TILE_SIZE - WIDTH)) {
+		movAddX += SPEED_MAP;
+	}else if(pos == "down" && movAddY < (levelsPar[select_level].size * TILE_SIZE + TILE_SIZE - HEIGHT)) {
 		movAddY += SPEED_MAP;
+	}else if(pos == "top" && movAddY > -TILE_SIZE) {
+		movAddY -= SPEED_MAP;
 	}
 }
 
+//Keys
 function keyEvent(e) {
 	let keyCode = e.keyCode;
 
@@ -253,7 +296,8 @@ function keyEvent(e) {
 	    }
 	}
 
-	for(let i = 1; i < keyCodes.length; i++) {
+	//For editor
+	for(let i = 1; i < 11; i++) {
 		if(keyCode == keyCodes[i].code) {
 			for(let o = 0; o < selectsEdit.length; o++) {
 				selectsEdit[o].sel = false;
@@ -264,14 +308,100 @@ function keyEvent(e) {
 		}
 	}
 
+
+	//for all select whith name == name
+	for(let n = 0; n < objectsGame.length; n++) {
+		if(objectsGame[n].select == true && e.keyCode == keyCodes[11].code) {
+			for(let t = 0; t < objectsGame.length; t++) {
+				if(objectsGame[t].name == objectsGame[n].name) {
+				    objectsGame[t].select = true;
+			    }
+			}
+		}
+	}
+
 	keyCode = null;
+}
+
+
+//Move objects
+function moveObjects() {
+	for(let r = 0; r < objectsGame.length; r++) {
+		if(objectsGame[r].map == idMap) {
+			if(objectsGame[r].x - movAddX - objectsGame[r].radius < objectsGame[r].point.x - movAddX) {
+				objectsGame[r].x += objectsGame[r].speed;
+			}else if(objectsGame[r].x - movAddX - objectsGame[r].radius > objectsGame[r].point.x - movAddX) {
+				objectsGame[r].x -= objectsGame[r].speed;
+			}
+
+			if(objectsGame[r].y - objectsGame[r].radius < objectsGame[r].point.y) {
+				objectsGame[r].y += objectsGame[r].speed;
+			}else if(objectsGame[r].y - objectsGame[r].radius > objectsGame[r].point.y) {
+				objectsGame[r].y -= objectsGame[r].speed;
+			}
+		}
+	}
+}
+
+//Collisions
+function collisionsObjects() {
+	if(objectsGame.length > 1) {
+	for(let n = 0; n < objectsGame.length; n++) {
+		for(let r = 0; r < objectsGame.length; r++) {
+		    if(objectsGame[n].x == objectsGame[r].x && objectsGame[n].y == objectsGame[r].y && n != r) {
+
+		    	if(objectsGame[n].x+64 == objectsGame[r].x) {
+		    	    objectsGame[n].point.x -= 64;
+		        }else {
+		        		objectsGame[n].point.x += 64;
+		        }
+
+		        if(objectsGame[r].y+64 == objectsGame[n].y) {
+		    	    objectsGame[r].point.y -= 64;
+		        }else {
+		    	    objectsGame[r].point.y += 64;
+		        }
+		    	return;
+		    }
+	    }
+
+	    if(objectsGame[n].y == TILE_SIZE*2 || objectsGame[n].y == TILE_SIZE*3) {
+		    objectsGame[n].y += TILE_SIZE*3;
+		    objectsGame[n].point.y += TILE_SIZE*3;
+		}
+		if(objectsGame[n].x == TILE_SIZE*2 || objectsGame[n].x == TILE_SIZE*3) {
+		    objectsGame[n].x += TILE_SIZE*3;
+		    objectsGame[n].point.x += TILE_SIZE*3;
+		}
+	}
+}
+}
+
+
+//Kill objects
+function killObjects() {
+	for(let r = 0; r < objectsGame.length; r++) {
+		if(objectsGame[r].health <= 0) {
+			if(r != 0) {
+			    objectsGame.splice(r, r);
+		    }else {
+		    	objectsGame.splice(r, 1);
+		    }
+		}
+	}
 }
 
 window.onkeydown = keyEvent;
 canvas.onmousedown = function (e) {
 	clicked = true;
-	select.x = e.clientX;
-	select.y = e.clientY;
+	let x = e.clientX;
+	let y = e.clientY;
+
+	if(e.shiftKey == false && e.altKey == false) {
+	    for(let n = 0; n < objectsGame.length; n++) {
+		    objectsGame[n].select = false;
+	    }
+    }
 }
 canvas.onmouseup = function (e) {
 	clicked = false;

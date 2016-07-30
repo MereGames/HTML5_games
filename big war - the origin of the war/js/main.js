@@ -30,6 +30,8 @@ var timeSave = 800;
 //Menu Images in menuImages
 //Buttons Images in buttonImages
 //Other Images in otherImages
+//Ground Images in groundImages
+//Objects Images in objectImages
 
 //Menu
 for(let num = 0; num < NUM_MENU; num++) {
@@ -51,6 +53,14 @@ for(let num = 0; num < NUM_GROUND; num++) {
 	img.src="img/ground_" + num + ".png";
     groundImages.push(img);
 }
+
+var objImg = new Image();
+objImg.src = "img/baze_0.png";
+objectImages.push(objImg);
+
+var objImg2 = new Image();
+objImg2.src = "img/robot_0.png";
+objectImages.push(objImg2);
 
 
 for(let i = 0; i < groundImages.length; i++) {
@@ -133,18 +143,21 @@ function startGame() {
 		dev = dat[1].dev;
 		if(mapsGame.length > 0) {
 		    for(let i = 0; i < mapsGame.length; i++) {
-					if(i < 0) {
-						i = 0;
-					}
-		    	    objButtons.push(new button(mapsGame[i].name, WIDTH/2 - 150, 40 + (i*60), WIDTH/2 -40, 65 + (i*65)/dev, 300, 40, mapsGame[i].name, "30px Arial", "free", "position", "menu", buttonImages[0], false));
-		    	    tranTexts[0].ru.push({name: mapsGame[i].name, tran: mapsGame[i].name});
-		    	    tranTexts[1].en.push({name: mapsGame[i].name, tran: mapsGame[i].name});
+				if(i < 0) {
+					i = 0;
+				}
+		    	objButtons.push(new button(mapsGame[i].name, WIDTH/2 - 150, 40 + (i*60), WIDTH/2 -40, 65 + (i*65)/dev, 300, 40, mapsGame[i].name, "30px Arial", "free", "position", "menu", buttonImages[0], false));
+		    	tranTexts[0].ru.push({name: mapsGame[i].name, tran: mapsGame[i].name});
+		        tranTexts[1].en.push({name: mapsGame[i].name, tran: mapsGame[i].name});
 		    }
 		        if(dev < 1.08) {
 		        	dev = 1.08;
 		        }else {
 		        	dev -= 0.02;
 		        }
+		    }
+		    for(let y = 0; y < levels.length; y++) {
+		    	levels.open = dat[2].levels[y].open;
 		    }
 		console.log("load save!");
 	}else {
@@ -182,7 +195,7 @@ function logoGame() {
 		}else {
 			gameConfig[0].position = "loading";
 			gameConfig[0].endLoad = "menu";
-			loadLocation(1500);
+			loadLocation(timesLoad[1].time);
 		}
 	}, 1300);
 }
@@ -583,12 +596,6 @@ function moveEvent(e) {
 			}else {
 				objButtons[17].over = false;
 			}
-
-			//Select box
-			if(clicked == true) {
-		        select.width = e.offsetX - select.x;
-		        select.height = e.offsetY - select.y;
-	        }
 		}
 	}else {
 		try {
@@ -649,7 +656,7 @@ function clickEvent(e) {
 				if(checkPosMouse(x, y, levels[i].x, levels[i].y - 65, 65, 65) && levels[i].open == true) {
 					select_level = levels[i].level;
 					gameConfig[0].endLoad = "level";
-					loadLocation(1000);
+					loadLocation(timesLoad[2].time);
 				}
 			}
 		}
@@ -660,6 +667,11 @@ function clickEvent(e) {
 					if(i >= endButton) {
 					    idMap = i - endButton;
 					    objButtons[i].activ();
+					    for(let r = 0; r < mapsGame[idMap].map.length; r++) {
+					    	for(let t = 0; t < mapsGame[idMap].map.length; t++) {
+					    	    mapsGame[idMap].map[r][t].tum = true;
+					        }
+					    }
 					    return;
 				    }else {
 				    	objButtons[i].activ();
@@ -667,8 +679,27 @@ function clickEvent(e) {
 				}
 			}
 		}
-		}else if(gameConfig[0].position == "mapEditor" && editMap == true) {
-			//
+		}else if(gameConfig[0].position == "free" && editMap == false || gameConfig[0].position == "level" && editMap == false) {
+			if(x >= objBaze.x - objBaze.radius - movAddX && x <= objBaze.x - objBaze.radius - movAddX + 64 && y >= objBaze.y - objBaze.radius - movAddY && y <= objBaze.y - objBaze.radius - movAddY + 64) {
+				objectsGame.push(new gameObject("robot_1", objectImages[1], "robot", "build", objBaze.x + 64, objBaze.y, idMap, 2, 50));
+		}
+			for(let n = 0; n < objectsGame.length; n++) {
+				if(objectsGame[n].map == idMap) {
+					for(let i = 0; i < mapsGame[idMap].map.length; i++) {
+						for(let j = 0; j < mapsGame[idMap].map.length; j++) {
+							if(x >= TILE_SIZE * i - movAddX && x <= TILE_SIZE * i - movAddX + TILE_SIZE &&  y >= TILE_SIZE * j - movAddY && y <= TILE_SIZE * j - movAddY + TILE_SIZE && objectsGame[n].select == true && e.altKey == false) {
+								objectsGame[n].point.x = TILE_SIZE * i;
+								objectsGame[n].point.y = TILE_SIZE * j;
+							}
+							if(x >= objectsGame[n].x - objectsGame[n].radius - movAddX && x <= objectsGame[n].x - objectsGame[n].radius - movAddX + TILE_SIZE&&  y >= objectsGame[n].y - objectsGame[n].radius - movAddY  && y <= objectsGame[n].y - objectsGame[n].radius - movAddY + TILE_SIZE) {
+								if(e.altKey == true || e.shiftKey == false) {
+								    objectsGame[n].select = true;
+							    }
+							}
+					    }
+					}
+				}
+			}
 		}
 	}else {
 		for(let i = 0; i < objButtons.length; i++) {
