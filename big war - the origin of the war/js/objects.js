@@ -2,11 +2,15 @@
 //@ Author - Mere Games or Rodion Kraynov
 //@ Site - http://meregames.ru
 
+
+var buildsGame = [];
+
 //Baze
 var objBaze = {
 	x: 64*9,
 	y: 64*7,
 	radius: 64*3,
+	name: "baze",
 
 	draw: function() {
 		if(this.x - this.radius - movAddX <= WIDTH + viewDis && this.x - this.radius - movAddX >= -viewDis && this.y - this.radius - movAddY <= HEIGHT + viewDis && this.y - this.radius - movAddY >= -viewDis) {
@@ -31,6 +35,8 @@ var objBaze = {
 		}
 	}
 }
+
+buildsGame.push(objBaze);
 
 //other objs
 var objectsGame = [];

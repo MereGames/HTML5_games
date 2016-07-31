@@ -23,9 +23,14 @@ var levelsPar = [
 ];
 
 var selectsEdit = [];
+var selectsBuilds = [];
 
 var xS = 75;
 var xT = 100;
+
+var viewBorders = [
+    {name: "baze", view: false}
+];
 
 var stopGame = false;
 var viewDis = 128;
@@ -140,7 +145,10 @@ function drawScene() {
 		}
 
 		//Objects
-	    objBaze.draw();
+	    for(let h = 0; h < buildsGame.length; h++) {
+	    	buildsGame[h].draw();
+	    }
+
 	    if(objectsGame.length > 0) {
 	    	for(let n = 0; n < objectsGame.length; n++) {
 	    		if(objectsGame[n].map == idMap) {
@@ -149,11 +157,50 @@ function drawScene() {
 	        }
 	    }
 
+	    //View Borders
+	    for(let o = 0; o < viewBorders.length; o++) {
+	        if(viewBorders[o].view == true) {
+	    	    ctx.drawImage(bordersInfo[o], buildsGame[o].x - buildsGame[o].radius - movAddX, buildsGame[o].y - buildsGame[o].radius - movAddY, 64, 64);
+	        }
+	    }
+
+	    //Player data
+	    ctx.save();
+	    ctx.textAlign = "right";
+	    ctx.fillStyle = "#fff";
+	    ctx.font = "30px cursive";
+	    ctx.fillText(mapsGame[idMap].playerData.money.toLocaleString() + "$", WIDTH - 8, 32);
+	    ctx.restore();
+
 	    //Update
 	    if(gameConfig[0].pre_position != "_menu") {
 	        collisionsObjects();
 	        moveObjects();
 	        killObjects();
+	    }
+
+	    //Left menu
+	    for(let d = 0; d < buildings.length; d++) {
+	    	ctx.save();
+	    	ctx.fillStyle = "#9D6B0F";
+	    	ctx.fillRect(20, 20, 64, 64);
+	    	ctx.fillStyle = "#fff";
+	    	ctx.font = "25px Arial";
+	    	if(buildings[d].select == true) {
+	    		ctx.strokeStyle = "red";
+	    	}else {
+	    		ctx.strokeStyle = "#fff";
+	    	}
+	    	ctx.drawImage(buildImages[d], 20, 20);
+	    	ctx.strokeRect(20, 20, 64, 64);
+	    	ctx.fillText(d, 40, 60);
+	    	ctx.restore();
+
+	    	if(buildings[d].select == true) {
+	    		ctx.globalAlpha = 0.7;
+	    		ctx.drawImage(buildImages[d], preBuild.x, preBuild.y, 64, 64);
+	    		ctx.globalAlpha = 1;
+	    	}
 	    }
 
 	    //Map Editor
@@ -249,6 +296,12 @@ function updateScene() {
 	if(stopGame == false) {
 	    document.body.style.cursor = "default";
 	}
+
+	for(let o = 0; o < viewBorders.length; o++) {
+		if(viewBorders[o].view == true) {
+			document.body.style.cursor = "pointer";
+		}
+	}
 }
 
 
@@ -297,6 +350,7 @@ function keyEvent(e) {
 	}
 
 	//For editor
+  if(gameConfig[0].position == "mapEditor") {
 	for(let i = 1; i < 11; i++) {
 		if(keyCode == keyCodes[i].code) {
 			for(let o = 0; o < selectsEdit.length; o++) {
@@ -307,6 +361,22 @@ function keyEvent(e) {
 			i++;
 		}
 	}
+  }else if(gameConfig[0].position == "free" || gameConfig[0].position == "level") {
+  	for(let i = 1; i < 11; i++) {
+		if(keyCode == keyCodes[i].code) {
+			i--;
+			if(buildings[i].select == true) {
+				buildings[i].select = false;
+				return;
+			}
+			for(let o = 0; o < buildings.length; o++) {
+				buildings[o].select = false;
+			}
+				buildings[i].select = true;
+			i++;
+		}
+	}
+  }
 
 
 	//for all select whith name == name
@@ -350,6 +420,9 @@ function collisionsObjects() {
 		for(let r = 0; r < objectsGame.length; r++) {
 		    if(objectsGame[n].x == objectsGame[r].x && objectsGame[n].y == objectsGame[r].y && n != r) {
 
+		    	objectsGame[n].speed = 8;
+		    	objectsGame[r].speed = 8;
+
 		    	if(objectsGame[n].x+64 == objectsGame[r].x) {
 		    	    objectsGame[n].point.x -= 64;
 		        }else {
@@ -362,16 +435,24 @@ function collisionsObjects() {
 		    	    objectsGame[r].point.y += 64;
 		        }
 		    	return;
+		    }else {
+		    	objectsGame[n].speed = objectsGame[n]._speed;
+		    	objectsGame[r].speed = objectsGame[r]._speed;
 		    }
 	    }
 
 	    if(objectsGame[n].y == TILE_SIZE*2 || objectsGame[n].y == TILE_SIZE*3) {
-		    objectsGame[n].y += TILE_SIZE*3;
 		    objectsGame[n].point.y += TILE_SIZE*3;
 		}
 		if(objectsGame[n].x == TILE_SIZE*2 || objectsGame[n].x == TILE_SIZE*3) {
-		    objectsGame[n].x += TILE_SIZE*3;
 		    objectsGame[n].point.x += TILE_SIZE*3;
+		}
+
+		if(objectsGame[n].y >= mapsGame[idMap].map.length * TILE_SIZE + TILE_SIZE*2 || objectsGame[n].x >= mapsGame[idMap].map.length * TILE_SIZE + TILE_SIZE*3) {
+		    objectsGame[n].point.y -= TILE_SIZE*3;
+		}
+		if(objectsGame[n].x >= mapsGame[idMap].map.length * TILE_SIZE + TILE_SIZE*2 || objectsGame[n].x >= mapsGame[idMap].map.length * TILE_SIZE + TILE_SIZE*3) {
+		    objectsGame[n].point.x -= TILE_SIZE*3;
 		}
 	}
 }

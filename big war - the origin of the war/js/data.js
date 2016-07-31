@@ -65,13 +65,10 @@ var tranTexts = [
     }
 ];
 
-var playerData = {
-	maney: 0,
-	score: 0
-};
-
 //Arrays for Iames
 var menuImages = [];
+var bordersInfo = [];
+var buildImages = [];
 var buttonImages = [];
 var groundImages = [];
 var objectImages = [];

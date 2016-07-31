@@ -90,7 +90,8 @@ levelsMaps[0].map = JSON.parse(levelsMaps[0].map);
 					    levelsMaps[0].map[t][y].tum = true;
 				    }
 				}
-				mapsGame.push({name: "map_" + mapsGame.length, map: levelsMaps[0].map});
+				//Maps save
+				mapsGame.push({name: "map_" + mapsGame.length, map: levelsMaps[0].map, playerData: {money: 99000, addMoney: 5}});
 				for(let i = (mapsGame.length - 1); i < mapsGame.length; i++) {
 					if(i < 0) {
 						i = 0;
@@ -118,11 +119,12 @@ levelsMaps[0].map = JSON.parse(levelsMaps[0].map);
 }
 
 //Objects game
-function gameObject(name, img, type, prof, x, y, map, speed, health) {
+function gameObject(name, img, type, prof, x, y, map, speed, health, ataca) {
 	this.img = img;
 	this.name = name;
 	this.map = map;
 	this.speed = speed;
+	this._speed = speed;
 	this.x = x;
 	this.y = y;
 	this.width = 64;
@@ -132,6 +134,7 @@ function gameObject(name, img, type, prof, x, y, map, speed, health) {
 	this.radius = 64*3;
 	this.point = {x: 512, y: 256};
 	this.select = false;
+	this.ataca = ataca;
 
 	this.health = health;
 	this._health = health;
@@ -169,4 +172,36 @@ function gameObject(name, img, type, prof, x, y, map, speed, health) {
 			}
 		}
 	}
+}
+
+function build(name, img, x, y, radius) {
+	this.name = name;
+	this.img = img;
+	this.x = x;
+	this.y = y;
+	this.radius = radius;
+
+	this.draw = function () {
+		if(this.x - this.radius - movAddX <= WIDTH + viewDis && this.x - this.radius - movAddX >= -viewDis && this.y - this.radius - movAddY <= HEIGHT + viewDis && this.y - this.radius - movAddY >= -viewDis) {
+		    ctx.drawImage(img, this.x - this.radius - movAddX, this.y - this.radius - movAddY);
+	    }
+	}
+
+	if(gameConfig[0].position == "free") {
+			for(let i = 0; i < mapsGame[idMap].map.length; i++) {
+				for(let j = 0; j < mapsGame[idMap].map.length; j++) {
+						if(this.x - 64 - movAddX >= 64 * i - movAddX && this.x - 64 - movAddX <= 64 * i - movAddX + 64 + this.radius &&  this.y - 64 - movAddY >= 64 * j - movAddY && this.y - 64 - movAddY <= 64 * j - movAddY + 64 + this.radius) {
+						    mapsGame[idMap].map[i][j].tum = false;
+					    }
+				}
+			}
+		}else if(gameConfig[0].position == "level") {
+			for(let i = 0; i < levelsMaps[select_level].map.length; i++) {
+				for(let j = 0; j < levelsMaps[select_level].map.length; j++) {
+						if(this.x - 64 - movAddX >= 64 * i - movAddX && this.x - 64 - movAddX <= 64 * i - movAddX + 64 + this.radius &&  this.y - 64 - movAddY >= 64 * j - movAddY && this.y - 64 - movAddY <= 64 * j - movAddY + 64 + this.radius) {
+						    levelsMaps[select_level].map[i][j].tum = false;
+					    }
+				}
+			}
+		}
 }

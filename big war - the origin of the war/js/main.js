@@ -11,7 +11,7 @@
 
 //Constants:
 const TILE_SIZE = 64;
-const NUM_MENU = 2, NUM_BUTTONS = 9, NUM_GROUND = 10;
+const NUM_MENU = 2, NUM_BUTTONS = 9, NUM_GROUND = 10, NUM_BORDERS = 1, NUM_BUILDS = 1;
 const WIDTH = (TILE_SIZE*14), HEIGHT = (TILE_SIZE*8);
 
 //Canvas
@@ -52,6 +52,20 @@ for(let num = 0; num < NUM_GROUND; num++) {
 	let img = new Image();
 	img.src="img/ground_" + num + ".png";
     groundImages.push(img);
+}
+
+//Borders
+for(let num = 0; num < NUM_BORDERS; num++) {
+	let img = new Image();
+	img.src="img/border_" + num + ".png";
+    bordersInfo.push(img);
+}
+
+//Builds
+for(let num = 0; num < NUM_BUILDS; num++) {
+	let img = new Image();
+	img.src="img/build_" + num + ".png";
+    buildImages.push(img);
 }
 
 var objImg = new Image();
@@ -140,6 +154,10 @@ function startGame() {
 		gameConfig[0].leng = dat[0].leng;
 		lengGame(dat[0].leng);
 		mapsGame = dat[1].gameMaps;
+		for(let p = 0; p < mapsGame.length; p++) {
+			mapsGame[p].playerData.money = 99000;
+			mapsGame[p].playerData.addMoney = 5;
+		}
 		dev = dat[1].dev;
 		if(mapsGame.length > 0) {
 		    for(let i = 0; i < mapsGame.length; i++) {
@@ -596,6 +614,35 @@ function moveEvent(e) {
 			}else {
 				objButtons[17].over = false;
 			}
+
+			//Baze main
+			if(x >= objBaze.x - objBaze.radius - movAddX && x <= objBaze.x - objBaze.radius - movAddX + 64 && y >= objBaze.y - objBaze.radius - movAddY && y <= objBaze.y - objBaze.radius - movAddY + 64) {
+				if(gameConfig[0].position == "free" || gameConfig[0].position == "level") {
+					viewBorders[0].view = true;
+				}
+		    }else {
+		    	viewBorders[0].view = false;
+		    }
+
+		    for(let d = 0; d < buildings.length; d++) {
+		    	if(buildings[d].select == true) {
+		    		for(let i = 0; i < mapsGame[idMap].map.length; i++) {
+		    			for(let j = 0; j < mapsGame[idMap].map.length; j++) {
+		    			    if(x >= TILE_SIZE * i - movAddX && x <= TILE_SIZE * i - movAddX + TILE_SIZE &&  y >= TILE_SIZE * j - movAddY && y <= TILE_SIZE * j - movAddY + TILE_SIZE) {
+								preBuild.x = TILE_SIZE * i - movAddX;
+								preBuild.y = TILE_SIZE * j - movAddY;
+								for(let r = 0; r < buildsGame.length; r++) {
+									if(buildsGame[r].x == preBuild.x + movAddX + buildings[d].radius && buildsGame[r].y == preBuild.y + movAddY + buildings[d].radius) {
+										preBuild.empty = false;
+									}else {
+										preBuild.empty = true;
+									}
+								}
+							}
+		    		    }
+		    		}
+		    	}
+		    }
 		}
 	}else {
 		try {
@@ -680,9 +727,31 @@ function clickEvent(e) {
 			}
 		}
 		}else if(gameConfig[0].position == "free" && editMap == false || gameConfig[0].position == "level" && editMap == false) {
+			//Baze main
 			if(x >= objBaze.x - objBaze.radius - movAddX && x <= objBaze.x - objBaze.radius - movAddX + 64 && y >= objBaze.y - objBaze.radius - movAddY && y <= objBaze.y - objBaze.radius - movAddY + 64) {
-				objectsGame.push(new gameObject("robot_1", objectImages[1], "robot", "build", objBaze.x + 64, objBaze.y, idMap, 2, 50));
-		}
+				if(mapsGame[idMap].playerData.money >= 150) {
+				    objectsGame.push(new gameObject("robot_1", objectImages[1], "robot", "atac", objBaze.x + 64, objBaze.y, idMap, 2, 50, 10));
+				    mapsGame[idMap].playerData.money -= 150;
+			    }
+		    }
+
+		    for(let d = 0; d < buildings.length; d++) {
+		    	if(buildings[d].select == true) {
+		    		for(let r = 0; r < buildsGame.length; r++) {
+		    			if(preBuild.empty == true) {
+		    				if(mapsGame[idMap].playerData.money >= buildings[d].price) {
+		    					preBuild.x += buildings[d].radius;
+		    					preBuild.y += buildings[d].radius;
+		    				    buildsGame.push(new build(buildings[d].name, buildImages[d], preBuild.x + movAddX, preBuild.y + movAddY, buildings[d].radius));
+		    				    buildings[d].select = false;
+		    				    mapsGame[idMap].playerData.money -= buildings[d].price;
+		    				    return;
+		    			    }
+		    		}
+		    	}
+		  }
+		    }
+
 			for(let n = 0; n < objectsGame.length; n++) {
 				if(objectsGame[n].map == idMap) {
 					for(let i = 0; i < mapsGame[idMap].map.length; i++) {
@@ -691,7 +760,7 @@ function clickEvent(e) {
 								objectsGame[n].point.x = TILE_SIZE * i;
 								objectsGame[n].point.y = TILE_SIZE * j;
 							}
-							if(x >= objectsGame[n].x - objectsGame[n].radius - movAddX && x <= objectsGame[n].x - objectsGame[n].radius - movAddX + TILE_SIZE&&  y >= objectsGame[n].y - objectsGame[n].radius - movAddY  && y <= objectsGame[n].y - objectsGame[n].radius - movAddY + TILE_SIZE) {
+							if(x >= objectsGame[n].x - objectsGame[n].radius - movAddX && x <= objectsGame[n].x - objectsGame[n].radius - movAddX + TILE_SIZE &&  y >= objectsGame[n].y - objectsGame[n].radius - movAddY  && y <= objectsGame[n].y - objectsGame[n].radius - movAddY + TILE_SIZE) {
 								if(e.altKey == true || e.shiftKey == false) {
 								    objectsGame[n].select = true;
 							    }
