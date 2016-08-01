@@ -7,5 +7,6 @@ var preBuild = {
 };
 
 var buildings = [
-    {name: "army", price: 500, select: false, radius: 64*3}
+    {name: "army", price: 500, select: false, radius: 64*3, time: 100},
+    {name: "factory_1", price: 1000, select: false, radius: 64*3, time: 0}
 ];

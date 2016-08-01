@@ -25,6 +25,9 @@ var levelsPar = [
 var selectsEdit = [];
 var selectsBuilds = [];
 
+var add;
+var pause = false;
+
 var xS = 75;
 var xT = 100;
 
@@ -107,13 +110,7 @@ function drawScene() {
 
 		//Objects
 	    objBaze.draw();
-	    if(objectsGame.length > 0) {
-	    	for(let n = 0; n < objectsGame.length; n++) {
-	    		if(objectsGame[n].map == idMap) {
-	    	        objectsGame[n].draw();
-	    	    }
-	        }
-	    }
+	    
 
 
         //Update
@@ -145,7 +142,8 @@ function drawScene() {
 		}
 
 		//Objects
-	    for(let h = 0; h < buildsGame.length; h++) {
+		objBaze.draw();
+	    for(let h = 1; h < buildsGame.length; h++) {
 	    	buildsGame[h].draw();
 	    }
 
@@ -158,22 +156,25 @@ function drawScene() {
 	    }
 
 	    //View Borders
-	    for(let o = 0; o < viewBorders.length; o++) {
-	        if(viewBorders[o].view == true) {
-	    	    ctx.drawImage(bordersInfo[o], buildsGame[o].x - buildsGame[o].radius - movAddX, buildsGame[o].y - buildsGame[o].radius - movAddY, 64, 64);
+	    if(buildsGame.length > 0 && stopGame == false) {
+	        for(let o = 1; o < viewBorders.length; o++) {
+	        	for(let j = 0; j < buildsGame.length; j++) {
+	              if(viewBorders[o].view == true) {
+	            		if(buildsGame[j].name == "army") {
+	    	                ctx.drawImage(bordersInfo[1], buildsGame[j].x - buildsGame[j].radius - movAddX, buildsGame[j].y - buildsGame[j].radius - movAddY, 64, 64);
+	    	            }
+	            }
 	        }
+	      }
+	        if(viewBorders[0].view == true) {
+	            ctx.drawImage(bordersInfo[0], objBaze.x - objBaze.radius - movAddX, objBaze.y - objBaze.radius - movAddY, 64, 64);
+	        }
+	    }else if(viewBorders[0].view == true && stopGame == false) {
+	    	ctx.drawImage(bordersInfo[0], objBaze.x - objBaze.radius - movAddX, objBaze.y - objBaze.radius - movAddY, 64, 64);
 	    }
 
-	    //Player data
-	    ctx.save();
-	    ctx.textAlign = "right";
-	    ctx.fillStyle = "#fff";
-	    ctx.font = "30px cursive";
-	    ctx.fillText(mapsGame[idMap].playerData.money.toLocaleString() + "$", WIDTH - 8, 32);
-	    ctx.restore();
-
 	    //Update
-	    if(gameConfig[0].pre_position != "_menu") {
+	    if(gameConfig[0].pre_position != "_menu" && stopGame == false) {
 	        collisionsObjects();
 	        moveObjects();
 	        killObjects();
@@ -183,24 +184,85 @@ function drawScene() {
 	    for(let d = 0; d < buildings.length; d++) {
 	    	ctx.save();
 	    	ctx.fillStyle = "#9D6B0F";
-	    	ctx.fillRect(20, 20, 64, 64);
+
+	    	if(d == 0) {
+	    	    ctx.fillRect(20, 20, 64, 64);
+	        }else if(d == 1) {
+	        	ctx.fillRect(20, 100, 64, 64);
+	        }
+
 	    	ctx.fillStyle = "#fff";
 	    	ctx.font = "25px Arial";
+
 	    	if(buildings[d].select == true) {
 	    		ctx.strokeStyle = "red";
 	    	}else {
 	    		ctx.strokeStyle = "#fff";
 	    	}
-	    	ctx.drawImage(buildImages[d], 20, 20);
-	    	ctx.strokeRect(20, 20, 64, 64);
-	    	ctx.fillText(d, 40, 60);
+
+	    	if(d == 0) {
+	    	    ctx.drawImage(buildImages[d], 20, 20);
+	        }else if(d == 1) {
+	        	ctx.drawImage(buildImages[d], 20, 100);
+	        }
+
+	        if(d == 0) {
+	    	    ctx.strokeRect(20, 20, 64, 64);
+	        }else if(d == 1) {
+	        	ctx.strokeRect(20, 100, 64, 64);
+	        }
+
+	    	ctx.textAlign = "center";
+
+	    	if(d == 0) {
+	    	    ctx.fillText(d, 50, 40);
+	        }else if(d == 1) {
+	        	ctx.fillText(d, 50, 120);
+	        }
+
+	    	ctx.fillStyle = "yellow";
+	    	ctx.font = "20px cursive";
+
+	    	if(d == 0) {
+	    	    ctx.fillText(buildings[d].price + "$", 50, 80);
+	        }else if(d == 1) {
+	        	ctx.fillText(buildings[d].price + "$", 50, 160);
+	        }
 	    	ctx.restore();
 
 	    	if(buildings[d].select == true) {
-	    		ctx.globalAlpha = 0.7;
+	    		ctx.save();
+	    		ctx.globalAlpha = 0.6;
+	    		ctx.strokeStyle = "#FF4B0F";
+	    		ctx.fillStyle = "red";
 	    		ctx.drawImage(buildImages[d], preBuild.x, preBuild.y, 64, 64);
-	    		ctx.globalAlpha = 1;
+	    		if(preBuild.empty == false) {
+	    			ctx.strokeRect(preBuild.x, preBuild.y, 64, 64);
+	    			ctx.fillRect(preBuild.x, preBuild.y, 64, 64);
+	    		}
+	    		ctx.restore();
 	    	}
+	    }
+
+	    //Player data
+	    ctx.save();
+	    ctx.textAlign = "right";
+	    ctx.fillStyle = "#fff";
+	    ctx.font = "30px cursive";
+	    ctx.fillText(mapsGame[idMap].playerData.money.toLocaleString() + "$", WIDTH - 8, 32);
+	    ctx.fillText("+"+mapsGame[idMap].playerData.addMoney.toLocaleString() + "$/sec", WIDTH - 8, 64);
+	    ctx.restore();
+
+	    //Pause
+	    if(pause == true) {
+	    	ctx.save();
+	    	ctx.textAlign = "center";
+	    	if(gameConfig[0].leng == "en") {
+	    		ctx.fillText("Pause", WIDTH/2, 60);
+	    	}else if(gameConfig[0].leng == "ru") {
+	    		ctx.fillText("Пауза", WIDTH/2, 60);
+	    	}
+	    	ctx.restore();
 	    }
 
 	    //Map Editor
@@ -290,7 +352,7 @@ function drawScene() {
 
 //Update
 function updateScene() {
-	if(gameConfig[0].pre_position == "none") {
+	if(gameConfig[0].pre_position == "none" && pause == false) {
 		stopGame = false;
 	}
 	if(stopGame == false) {
@@ -302,11 +364,29 @@ function updateScene() {
 			document.body.style.cursor = "pointer";
 		}
 	}
+
+	if(stopGame == false && gameConfig[0].position == "free" || stopGame == false && gameConfig[0].position == "level") {
+		addMoneyPlayer();
+	}else {
+		clearInterval(add);
+		add = null;
+	}
+}
+
+function addMoneyPlayer() {
+	if(add == undefined || add == null) {
+	add = setInterval(function () {
+		if(gameConfig[0].position == "free") {
+			mapsGame[idMap].playerData.money += mapsGame[idMap].playerData.addMoney;
+		}
+	}, 1000);
+  }
 }
 
 
 //Move map
 function moveMap(pos) {
+	if(stopGame == false) {
 	if(pos == "left" && movAddX > -TILE_SIZE) {
 		movAddX -= SPEED_MAP;
 	}else if(pos == "right" && movAddX < (levelsPar[select_level].size * TILE_SIZE + TILE_SIZE - WIDTH)) {
@@ -317,11 +397,24 @@ function moveMap(pos) {
 		movAddY -= SPEED_MAP;
 	}
 }
+}
 
 //Keys
 function keyEvent(e) {
 	let keyCode = e.keyCode;
 
+	if(keyCode == 80) {
+	    	if(stopGame == false) {
+	    		stopGame = true;
+	    		pause = true;
+	    		return;
+	    	}else if(stopGame == true) {
+	    		stopGame = false;
+	    		pause = false;
+	    	}
+	    }
+
+if(stopGame == false) {
 	if(keyCode == keyCodes[0].code && keyCodes[0].name == "Esc") {
 		if(gameConfig[0].leng == "en") {
 	    	    objButtons[12].xt = WIDTH/2 - 50;
@@ -373,6 +466,7 @@ function keyEvent(e) {
 				buildings[o].select = false;
 			}
 				buildings[i].select = true;
+				preBuild.empty = false;
 			i++;
 		}
 	}
@@ -389,6 +483,7 @@ function keyEvent(e) {
 			}
 		}
 	}
+}
 
 	keyCode = null;
 }
@@ -400,14 +495,19 @@ function moveObjects() {
 		if(objectsGame[r].map == idMap) {
 			if(objectsGame[r].x - movAddX - objectsGame[r].radius < objectsGame[r].point.x - movAddX) {
 				objectsGame[r].x += objectsGame[r].speed;
+				animationObjs[r].x = 0;
+
 			}else if(objectsGame[r].x - movAddX - objectsGame[r].radius > objectsGame[r].point.x - movAddX) {
 				objectsGame[r].x -= objectsGame[r].speed;
+				animationObjs[r].x = 128;
 			}
 
 			if(objectsGame[r].y - objectsGame[r].radius < objectsGame[r].point.y) {
 				objectsGame[r].y += objectsGame[r].speed;
+				animationObjs[r].x = 64;
 			}else if(objectsGame[r].y - objectsGame[r].radius > objectsGame[r].point.y) {
 				objectsGame[r].y -= objectsGame[r].speed;
+				animationObjs[r].x = 192;
 			}
 		}
 	}
@@ -415,7 +515,7 @@ function moveObjects() {
 
 //Collisions
 function collisionsObjects() {
-	if(objectsGame.length > 1) {
+	if(objectsGame.length > 0) {
 	for(let n = 0; n < objectsGame.length; n++) {
 		for(let r = 0; r < objectsGame.length; r++) {
 		    if(objectsGame[n].x == objectsGame[r].x && objectsGame[n].y == objectsGame[r].y && n != r) {
@@ -455,6 +555,18 @@ function collisionsObjects() {
 		    objectsGame[n].point.x -= TILE_SIZE*3;
 		}
 	}
+
+	for(let u = 0; u < objectsGame.length; u++) {
+	  for(let i = 0; i < mapsGame[idMap].map.length; i++) {
+		for(let j = 0; j < mapsGame[idMap].map.length; j++) {
+			if(TILE_SIZE*i == objectsGame[u].x - objectsGame[u].radius && TILE_SIZE*j == objectsGame[u].y - objectsGame[u].radius) {
+				if(mapsGame[idMap].map[i][j].img == 9 || mapsGame[idMap].map[i][j].img == 8) {
+					objectsGame[u].health = 0;
+				}
+			}
+	    }
+	}
+  }
 }
 }
 

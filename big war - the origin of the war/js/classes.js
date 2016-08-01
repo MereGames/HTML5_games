@@ -119,7 +119,7 @@ levelsMaps[0].map = JSON.parse(levelsMaps[0].map);
 }
 
 //Objects game
-function gameObject(name, img, type, prof, x, y, map, speed, health, ataca) {
+function gameObject(name, img, type, prof, x, y, map, speed, health, ataca, num) {
 	this.img = img;
 	this.name = name;
 	this.map = map;
@@ -132,21 +132,33 @@ function gameObject(name, img, type, prof, x, y, map, speed, health, ataca) {
 	this.type = type;
 	this.prof = prof;
 	this.radius = 64*3;
-	this.point = {x: 512, y: 256};
+	this.point = {x: x - 64*3 + 64, y: y - 64*3};
 	this.select = false;
 	this.ataca = ataca;
+	this.num = num;
 
 	this.health = health;
 	this._health = health;
 
 	this.draw = function () {
 		if(this.x - this.radius - movAddX <= WIDTH + viewDis && this.x - this.radius - movAddX >= -viewDis && this.y - this.radius - movAddY <= HEIGHT + viewDis && this.y - this.radius - movAddY >= -viewDis) {
-		    ctx.drawImage(img, this.x - this.radius - movAddX, this.y - this.radius - movAddY);
+		    ctx.drawImage(img, animationObjs[num].x, 0, 64, 64, this.x - this.radius - movAddX, this.y - this.radius - movAddY, 64, 64);
 		    ctx.save();
-		    ctx.fillStyle = "red";
-		    ctx.fillRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 55, this.health/2, 5);
+		    ctx.fillStyle = "#0AAC2B";
 		    ctx.strokeStyle = "#fff";
-		    ctx.strokeRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 55, this._health/2, 5);
+		    if(this.health >= 300) {
+		        ctx.fillRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 55, this.health/10, 5);
+		        ctx.strokeRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 55, this._health/10, 5);
+		    }else if(this.health >= 150){
+		    	ctx.fillRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 55, this.health/5, 5);
+		        ctx.strokeRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 55, this._health/5, 5);
+		    }else if(this.health >= 65){
+		    	ctx.fillRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 55, this.health/2, 5);
+		        ctx.strokeRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 55, this._health/2, 5);
+		    }else {
+		    	ctx.fillRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 55, this.health, 5);
+		        ctx.strokeRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 55, this._health, 5);
+		    }
 		    ctx.restore();
 		    if(this.select == true) {
 		    	ctx.strokeStyle = "red";
@@ -174,16 +186,45 @@ function gameObject(name, img, type, prof, x, y, map, speed, health, ataca) {
 	}
 }
 
-function build(name, img, x, y, radius) {
+function build(name, img, x, y, radius, time) {
 	this.name = name;
 	this.img = img;
 	this.x = x;
 	this.y = y;
 	this.radius = radius;
+	this.timeOut = 0;
+	this._timeOut = time;
+	this.num = 0;
+	this.health = 120;
 
 	this.draw = function () {
 		if(this.x - this.radius - movAddX <= WIDTH + viewDis && this.x - this.radius - movAddX >= -viewDis && this.y - this.radius - movAddY <= HEIGHT + viewDis && this.y - this.radius - movAddY >= -viewDis) {
 		    ctx.drawImage(img, this.x - this.radius - movAddX, this.y - this.radius - movAddY);
+		    ctx.save();
+		    ctx.font = "20px cursive";
+		    ctx.textAlign = "center";
+		    if(this.num > 0) {
+		    	ctx.strokeStyle = "#fff";
+		        ctx.fillText(this.num, this.x - this.radius - movAddX + 34, this.y - this.radius - movAddY + 40);
+		        ctx.fillStyle = "blue";
+		        if(this._timeOut >= 60) {
+		            ctx.fillRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 64, this.timeOut/1.5, 5);
+		            ctx.strokeRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 64, this._timeOut/1.5, 5);
+		        }else {
+		        	ctx.fillRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 64, this.timeOut, 5);
+		            ctx.strokeRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 64, this._timeOut, 5);
+		        }
+		        if(this.timeOut < this._timeOut && stopGame == false) {
+		        	this.timeOut += 0.5;
+		        }else if(this.timeOut >= this._timeOut) {
+		        	this.num -= 1;
+		        	this.timeOut = 0;
+		        	if(this.name == "army") {
+		        	    objectsGame.push(new gameObject("tank", objectImages[2], "tank", "atac", this.x + 64, this.y, idMap, 2, 100, 30));
+		            }
+		        }
+		    }
+		    ctx.restore();
 	    }
 	}
 
