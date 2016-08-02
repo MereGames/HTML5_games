@@ -7,7 +7,6 @@ var buildsGame = [{name: "none"}];
 
 //other objs
 var objectsGame = [];
-var number = 0;
 
 //Baze
 var objBaze = {
@@ -18,7 +17,7 @@ var objBaze = {
 	timeOut: 0,
 	_timeOut: 50,
 	num: 0,
-	health: 5000,
+	health: 1000,
 
 	draw: function() {
 		if(this.x - this.radius - movAddX <= WIDTH + viewDis && this.x - this.radius - movAddX >= -viewDis && this.y - this.radius - movAddY <= HEIGHT + viewDis && this.y - this.radius - movAddY >= -viewDis) {
@@ -37,9 +36,7 @@ var objBaze = {
 		        }else if(this.timeOut >= this._timeOut) {
 		        	this.num -= 1;
 		        	this.timeOut = 0;
-		        	objectsGame.push(new gameObject("robot", objectImages[1], "robot", "atac", this.x + 64, this.y, idMap, 2, 50, 10, number));
-		        	number += 1;
-		        	animationObjs.push({name: "robot", x: 0});
+		        	objectsGame.push(new gameObject("robot", objectImages[1], "player", "bliz", this.x + 64, this.y, idMap, 2, 50, 10, 80));
 		        }
 		    }
 		    ctx.restore();

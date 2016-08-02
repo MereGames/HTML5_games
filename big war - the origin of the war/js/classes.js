@@ -5,6 +5,8 @@ var deleteProg = false;
 var dev = 1.15;
 var addDev = 0.07;
 
+var objBull = [];
+
 //Class button
 var button = function (name, x, y, xt, yt, width, height, text, font, action, typeAction, type, img, over) {
 	this.x = x;
@@ -91,7 +93,7 @@ levelsMaps[0].map = JSON.parse(levelsMaps[0].map);
 				    }
 				}
 				//Maps save
-				mapsGame.push({name: "map_" + mapsGame.length, map: levelsMaps[0].map, playerData: {money: 99000, addMoney: 5}});
+				mapsGame.push({name: "map_" + mapsGame.length, map: levelsMaps[0].map, playerData: {money: 99000, addMoney: 5, laut: 1, time: 10}});
 				for(let i = (mapsGame.length - 1); i < mapsGame.length; i++) {
 					if(i < 0) {
 						i = 0;
@@ -118,8 +120,23 @@ levelsMaps[0].map = JSON.parse(levelsMaps[0].map);
 	}
 }
 
+//Bullet
+function bullet(x, y, anim, type, name) {
+	this.x = x;
+	this.y = y;
+	this.anim = anim;
+	this.speed = 7;
+	this.time = 50;
+	this.type = type;
+	this.name = name;
+
+	this.draw = function () {
+		ctx.drawImage(otherImages[2], this.x - movAddX, this.y - movAddY, 7, 7);
+	}
+}
+
 //Objects game
-function gameObject(name, img, type, prof, x, y, map, speed, health, ataca, num) {
+function gameObject(name, img, type, prof, x, y, map, speed, health, ataca, reload) {
 	this.img = img;
 	this.name = name;
 	this.map = map;
@@ -135,16 +152,24 @@ function gameObject(name, img, type, prof, x, y, map, speed, health, ataca, num)
 	this.point = {x: x - 64*3 + 64, y: y - 64*3};
 	this.select = false;
 	this.ataca = ataca;
-	this.num = num;
+	this.animation = 0;
+	this.reload = reload;
+	this._reload = reload;
+	this.drawBol = true;
+	this.faer = true;
 
 	this.health = health;
 	this._health = health;
 
 	this.draw = function () {
-		if(this.x - this.radius - movAddX <= WIDTH + viewDis && this.x - this.radius - movAddX >= -viewDis && this.y - this.radius - movAddY <= HEIGHT + viewDis && this.y - this.radius - movAddY >= -viewDis) {
-		    ctx.drawImage(img, animationObjs[num].x, 0, 64, 64, this.x - this.radius - movAddX, this.y - this.radius - movAddY, 64, 64);
+		if(this.x - this.radius - movAddX <= WIDTH + viewDis && this.x - this.radius - movAddX >= -viewDis && this.y - this.radius - movAddY <= HEIGHT + viewDis && this.y - this.radius - movAddY >= -viewDis && this.drawBol == true) {
+		    ctx.drawImage(img, this.animation, 0, 64, 64, this.x - this.radius - movAddX, this.y - this.radius - movAddY, 64, 64);
 		    ctx.save();
-		    ctx.fillStyle = "#0AAC2B";
+		    if(this.type == "enemy") {
+		    	ctx.fillStyle = "red";
+		    }else {
+		    	ctx.fillStyle = "#0AAC2B";
+		    }
 		    ctx.strokeStyle = "#fff";
 		    if(this.health >= 300) {
 		        ctx.fillRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 55, this.health/10, 5);
@@ -164,9 +189,28 @@ function gameObject(name, img, type, prof, x, y, map, speed, health, ataca, num)
 		    	ctx.strokeStyle = "red";
 			    ctx.strokeRect(this.x - this.radius - movAddX, this.y - this.radius - movAddY, 64, 64);
 		    }
+
+		    if(this.faer == true && this.prof == "dis") {
+		    	if(this.reload >= this._reload) {
+		    		if(this.animation == 0) {
+		    	        objBull.push(new bullet(this.x - this.radius + 64, this.y - this.radius + 32, this.animation, this.type, this.name));
+		    	    }else if(this.animation == 128) {
+		    	    	objBull.push(new bullet(this.x - this.radius, this.y - this.radius + 32, this.animation, this.type, this.name));
+		    	    }else if(this.animation == 64) {
+		    	    	objBull.push(new bullet(this.x - this.radius + 32, this.y - this.radius + 64, this.animation, this.type, this.name));
+		    	    }else if(this.animation == 192) {
+		    	    	objBull.push(new bullet(this.x - this.radius + 32, this.y - this.radius, this.animation, this.type, this.name));
+		    	    }
+		    	    this.reload = 0;
+		        }
+		    }
+
+		    if(this.reload < this._reload && this.prof == "dis") {
+		    	this.reload += 1;
+		    }
 	    }
 
-		if(gameConfig[0].position == "free") {
+		if(gameConfig[0].position == "free" && this.type != "enemy") {
 			for(let i = 0; i < mapsGame[idMap].map.length; i++) {
 				for(let j = 0; j < mapsGame[idMap].map.length; j++) {
 						if(this.x - 64 - movAddX >= 64 * i - movAddX && this.x - 64 - movAddX <= 64 * i - movAddX + 64 + this.radius &&  this.y - 64 - movAddY >= 64 * j - movAddY && this.y - 64 - movAddY <= 64 * j - movAddY + 64 + this.radius) {
@@ -174,11 +218,24 @@ function gameObject(name, img, type, prof, x, y, map, speed, health, ataca, num)
 					    }
 				}
 			}
-		}else if(gameConfig[0].position == "level") {
+		}else if(gameConfig[0].position == "level" && this.type != "enemy") {
 			for(let i = 0; i < levelsMaps[select_level].map.length; i++) {
 				for(let j = 0; j < levelsMaps[select_level].map.length; j++) {
 						if(this.x - 64 - movAddX >= 64 * i - movAddX && this.x - 64 - movAddX <= 64 * i - movAddX + 64 + this.radius &&  this.y - 64 - movAddY >= 64 * j - movAddY && this.y - 64 - movAddY <= 64 * j - movAddY + 64 + this.radius) {
 						    levelsMaps[select_level].map[i][j].tum = false;
+					    }
+				}
+			}
+		}
+		if(gameConfig[0].position == "free" && this.type == "enemy"){
+			for(let i = 0; i < mapsGame[idMap].map.length; i++) {
+				for(let j = 0; j < mapsGame[idMap].map.length; j++) {
+						if(this.x - this.radius >= 64 * i && this.x - this.radius <= 64 * i + 64 &&  this.y - this.radius >= 64 * j && this.y - this.radius <= 64 * j + 64) {
+						    if(mapsGame[idMap].map[i][j].tum == true) {
+						    	this.drawBol = false;
+						    }else {
+						    	this.drawBol = true;
+						    }
 					    }
 				}
 			}
@@ -220,7 +277,7 @@ function build(name, img, x, y, radius, time) {
 		        	this.num -= 1;
 		        	this.timeOut = 0;
 		        	if(this.name == "army") {
-		        	    objectsGame.push(new gameObject("tank", objectImages[2], "tank", "atac", this.x + 64, this.y, idMap, 2, 100, 30));
+		        	    objectsGame.push(new gameObject("tank", objectImages[2], "player", "dis", this.x + 64, this.y, idMap, 2, 100, 30, 800));
 		            }
 		        }
 		    }

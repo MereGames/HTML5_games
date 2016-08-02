@@ -27,6 +27,7 @@ var selectsBuilds = [];
 
 var add;
 var pause = false;
+var lastTime = 10;
 
 var xS = 75;
 var xT = 100;
@@ -118,6 +119,8 @@ function drawScene() {
 	        collisionsObjects();
 	        moveObjects();
 	        killObjects();
+
+	        moveEnemy();
 	    }
 	    
 	}else if(gameConfig[0].position == "free" || gameConfig[0].endLoad == "free") {
@@ -178,6 +181,12 @@ function drawScene() {
 	        collisionsObjects();
 	        moveObjects();
 	        killObjects();
+
+	        moveEnemy();
+	    }
+
+	    for(let a = 0; a < objBull.length; a++) {
+	    	objBull[a].draw();
 	    }
 
 	    //Left menu
@@ -250,7 +259,20 @@ function drawScene() {
 	    ctx.fillStyle = "#fff";
 	    ctx.font = "30px cursive";
 	    ctx.fillText(mapsGame[idMap].playerData.money.toLocaleString() + "$", WIDTH - 8, 32);
-	    ctx.fillText("+"+mapsGame[idMap].playerData.addMoney.toLocaleString() + "$/sec", WIDTH - 8, 64);
+	    if(gameConfig[0].leng == "en") {
+	        ctx.fillText("+"+mapsGame[idMap].playerData.addMoney.toLocaleString() + "$/sec", WIDTH - 8, 64);
+	    }else {
+	    	ctx.fillText("+"+mapsGame[idMap].playerData.addMoney.toLocaleString() + "$/сек", WIDTH - 8, 64);
+	    }
+	    ctx.textAlign = "center";
+	    ctx.fillStyle = "red";
+	    ctx.fillText(mapsGame[idMap].playerData.laut, WIDTH/2 + 20, HEIGHT - 10);
+	    ctx.fillStyle = "yellow";
+	    if(gameConfig[0].leng == "en") {
+	        ctx.fillText(mapsGame[idMap].playerData.time + "s", WIDTH/2 - 40, HEIGHT - 10);
+	    }else {
+	    	ctx.fillText(mapsGame[idMap].playerData.time + "с", WIDTH/2 - 40, HEIGHT - 10);
+	    }
 	    ctx.restore();
 
 	    //Pause
@@ -495,20 +517,35 @@ function moveObjects() {
 		if(objectsGame[r].map == idMap) {
 			if(objectsGame[r].x - movAddX - objectsGame[r].radius < objectsGame[r].point.x - movAddX) {
 				objectsGame[r].x += objectsGame[r].speed;
-				animationObjs[r].x = 0;
+				objectsGame[r].animation = 0;
 
 			}else if(objectsGame[r].x - movAddX - objectsGame[r].radius > objectsGame[r].point.x - movAddX) {
 				objectsGame[r].x -= objectsGame[r].speed;
-				animationObjs[r].x = 128;
+				objectsGame[r].animation = 128;
 			}
 
 			if(objectsGame[r].y - objectsGame[r].radius < objectsGame[r].point.y) {
 				objectsGame[r].y += objectsGame[r].speed;
-				animationObjs[r].x = 64;
+				objectsGame[r].animation = 64;
 			}else if(objectsGame[r].y - objectsGame[r].radius > objectsGame[r].point.y) {
 				objectsGame[r].y -= objectsGame[r].speed;
-				animationObjs[r].x = 192;
+				objectsGame[r].animation = 192;
 			}
+		}
+	}
+	for(let b = 0; b < objBull.length; b++) {
+		if(objBull[b].anim == 0) {
+			objBull[b].x += objBull[b].speed;
+		}else if(objBull[b].anim == 64) {
+			objBull[b].y += objBull[b].speed;
+		}else if(objBull[b].anim == 128) {
+			objBull[b].x -= objBull[b].speed;
+		}else if(objBull[b].anim == 192) {
+			objBull[b].y -= objBull[b].speed;
+		}
+		objBull[b].time -= 1;
+		if(objBull[b].time <= 0) {
+			objBull.splice(1, b);
 		}
 	}
 }
@@ -560,12 +597,52 @@ function collisionsObjects() {
 	  for(let i = 0; i < mapsGame[idMap].map.length; i++) {
 		for(let j = 0; j < mapsGame[idMap].map.length; j++) {
 			if(TILE_SIZE*i == objectsGame[u].x - objectsGame[u].radius && TILE_SIZE*j == objectsGame[u].y - objectsGame[u].radius) {
-				if(mapsGame[idMap].map[i][j].img == 9 || mapsGame[idMap].map[i][j].img == 8) {
+				if(mapsGame[idMap].map[i][j].img == 9 || mapsGame[idMap].map[i][j].img == 8 || mapsGame[idMap].map[i][j].img == 3 || mapsGame[idMap].map[i][j].img == 7) {
 					objectsGame[u].health = 0;
+				}else if(mapsGame[idMap].map[i][j].img == 1 || mapsGame[idMap].map[i][j].img == 2 || mapsGame[idMap].map[i][j].img == 5 || mapsGame[idMap].map[i][j].img == 6) {
+					objectsGame[u].point.x -= 64;
+				    objectsGame[u].point.y -= 64;
+				}
+			}else if(TILE_SIZE*i == objectsGame[u].x + TILE_SIZE - objectsGame[u].radius && TILE_SIZE*j == objectsGame[u].y + TILE_SIZE - objectsGame[u].radius || TILE_SIZE*i == objectsGame[u].x - TILE_SIZE - objectsGame[u].radius && TILE_SIZE*j == objectsGame[u].y - TILE_SIZE - objectsGame[u].radius) {
+				if(mapsGame[idMap].map[i][j].img == 1 || mapsGame[idMap].map[i][j].img == 2 || mapsGame[idMap].map[i][j].img == 5 || mapsGame[idMap].map[i][j].img == 6) {
+				    if(TILE_SIZE*i == objectsGame[u].x + TILE_SIZE - objectsGame[u].radius && TILE_SIZE*j == objectsGame[u].y + TILE_SIZE - objectsGame[u].radius) {
+				    	objectsGame[u].point.x -= 64;
+				    	objectsGame[u].point.y -= 64;
+				    }else if(TILE_SIZE*i == objectsGame[u].x - TILE_SIZE - objectsGame[u].radius && TILE_SIZE*j == objectsGame[u].y - TILE_SIZE - objectsGame[u].radius) {
+				    	objectsGame[u].point.x += 64;
+				    	objectsGame[u].point.y += 64;
+				    }
 				}
 			}
 	    }
 	}
+  }
+
+  for(let o = 0; o < objectsGame.length; o++) {
+	 for(let b = 0; b < objBull.length; b++) {
+  		if(objBull[b].x >= objectsGame[o].x - objectsGame[o].radius && objBull[b].x <= objectsGame[o].x + 64 - objectsGame[o].radius) {
+  			if(objBull[b].y >= objectsGame[o].y - objectsGame[o].radius && objBull[b].y <= objectsGame[o].y + 64 - objectsGame[o].radius) {
+  				if(objectsGame[o].type != objBull[b].type) {
+  					for(let q = 0; q < objectsGame.length; q++) {
+  						if(q!=o && objBull[b].name == objectsGame[q].name) {
+  					        objectsGame[o].health -= objectsGame[q].ataca;
+  					        objBull.splice(1, b);
+  					        return;
+  					    }
+  				    }
+  				}
+  			}
+  		}
+  	}
+  }
+
+  for(let p = 0; p < buildsGame.length; p++) {
+  	for(let r = 0; r < objectsGame.length; r++) {
+  		if(objectsGame[r].x - objectsGame[r].radius == buildsGame[p].x - buildsGame[p].radius && objectsGame[r].y - objectsGame[r].radius == buildsGame[p].y - buildsGame[p].radius || objectsGame[r].x - objectsGame[r].radius == objBaze.x - objBaze.radius && objectsGame[r].y - objectsGame[r].radius == objBaze.y - objBaze.radius) {
+  			objectsGame[r].point.x += 64;
+			objectsGame[r].point.y += 64;
+  		}
+  	}
   }
 }
 }
@@ -575,13 +652,71 @@ function collisionsObjects() {
 function killObjects() {
 	for(let r = 0; r < objectsGame.length; r++) {
 		if(objectsGame[r].health <= 0) {
-			if(r != 0) {
-			    objectsGame.splice(r, r);
-		    }else {
-		    	objectsGame.splice(r, 1);
-		    }
+			//if(r != 0) {
+			    objectsGame.splice(r, 1);
+		    //}else {
+		    	//objectsGame.splice(r, 1);
+		    //}
 		}
 	}
+}
+
+//Emeny move
+function moveEnemy() {
+	for(let r = 0; r < objectsGame.length; r++) {
+		for(let p = 0; p < objectsGame.length; p++) {
+		    if(r != p && objectsGame[r].type == "enemy") {
+		    	objectsGame[r].faer = true;
+		    	if(objectsGame[r].x != objectsGame[p].x + 256) {
+		    		objectsGame[r].point.x = objectsGame[p].x;
+		    	}
+		    	if(objectsGame[r].y != objectsGame[p].y + 256) {
+		    		objectsGame[r].point.y = objectsGame[p].y;
+		    	}
+		    }
+
+		    if(objectsGame[r].x == objectsGame[p].x) {
+		    	objectsGame[r].faer = true;
+		    }
+   }
+  }
+
+  for(let d = 0; d < objectsGame.length; d++) {
+  	for(let s = 0; s < objectsGame.length; s++) {
+  		if(objectsGame[d].type == "enemy" && objectsGame[s].type == "enemy" && s != d) {
+  			if(objectsGame[d].point.x == objectsGame[s].point.x) {
+  				objectsGame[d].point.x = 64;
+  			}
+  		}
+  	}
+  }
+}
+
+//Timer
+function timerLauts() {
+	setInterval(function () {
+		if(mapsGame.length > 0 && stopGame == false) {
+			if(gameConfig[0].position == "free" || gameConfig[0].position == "level") {
+		      if(mapsGame[idMap].playerData.time > 0) {
+		          mapsGame[idMap].playerData.time -= 1;
+	          }else {
+	          	mapsGame[idMap].playerData.time = lastTime + 20;
+	          	lastTime = lastTime + 20;
+	          	mapsGame[idMap].playerData.laut += 1;
+	          	createEnemy();
+	          }
+	      }
+	    }
+	}, 1000);
+}
+timerLauts();
+
+
+//Enemy
+function createEnemy() {
+	for(let k = 0; k < mapsGame[idMap].playerData.laut * 3; k++) {
+	    objectsGame.push(new gameObject("tank", objectImagesEnemy[0], "enemy", "dis", 256, 256, idMap, 1, 100, 10, 20));
+    }
 }
 
 window.onkeydown = keyEvent;

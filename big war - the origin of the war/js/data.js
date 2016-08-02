@@ -72,4 +72,5 @@ var buildImages = [];
 var buttonImages = [];
 var groundImages = [];
 var objectImages = [];
+var objectImagesEnemy = [];
 var otherImages = [];
