@@ -25,9 +25,13 @@ var levelsPar = [
 var selectsEdit = [];
 var selectsBuilds = [];
 
+var _gameOver = false;
+
 var add;
 var pause = false;
 var lastTime = 10;
+
+var iterRot = null;
 
 var xS = 75;
 var xT = 100;
@@ -147,7 +151,9 @@ function drawScene() {
 		//Objects
 		objBaze.draw();
 	    for(let h = 1; h < buildsGame.length; h++) {
-	    	buildsGame[h].draw();
+	    	if(buildsGame[h].map == idMap) {
+	    	    buildsGame[h].draw();
+	        }
 	    }
 
 	    if(objectsGame.length > 0) {
@@ -186,7 +192,7 @@ function drawScene() {
 	    }
 
 	    for(let a = 0; a < objBull.length; a++) {
-	    	objBull[a].draw();
+	    	    objBull[a].draw();
 	    }
 
 	    //Left menu
@@ -274,6 +280,15 @@ function drawScene() {
 	    	ctx.fillText(mapsGame[idMap].playerData.time + "с", WIDTH/2 - 40, HEIGHT - 10);
 	    }
 	    ctx.restore();
+
+	    if(_gameOver == true) {
+	    	ctx.save();
+	        ctx.textAlign = "center";
+	        ctx.fillStyle = "red";
+	        ctx.font = "120px cursive";
+	        ctx.fillText("Game over!", WIDTH/2, HEIGHT/2);
+	        ctx.restore();
+	    }
 
 	    //Pause
 	    if(pause == true) {
@@ -533,6 +548,9 @@ function moveObjects() {
 			}
 		}
 	}
+	for(let t = 0; t < objBull.length; t++) {
+		objBull[t].time -= 1;
+	}
 	for(let b = 0; b < objBull.length; b++) {
 		if(objBull[b].anim == 0) {
 			objBull[b].x += objBull[b].speed;
@@ -543,10 +561,116 @@ function moveObjects() {
 		}else if(objBull[b].anim == 192) {
 			objBull[b].y -= objBull[b].speed;
 		}
-		objBull[b].time -= 1;
 		if(objBull[b].time <= 0) {
 			objBull.splice(1, b);
 		}
+	}
+
+	for(let q = 0; q < objectsGame.length; q++) {
+		for(let a = 0; a < objectsGame.length; a++) {
+			if(objectsGame[q].type == "player" && objectsGame[a].type == "enemy") {
+				if(objectsGame[q].x > objectsGame[a].x && objectsGame[q].animation == 128 && objectsGame[q].y == objectsGame[a].y  || objectsGame[q].x < objectsGame[a].x && objectsGame[q].animation == 0 && objectsGame[q].y == objectsGame[a].y) {
+					objectsGame[q].faer = true;
+				}else {
+					objectsGame[q].faer = false;
+				}
+				if(objectsGame[q].y > objectsGame[a].y && objectsGame[q].animation == 192 && objectsGame[q].x == objectsGame[a].x || objectsGame[q].y < objectsGame[a].y && objectsGame[q].animation == 64 && objectsGame[q].x == objectsGame[a].x){
+					objectsGame[q].faer = true;
+				}else {
+					objectsGame[q].faer = false;
+				}
+			}
+		}
+	}
+
+	if(iterRot == null || iterRot == undefined) {
+		iterRot = setInterval(function () {
+			for(let v = 0; v < objectsGame.length; v++) {
+				if(objectsGame[v].faer == false && stopGame == false) {
+					if(objectsGame[v].animation != 192) {
+						objectsGame[v].animation += 64;
+					}else {
+						objectsGame[v].animation = 0;
+					}
+				}
+			}
+		}, 3000);
+	}
+
+	loop1:
+	for(let q = 0; q < objectsGame.length; q++) {
+		for(let a = 0; a < objectsGame.length; a++) {
+			if(objectsGame[q].type == "enemy" && objectsGame[a].type == "player") {
+				if(objectsGame[q].x - objectsGame[q].radius > objectsGame[a].x - objectsGame[a].radius && objectsGame[q].animation == 128 && objectsGame[q].y - objectsGame[q].radius == objectsGame[a].y - objectsGame[a].radius || objectsGame[q].x - objectsGame[q].radius < objectsGame[a].x - objectsGame[a].radius && objectsGame[q].animation == 0 && objectsGame[q].y - objectsGame[q].radius == objectsGame[a].y - objectsGame[a].radius) {
+					objectsGame[q].faer = true;
+					continue loop1;
+				}else {
+					objectsGame[q].faer = false;
+				}
+
+				if(objectsGame[q].y - objectsGame[q].radius > objectsGame[a].y - objectsGame[a].radius && objectsGame[q].animation == 192 && objectsGame[q].x - objectsGame[q].radius == objectsGame[a].x - objectsGame[a].radius || objectsGame[q].y - objectsGame[q].radius < objectsGame[a].y - objectsGame[a].radius && objectsGame[q].animation == 64 && objectsGame[q].x - objectsGame[q].radius == objectsGame[a].x - objectsGame[a].radius) {
+					objectsGame[q].faer = true;
+					continue loop1;
+				}else {
+					objectsGame[q].faer = false;
+				}
+			}
+			if(objectsGame[q].type == "player" && objectsGame[a].type == "enemy") {
+				if(objectsGame[q].x - objectsGame[q].radius > objectsGame[a].x - objectsGame[a].radius && objectsGame[q].animation == 128 && objectsGame[q].y - objectsGame[q].radius == objectsGame[a].y - objectsGame[a].radius || objectsGame[q].x - objectsGame[q].radius < objectsGame[a].x - objectsGame[a].radius && objectsGame[q].animation == 0 && objectsGame[q].y - objectsGame[q].radius == objectsGame[a].y - objectsGame[a].radius) {
+					objectsGame[q].faer = true;
+					continue loop1;
+				}else {
+					objectsGame[q].faer = false;
+				}
+
+				if(objectsGame[q].y - objectsGame[q].radius > objectsGame[a].y - objectsGame[a].radius && objectsGame[q].animation == 192 && objectsGame[q].x - objectsGame[q].radius == objectsGame[a].x - objectsGame[a].radius || objectsGame[q].y - objectsGame[q].radius < objectsGame[a].y - objectsGame[a].radius && objectsGame[q].animation == 64 && objectsGame[q].x - objectsGame[q].radius == objectsGame[a].x - objectsGame[a].radius) {
+					objectsGame[q].faer = true;
+					continue loop1;
+				}else {
+					objectsGame[q].faer = false;
+				}
+			}
+		}
+	}
+
+	loop2:
+	for(let q = 0; q < objectsGame.length; q++) {
+		for(let a = 0; a < buildsGame.length; a++) {
+			if(objectsGame[q].type == "enemy") {
+				if(objectsGame[q].x - objectsGame[q].radius > buildsGame[a].x - buildsGame[a].radius && objectsGame[q].animation == 128 && objectsGame[q].y - objectsGame[q].radius == buildsGame[a].y - buildsGame[a].radius || objectsGame[q].x - objectsGame[q].radius < buildsGame[a].x - buildsGame[a].radius && objectsGame[q].animation == 0 && objectsGame[q].y - objectsGame[q].radius == buildsGame[a].y - buildsGame[a].radius) {
+					objectsGame[q].faer = true;
+					continue loop2;
+				}else {
+					objectsGame[q].faer = false;
+				}
+
+				if(objectsGame[q].y - objectsGame[q].radius > buildsGame[a].y - buildsGame[a].radius && objectsGame[q].animation == 192 && objectsGame[q].x - objectsGame[q].radius == buildsGame[a].x - buildsGame[a].radius || objectsGame[q].y - objectsGame[q].radius < buildsGame[a].y - buildsGame[a].radius && objectsGame[q].animation == 64 && objectsGame[q].x - objectsGame[q].radius == buildsGame[a].x - buildsGame[a].radius) {
+					objectsGame[q].faer = true;
+					continue loop2;
+				}else {
+					objectsGame[q].faer = false;
+				}
+			}
+		}
+	}
+
+	loop5:
+	for(let q = 0; q < objectsGame.length; q++) {
+			if(objectsGame[q].type == "enemy") {
+				if(objectsGame[q].x - objectsGame[q].radius > objBaze.x - objBaze.radius && objectsGame[q].animation == 128 && objectsGame[q].y - objectsGame[q].radius == objBaze.y - objBaze.radius || objectsGame[q].x - objectsGame[q].radius < objBaze.x - objBaze.radius && objectsGame[q].animation == 0 && objectsGame[q].y - objectsGame[q].radius == objBaze.y - objBaze.radius) {
+					objectsGame[q].faer = true;
+					continue loop5;
+				}else {
+					objectsGame[q].faer = false;
+				}
+
+				if(objectsGame[q].y - objectsGame[q].radius > objBaze.y - objBaze.radius && objectsGame[q].animation == 192 && objectsGame[q].x - objectsGame[q].radius == objBaze.x - objBaze.radius || objectsGame[q].y - objectsGame[q].radius < objBaze.y - objBaze.radius && objectsGame[q].animation == 64 && objectsGame[q].x - objectsGame[q].radius == objBaze.x - objBaze.radius) {
+					objectsGame[q].faer = true;
+					continue loop5;
+				}else {
+					objectsGame[q].faer = false;
+				}
+			}
 	}
 }
 
@@ -618,24 +742,6 @@ function collisionsObjects() {
 	}
   }
 
-  for(let o = 0; o < objectsGame.length; o++) {
-	 for(let b = 0; b < objBull.length; b++) {
-  		if(objBull[b].x >= objectsGame[o].x - objectsGame[o].radius && objBull[b].x <= objectsGame[o].x + 64 - objectsGame[o].radius) {
-  			if(objBull[b].y >= objectsGame[o].y - objectsGame[o].radius && objBull[b].y <= objectsGame[o].y + 64 - objectsGame[o].radius) {
-  				if(objectsGame[o].type != objBull[b].type) {
-  					for(let q = 0; q < objectsGame.length; q++) {
-  						if(q!=o && objBull[b].name == objectsGame[q].name) {
-  					        objectsGame[o].health -= objectsGame[q].ataca;
-  					        objBull.splice(1, b);
-  					        return;
-  					    }
-  				    }
-  				}
-  			}
-  		}
-  	}
-  }
-
   for(let p = 0; p < buildsGame.length; p++) {
   	for(let r = 0; r < objectsGame.length; r++) {
   		if(objectsGame[r].x - objectsGame[r].radius == buildsGame[p].x - buildsGame[p].radius && objectsGame[r].y - objectsGame[r].radius == buildsGame[p].y - buildsGame[p].radius || objectsGame[r].x - objectsGame[r].radius == objBaze.x - objBaze.radius && objectsGame[r].y - objectsGame[r].radius == objBaze.y - objBaze.radius) {
@@ -644,6 +750,86 @@ function collisionsObjects() {
   		}
   	}
   }
+
+  loop3:
+  for(let o = 0; o < objectsGame.length; o++) {
+	 for(let b = 0; b < objBull.length; b++) {
+  		if(objBull[b].x >= objectsGame[o].x - objectsGame[o].radius && objBull[b].x <= objectsGame[o].x + 64 - objectsGame[o].radius) {
+  			if(objBull[b].y >= objectsGame[o].y - objectsGame[o].radius && objBull[b].y <= objectsGame[o].y + 64 - objectsGame[o].radius) {
+  				if(objectsGame[o].type != objBull[b].type) {
+  					for(let q = 0; q < objectsGame.length; q++) {
+  						if(q!=o && objBull[b].name == objectsGame[q].name) {
+  					        objectsGame[o].health -= objectsGame[q].ataca;
+
+  					        if(objBull[b].anim == 0) {
+
+  					        	objectsGame[o].animation = 128;
+  					        	objectsGame[q].animation = 0;
+
+  					        }else if(objBull[b].anim == 128) {
+
+  					        	objectsGame[o].animation = 0;
+  					        	objectsGame[q].animation = 128;
+
+  					        }else if(objBull[b].anim == 64) {
+
+  					        	objectsGame[o].animation = 192;
+  					        	objectsGame[q].animation = 64;
+
+  					        }else if(objBull[b].anim == 192) {
+
+  					        	objectsGame[o].animation = 64;
+  					        	objectsGame[q].animation = 192;
+
+  					        }
+  					        objBull.splice(b, 1);
+
+  					        continue loop3;
+  					    }
+  				    }
+  				}
+  			}
+  		}
+  	}
+  }
+
+  loop4:
+  for(let o = 0; o < buildsGame.length; o++) {
+	 for(let b = 0; b < objBull.length; b++) {
+  		if(objBull[b].x >= buildsGame[o].x - buildsGame[o].radius && objBull[b].x <= buildsGame[o].x + 64 - buildsGame[o].radius) {
+  			if(objBull[b].y >= buildsGame[o].y - buildsGame[o].radius && objBull[b].y <= buildsGame[o].y + 64 - buildsGame[o].radius) {
+  				if(objBull[b].type == "enemy") {
+  					for(let q = 0; q < objectsGame.length; q++) {
+  						if(q!=o && objBull[b].name == objectsGame[q].name) {
+  					        buildsGame[o].health -= objectsGame[q].ataca;
+  					        objBull.splice(b, 1);
+
+  					        continue loop4;
+  					    }
+  				    }
+  				}
+  			}
+  		}
+  	}
+  }
+
+  loop6:
+	 for(let b = 0; b < objBull.length; b++) {
+  		if(objBull[b].x >= objBaze.x - objBaze.radius && objBull[b].x <= objBaze.x + 64 - objBaze.radius) {
+  			if(objBull[b].y >= objBaze.y - objBaze.radius && objBull[b].y <= objBaze.y + 64 - objBaze.radius) {
+  				if(objBull[b].type == "enemy") {
+  					for(let q = 0; q < objectsGame.length; q++) {
+  						if(objBull[b].name == objectsGame[q].name) {
+  					        objBaze.health -= objectsGame[q].ataca;
+  					        objBull.splice(b, 1);
+
+  					        continue loop6;
+  					    }
+  				    }
+  				}
+  			}
+  		}
+  	}
 }
 }
 
@@ -652,44 +838,63 @@ function collisionsObjects() {
 function killObjects() {
 	for(let r = 0; r < objectsGame.length; r++) {
 		if(objectsGame[r].health <= 0) {
-			//if(r != 0) {
 			    objectsGame.splice(r, 1);
-		    //}else {
-		    	//objectsGame.splice(r, 1);
-		    //}
 		}
 	}
+	for(let b = 0; b < buildsGame.length; b++) {
+		if(buildsGame[b].health <= 0) {
+			    buildsGame.splice(b, 1);
+		}
+	}
+	if(objBaze.health <= 0) {
+		delete objBaze;
+		stopGame = true;
+		pause = true;
+		gameOver();
+	}
+}
+
+function gameOver() {
+	_gameOver = true;
+	movAddX = -64;
+	movAddY = -64;
+	setTimeout(function () {
+		window.location.reload();
+	}, 4000);
 }
 
 //Emeny move
 function moveEnemy() {
-	for(let r = 0; r < objectsGame.length; r++) {
+	/*for(let r = 0; r < objectsGame.length; r++) {
 		for(let p = 0; p < objectsGame.length; p++) {
-		    if(r != p && objectsGame[r].type == "enemy") {
-		    	objectsGame[r].faer = true;
-		    	if(objectsGame[r].x != objectsGame[p].x + 256) {
+		    if(objectsGame[r].type == "enemy" && objectsGame[p].type == "player") {
+		    	if(objectsGame[r].x != objectsGame[p].x + 128 && objectsGame[r].y != objectsGame[p].y + 128 && objectsGame[r].target.bull == false && objectsGame[p].target.bull == false) {
 		    		objectsGame[r].point.x = objectsGame[p].x;
-		    	}
-		    	if(objectsGame[r].y != objectsGame[p].y + 256) {
 		    		objectsGame[r].point.y = objectsGame[p].y;
+		    		objectsGame[r].target.bull = true;
+		    		objectsGame[p].target.bull = true;
 		    	}
 		    }
+        }
+    }
 
-		    if(objectsGame[r].x == objectsGame[p].x) {
-		    	objectsGame[r].faer = true;
-		    }
-   }
-  }
-
-  for(let d = 0; d < objectsGame.length; d++) {
-  	for(let s = 0; s < objectsGame.length; s++) {
-  		if(objectsGame[d].type == "enemy" && objectsGame[s].type == "enemy" && s != d) {
-  			if(objectsGame[d].point.x == objectsGame[s].point.x) {
-  				objectsGame[d].point.x = 64;
-  			}
-  		}
-  	}
-  }
+    for(let  e = 0; e < objectsGame.length; e++) {
+    	for(let w = 0; w < objectsGame.length; w++) {
+    	if(objectsGame[e].type == "enemy" && objectsGame[w].type == "player") {
+    		if(objectsGame[e].target.bull == true) {
+    			objectsGame[e].point.x = objectsGame[w].x;
+		    	objectsGame[e].point.y = objectsGame[w].y;
+    		}
+    		for(let d = 0; d < objectsGame.length; d++) {
+    			if(objectsGame[d].type == "enemy") {
+    				if(objectsGame[d].point.x == objectsGame[e].point.x && objectsGame[d].point.y == objectsGame[e].point.y) {
+    					objectsGame[e].target.bull = false;
+    				}
+    			}
+    		}
+    	}
+    }
+  }*/
 }
 
 //Timer
@@ -714,8 +919,8 @@ timerLauts();
 
 //Enemy
 function createEnemy() {
-	for(let k = 0; k < mapsGame[idMap].playerData.laut * 3; k++) {
-	    objectsGame.push(new gameObject("tank", objectImagesEnemy[0], "enemy", "dis", 256, 256, idMap, 1, 100, 10, 20));
+	for(let k = 0; k < mapsGame[idMap].playerData.laut * 10; k++) {
+	    objectsGame.push(new gameObject("tank_enemy", objectImagesEnemy[0], "enemy", "dis", 256, 256, idMap, 1, 100, 10, 50));
     }
 }
 

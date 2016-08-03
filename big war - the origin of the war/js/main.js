@@ -172,8 +172,8 @@ function startGame() {
 		lengGame(dat[0].leng);
 		mapsGame = dat[1].gameMaps;
 		for(let p = 0; p < mapsGame.length; p++) {
-			mapsGame[p].playerData.money = 10000;
-			mapsGame[p].playerData.addMoney = 25;
+			mapsGame[p].playerData.money = 1000000;
+			mapsGame[p].playerData.addMoney = 2500;
 
 			mapsGame[p].playerData.laut = 1;
 			mapsGame[p].playerData.time = 10;
@@ -854,7 +854,7 @@ function clickEvent(e) {
 		    				if(mapsGame[idMap].playerData.money >= buildings[d].price) {
 		    					preBuild.x += buildings[d].radius;
 		    					preBuild.y += buildings[d].radius;
-		    				    buildsGame.push(new build(buildings[d].name, buildImages[d], preBuild.x + movAddX, preBuild.y + movAddY, buildings[d].radius, buildings[d].time));
+		    				    buildsGame.push(new build(buildings[d].name, buildImages[d], preBuild.x + movAddX, preBuild.y + movAddY, buildings[d].radius, buildings[d].time, idMap));
 		    				    viewBorders.push({name: buildings[d].name, view: false});
 		    				    if(buildings[d].name == "factory_1") {
 		    				    	mapsGame[idMap].playerData.addMoney += 43;

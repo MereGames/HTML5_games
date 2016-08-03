@@ -17,7 +17,8 @@ var objBaze = {
 	timeOut: 0,
 	_timeOut: 50,
 	num: 0,
-	health: 1000,
+	health: 200,
+	_health: 1000,
 
 	draw: function() {
 		if(this.x - this.radius - movAddX <= WIDTH + viewDis && this.x - this.radius - movAddX >= -viewDis && this.y - this.radius - movAddY <= HEIGHT + viewDis && this.y - this.radius - movAddY >= -viewDis) {
@@ -39,6 +40,13 @@ var objBaze = {
 		        	objectsGame.push(new gameObject("robot", objectImages[1], "player", "bliz", this.x + 64, this.y, idMap, 2, 50, 10, 80));
 		        }
 		    }
+		    ctx.restore();
+
+		    ctx.save();
+		    ctx.fillStyle = "#0AAC2B";
+		    ctx.strokeStyle = "#fff";
+		    ctx.fillRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 74, this.health/15, 5);
+		    ctx.strokeRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 74, this._health/15, 5);
 		    ctx.restore();
 	    }
 		if(gameConfig[0].position == "free") {

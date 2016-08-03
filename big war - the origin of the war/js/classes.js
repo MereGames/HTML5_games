@@ -121,14 +121,15 @@ levelsMaps[0].map = JSON.parse(levelsMaps[0].map);
 }
 
 //Bullet
-function bullet(x, y, anim, type, name) {
+function bullet(x, y, anim, type, name, map) {
 	this.x = x;
 	this.y = y;
 	this.anim = anim;
-	this.speed = 7;
-	this.time = 50;
+	this.speed = 8;
+	this.time = 100;
 	this.type = type;
 	this.name = name;
+	this.map = map;
 
 	this.draw = function () {
 		ctx.drawImage(otherImages[2], this.x - movAddX, this.y - movAddY, 7, 7);
@@ -156,7 +157,8 @@ function gameObject(name, img, type, prof, x, y, map, speed, health, ataca, relo
 	this.reload = reload;
 	this._reload = reload;
 	this.drawBol = true;
-	this.faer = true;
+	this.faer = false;
+	this.target = {bull: false, en: 0, pl: 0};
 
 	this.health = health;
 	this._health = health;
@@ -189,26 +191,26 @@ function gameObject(name, img, type, prof, x, y, map, speed, health, ataca, relo
 		    	ctx.strokeStyle = "red";
 			    ctx.strokeRect(this.x - this.radius - movAddX, this.y - this.radius - movAddY, 64, 64);
 		    }
+	    }
 
-		    if(this.faer == true && this.prof == "dis") {
+	    if(this.faer == true && stopGame == false) {
 		    	if(this.reload >= this._reload) {
 		    		if(this.animation == 0) {
-		    	        objBull.push(new bullet(this.x - this.radius + 64, this.y - this.radius + 32, this.animation, this.type, this.name));
+		    	        objBull.push(new bullet(this.x - this.radius + 64, this.y - this.radius + 32, this.animation, this.type, this.name, this.map));
 		    	    }else if(this.animation == 128) {
-		    	    	objBull.push(new bullet(this.x - this.radius, this.y - this.radius + 32, this.animation, this.type, this.name));
+		    	    	objBull.push(new bullet(this.x - this.radius, this.y - this.radius + 32, this.animation, this.type, this.name, this.map));
 		    	    }else if(this.animation == 64) {
-		    	    	objBull.push(new bullet(this.x - this.radius + 32, this.y - this.radius + 64, this.animation, this.type, this.name));
+		    	    	objBull.push(new bullet(this.x - this.radius + 32, this.y - this.radius + 64, this.animation, this.type, this.name, this.map));
 		    	    }else if(this.animation == 192) {
-		    	    	objBull.push(new bullet(this.x - this.radius + 32, this.y - this.radius, this.animation, this.type, this.name));
+		    	    	objBull.push(new bullet(this.x - this.radius + 32, this.y - this.radius, this.animation, this.type, this.name, this.map));
 		    	    }
 		    	    this.reload = 0;
 		        }
 		    }
 
-		    if(this.reload < this._reload && this.prof == "dis") {
+		    if(this.reload < this._reload && stopGame == false) {
 		    	this.reload += 1;
 		    }
-	    }
 
 		if(gameConfig[0].position == "free" && this.type != "enemy") {
 			for(let i = 0; i < mapsGame[idMap].map.length; i++) {
@@ -243,7 +245,7 @@ function gameObject(name, img, type, prof, x, y, map, speed, health, ataca, relo
 	}
 }
 
-function build(name, img, x, y, radius, time) {
+function build(name, img, x, y, radius, time, map) {
 	this.name = name;
 	this.img = img;
 	this.x = x;
@@ -252,12 +254,23 @@ function build(name, img, x, y, radius, time) {
 	this.timeOut = 0;
 	this._timeOut = time;
 	this.num = 0;
+	this.map = map;
 	this.health = 120;
+	this._health = 120;
 
 	this.draw = function () {
 		if(this.x - this.radius - movAddX <= WIDTH + viewDis && this.x - this.radius - movAddX >= -viewDis && this.y - this.radius - movAddY <= HEIGHT + viewDis && this.y - this.radius - movAddY >= -viewDis) {
 		    ctx.drawImage(img, this.x - this.radius - movAddX, this.y - this.radius - movAddY);
+
 		    ctx.save();
+		    ctx.fillStyle = "#0AAC2B";
+		    ctx.strokeStyle = "#fff";
+		    ctx.fillRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 74, this.health/3, 5);
+		    ctx.strokeRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 74, this._health/3, 5);
+		    ctx.restore();
+	    }
+
+	    ctx.save();
 		    ctx.font = "20px cursive";
 		    ctx.textAlign = "center";
 		    if(this.num > 0) {
@@ -273,16 +286,15 @@ function build(name, img, x, y, radius, time) {
 		        }
 		        if(this.timeOut < this._timeOut && stopGame == false) {
 		        	this.timeOut += 0.5;
-		        }else if(this.timeOut >= this._timeOut) {
+		        }else if(this.timeOut >= this._timeOut && stopGame == false) {
 		        	this.num -= 1;
 		        	this.timeOut = 0;
 		        	if(this.name == "army") {
-		        	    objectsGame.push(new gameObject("tank", objectImages[2], "player", "dis", this.x + 64, this.y, idMap, 2, 100, 30, 800));
+		        	    objectsGame.push(new gameObject("tank", objectImages[2], "player", "dis", this.x + 64, this.y, idMap, 2, 100, 30, 40));
 		            }
 		        }
 		    }
 		    ctx.restore();
-	    }
 	}
 
 	if(gameConfig[0].position == "free") {
