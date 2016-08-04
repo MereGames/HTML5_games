@@ -5,11 +5,12 @@
 
 
 const SPEED_MAP = 10;
+const NUM_MAIN = 4;
 
 var levelsPar = [
-    {level: 0, size: 50, dif: "none", tum: true},
+    {level: 0, size: 30, dif: "none", tum: true},
     {level: 1, size: 30, dif: "easy", tum: true},
-    {level: 2, size: 30, dif: "easy", tum: true},
+    {level: 2, size: 50, dif: "easy", tum: true},
     {level: 3, size: 50, dif: "easy", tum: true},
     {level: 4, size: 50, dif: "easy", tum: true},
     {level: 5, size: 60, dif: "normal", tum: true},
@@ -17,15 +18,28 @@ var levelsPar = [
     {level: 7, size: 70, dif: "normal", tum: true},
     {level: 8, size: 70, dif: "normal", tum: true},
     {level: 9, size: 70, dif: "normal", tum: true},
-    {level: 10, size: 90, dif: "hard", tum: true},
-    {level: 11, size: 90, dif: "hard", tum: true},
-    {level: 12, size: 90, dif: "hard", tum: true}
+    {level: 10, size: 80, dif: "hard", tum: true},
+    {level: 11, size: 80, dif: "hard", tum: true},
+    {level: 12, size: 80, dif: "hard", tum: true}
 ];
+
+var viewMain = true;
+var viewSpesial = false;
+
+var yRec = 30;
+
+//Main Global-Virabels
+var musikPlay = true;
+var musik = new Audio();
+musik.src = "audio/ms_1.mp3";
+musik.loop = true;
+musik.play();
 
 var selectsEdit = [];
 var selectsBuilds = [];
 
 var _gameOver = false;
+var _gameVictory = false;
 
 var add;
 var pause = false;
@@ -47,22 +61,6 @@ var devText = 1.15;
 
 var xP = 0, yP = 0;
 
-//select
-var select = {
-	x: -64,
-	y: -64,
-	width: 0,
-	height: 0,
-
-	draw: function () {
-		ctx.fillStyle = "#999";
-		ctx.strokeStyle = "#fff";
-		ctx.globalAlpha = 0.5;
-		ctx.fillRect(this.x, this.y, this.width, this.height);
-		ctx.strokeRect(this.x, this.y, this.width, this.height);
-		ctx.globalAlpha = 1;
-	}
-}
 var clicked = false;
 var editMap = false;
 
@@ -71,7 +69,7 @@ var movAddX = -64, movAddY = -64;
 var sceneObjs = [];
 
 //Maps
-for(let i = 0; i < levelsPar.length; i++) {
+for(let i = 0; i < 1; i++) {
 	let arrLin = [];
 	for(let u = 0;u < levelsPar[i].size; u++) {
 		if(levelsPar[i].tum == true) {
@@ -100,56 +98,22 @@ function drawScene() {
 		for(let k = 0; k < levelsPar[select_level].size; k++) {
 			loop2:
 			for(let l = 0; l < levelsPar[select_level].size; l++) {
-				if(levelsMaps[select_level].map[k][l].tum == true && TILE_SIZE * k - movAddX > -viewDis && TILE_SIZE * k - movAddX < WIDTH + viewDis && TILE_SIZE * l - movAddY > -viewDis && TILE_SIZE * l - movAddY < HEIGHT + viewDis) {
-					ctx.drawImage(groundImages[levelsMaps[select_level].map[k][l].img], TILE_SIZE * k - movAddX, TILE_SIZE * l - movAddY, TILE_SIZE, TILE_SIZE);
+				if(levelsMaps[select_level].map[0].map[k][l].tum == true && TILE_SIZE * k - movAddX > -viewDis && TILE_SIZE * k - movAddX < WIDTH + viewDis && TILE_SIZE * l - movAddY > -viewDis && TILE_SIZE * l - movAddY < HEIGHT + viewDis) {
+					ctx.drawImage(groundImages[levelsMaps[select_level].map[0].map[k][l].img], TILE_SIZE * k - movAddX, TILE_SIZE * l - movAddY, TILE_SIZE, TILE_SIZE);
 					ctx.save();
 					ctx.fillStyle = "#000";
 					ctx.globalAlpha = 0.5;
 					ctx.fillRect(TILE_SIZE * k - movAddX, TILE_SIZE * l - movAddY, TILE_SIZE, TILE_SIZE);
 					ctx.restore();
 				}else if(TILE_SIZE * k - movAddX > -viewDis && TILE_SIZE * k - movAddX < WIDTH + viewDis && TILE_SIZE * l - movAddY > -viewDis && TILE_SIZE * l - movAddY < HEIGHT + viewDis){
-					ctx.drawImage(groundImages[levelsMaps[select_level].map[k][l].img], TILE_SIZE * k - movAddX, TILE_SIZE * l - movAddY, TILE_SIZE, TILE_SIZE);
-				}
-		    }
-		}
-
-		//Objects
-	    objBaze.draw();
-	    
-
-
-        //Update
-	    if(gameConfig[0].pre_position != "_menu") {
-	        collisionsObjects();
-	        moveObjects();
-	        killObjects();
-
-	        moveEnemy();
-	    }
-	    
-	}else if(gameConfig[0].position == "free" || gameConfig[0].endLoad == "free") {
-		loop1:
-		for(let k = 0; k < mapsGame[idMap].map.length; k++) {
-			loop2:
-			for(let l = 0; l < mapsGame[idMap].map.length; l++) {
-				if(mapsGame[idMap].map[k][l].img == -1) {
-					continue loop1;
-				}
-				if(mapsGame[idMap].map[k][l].tum == true && TILE_SIZE * k - movAddX > -viewDis && TILE_SIZE * k - movAddX < WIDTH + viewDis && TILE_SIZE * l - movAddY > -viewDis && TILE_SIZE * l - movAddY < HEIGHT + viewDis) {
-					ctx.drawImage(groundImages[mapsGame[idMap].map[k][l].img], TILE_SIZE * k - movAddX, TILE_SIZE * l - movAddY, TILE_SIZE, TILE_SIZE);
-					ctx.save();
-					ctx.fillStyle = "#000";
-					ctx.globalAlpha = 0.4;
-					ctx.fillRect(TILE_SIZE * k - movAddX, TILE_SIZE * l - movAddY, TILE_SIZE, TILE_SIZE);
-					ctx.restore();
-				}else if(TILE_SIZE * k - movAddX > -viewDis && TILE_SIZE * k - movAddX < WIDTH + viewDis && TILE_SIZE * l - movAddY > -viewDis && TILE_SIZE * l - movAddY < HEIGHT + viewDis){
-					ctx.drawImage(groundImages[mapsGame[idMap].map[k][l].img], TILE_SIZE * k - movAddX, TILE_SIZE * l - movAddY, TILE_SIZE, TILE_SIZE);
+					ctx.drawImage(groundImages[levelsMaps[select_level].map[0].map[k][l].img], TILE_SIZE * k - movAddX, TILE_SIZE * l - movAddY, TILE_SIZE, TILE_SIZE);
 				}
 		    }
 		}
 
 		//Objects
 		objBaze.draw();
+		objBazeEnemy.draw();
 	    for(let h = 1; h < buildsGame.length; h++) {
 	    	if(buildsGame[h].map == idMap) {
 	    	    buildsGame[h].draw();
@@ -195,16 +159,25 @@ function drawScene() {
 	    	    objBull[a].draw();
 	    }
 
+	    //Up manu
+	    ctx.save();
+	    ctx.fillStyle = "#9D6B0F";
+	    ctx.fillRect(5, 5, 20, 16);
+	    ctx.fillRect(30, 5, 20, 16);
+	    ctx.textAlign = "center";
+	    ctx.fillStyle = "#fff";
+	    ctx.font = "20px Arial";
+	    ctx.fillText("Z", 15, 20);
+	    ctx.fillText("X", 40, 20);
+	    ctx.restore();
+
 	    //Left menu
+	    if(viewMain == true || viewSpesial == true) {
 	    for(let d = 0; d < buildings.length; d++) {
 	    	ctx.save();
 	    	ctx.fillStyle = "#9D6B0F";
 
-	    	if(d == 0) {
-	    	    ctx.fillRect(20, 20, 64, 64);
-	        }else if(d == 1) {
-	        	ctx.fillRect(20, 100, 64, 64);
-	        }
+	    	ctx.fillRect(20, yRec, 64, 64);
 
 	    	ctx.fillStyle = "#fff";
 	    	ctx.font = "25px Arial";
@@ -215,34 +188,23 @@ function drawScene() {
 	    		ctx.strokeStyle = "#fff";
 	    	}
 
-	    	if(d == 0) {
-	    	    ctx.drawImage(buildImages[d], 20, 20);
-	        }else if(d == 1) {
-	        	ctx.drawImage(buildImages[d], 20, 100);
+	    	if(viewMain == true && d <= NUM_MAIN) {
+	    	    ctx.drawImage(buildImages[d], 20, yRec);
 	        }
 
-	        if(d == 0) {
-	    	    ctx.strokeRect(20, 20, 64, 64);
-	        }else if(d == 1) {
-	        	ctx.strokeRect(20, 100, 64, 64);
-	        }
+	    	ctx.strokeRect(20, yRec, 64, 64);
 
 	    	ctx.textAlign = "center";
 
-	    	if(d == 0) {
-	    	    ctx.fillText(d, 50, 40);
-	        }else if(d == 1) {
-	        	ctx.fillText(d, 50, 120);
-	        }
+	    	ctx.fillText(d, 50, yRec + 20);
 
 	    	ctx.fillStyle = "yellow";
 	    	ctx.font = "20px cursive";
 
-	    	if(d == 0) {
-	    	    ctx.fillText(buildings[d].price + "$", 50, 80);
-	        }else if(d == 1) {
-	        	ctx.fillText(buildings[d].price + "$", 50, 160);
+	    	if(viewMain == true && d <= NUM_MAIN) {
+	    	    ctx.fillText(buildings[d].price + "$", 50, yRec + 60);
 	        }
+
 	    	ctx.restore();
 
 	    	if(buildings[d].select == true) {
@@ -257,6 +219,9 @@ function drawScene() {
 	    		}
 	    		ctx.restore();
 	    	}
+	    	yRec+=80;
+	      }
+	      yRec = 30;
 	    }
 
 	    //Player data
@@ -288,6 +253,202 @@ function drawScene() {
 	        ctx.font = "120px cursive";
 	        ctx.fillText("Game over!", WIDTH/2, HEIGHT/2);
 	        ctx.restore();
+	    }else if(_gameVictory == true) {
+	    	ctx.save();
+	        ctx.textAlign = "center";
+	        ctx.fillStyle = "red";
+	        ctx.font = "120px cursive";
+	        ctx.fillText("Victory!", WIDTH/2, HEIGHT/2);
+	        ctx.restore();
+	    }
+
+	    //Pause
+	    if(pause == true) {
+	    	ctx.save();
+	    	ctx.textAlign = "center";
+	    	if(gameConfig[0].leng == "en") {
+	    		ctx.fillText("Pause", WIDTH/2, 60);
+	    	}else if(gameConfig[0].leng == "ru") {
+	    		ctx.fillText("Пауза", WIDTH/2, 60);
+	    	}
+	    	ctx.restore();
+	    }
+	    
+	}else if(gameConfig[0].position == "free" || gameConfig[0].endLoad == "free") {
+		for(let k = 0; k < mapsGame[idMap].map.length; k++) {
+			for(let l = 0; l < mapsGame[idMap].map.length; l++) {
+				if(mapsGame[idMap].map[k][l].tum == true && TILE_SIZE * k - movAddX > -viewDis && TILE_SIZE * k - movAddX < WIDTH + viewDis && TILE_SIZE * l - movAddY > -viewDis && TILE_SIZE * l - movAddY < HEIGHT + viewDis) {
+					//------------------------------------
+					if(mapsGame[idMap].map[k][l].img == 8) {
+					    ctx.drawImage(groundImages[mapsGame[idMap].map[k][l].img], animatGrX, animatGrY, 64, 64, TILE_SIZE * k - movAddX, TILE_SIZE * l - movAddY, TILE_SIZE, TILE_SIZE);
+				    }else {
+				    	ctx.drawImage(groundImages[mapsGame[idMap].map[k][l].img], TILE_SIZE * k - movAddX, TILE_SIZE * l - movAddY, TILE_SIZE, TILE_SIZE);
+				    }
+					ctx.save();
+					ctx.fillStyle = "#000";
+					ctx.globalAlpha = 0.4;
+					ctx.fillRect(TILE_SIZE * k - movAddX, TILE_SIZE * l - movAddY, TILE_SIZE, TILE_SIZE);
+					ctx.restore();
+				}else if(TILE_SIZE * k - movAddX > -viewDis && TILE_SIZE * k - movAddX < WIDTH + viewDis && TILE_SIZE * l - movAddY > -viewDis && TILE_SIZE * l - movAddY < HEIGHT + viewDis){
+					//------------------------------------
+					if(mapsGame[idMap].map[k][l].img == 8) {
+					    ctx.drawImage(groundImages[mapsGame[idMap].map[k][l].img], animatGrX, animatGrY, 64, 64, TILE_SIZE * k - movAddX, TILE_SIZE * l - movAddY, TILE_SIZE, TILE_SIZE);
+				    }else {
+				    	ctx.drawImage(groundImages[mapsGame[idMap].map[k][l].img], TILE_SIZE * k - movAddX, TILE_SIZE * l - movAddY, TILE_SIZE, TILE_SIZE);
+				    }
+				}
+		    }
+		}
+
+		//Objects
+		objBaze.draw();
+		objBazeEnemy.draw();
+	    for(let h = 1; h < buildsGame.length; h++) {
+	    	if(buildsGame[h].map == idMap) {
+	    	    buildsGame[h].draw();
+	        }
+	    }
+
+	    if(objectsGame.length > 0) {
+	    	for(let n = 0; n < objectsGame.length; n++) {
+	    		if(objectsGame[n].map == idMap) {
+	    	        objectsGame[n].draw();
+	    	    }
+	        }
+	    }
+
+	    //View Borders
+	    if(buildsGame.length > 0 && stopGame == false) {
+	        for(let o = 1; o < viewBorders.length; o++) {
+	        	for(let j = 0; j < buildsGame.length; j++) {
+	              if(viewBorders[o].view == true) {
+	            		if(buildsGame[j].name == "army") {
+	    	                ctx.drawImage(bordersInfo[1], buildsGame[j].x - buildsGame[j].radius - movAddX, buildsGame[j].y - buildsGame[j].radius - movAddY, 64, 64);
+	    	            }
+	            }
+	        }
+	      }
+	        if(viewBorders[0].view == true) {
+	            ctx.drawImage(bordersInfo[0], objBaze.x - objBaze.radius - movAddX, objBaze.y - objBaze.radius - movAddY, 64, 64);
+	        }
+	    }else if(viewBorders[0].view == true && stopGame == false) {
+	    	ctx.drawImage(bordersInfo[0], objBaze.x - objBaze.radius - movAddX, objBaze.y - objBaze.radius - movAddY, 64, 64);
+	    }
+
+	    //Update
+	    if(gameConfig[0].pre_position != "_menu" && stopGame == false) {
+	        collisionsObjects();
+	        moveObjects();
+	        killObjects();
+
+	        moveEnemy();
+	    }
+
+	    for(let a = 0; a < objBull.length; a++) {
+	    	    objBull[a].draw();
+	    }
+
+	    //Up manu
+	    ctx.save();
+	    ctx.fillStyle = "#9D6B0F";
+	    ctx.fillRect(5, 5, 20, 16);
+	    ctx.fillRect(30, 5, 20, 16);
+	    ctx.textAlign = "center";
+	    ctx.fillStyle = "#fff";
+	    ctx.font = "20px Arial";
+	    ctx.fillText("Z", 15, 20);
+	    ctx.fillText("X", 40, 20);
+	    ctx.restore();
+
+	    //Left menu
+	    if(viewMain == true || viewSpesial == true) {
+	    for(let d = 0; d < buildings.length; d++) {
+	    	ctx.save();
+	    	ctx.fillStyle = "#9D6B0F";
+
+	    	ctx.fillRect(20, yRec, 64, 64);
+
+	    	ctx.fillStyle = "#fff";
+	    	ctx.font = "25px Arial";
+
+	    	if(buildings[d].select == true) {
+	    		ctx.strokeStyle = "red";
+	    	}else {
+	    		ctx.strokeStyle = "#fff";
+	    	}
+
+	    	if(viewMain == true && d <= NUM_MAIN) {
+	    	    ctx.drawImage(buildImages[d], 20, yRec);
+	        }
+
+	    	ctx.strokeRect(20, yRec, 64, 64);
+
+	    	ctx.textAlign = "center";
+
+	    	ctx.fillText(d, 50, yRec + 20);
+
+	    	ctx.fillStyle = "yellow";
+	    	ctx.font = "20px cursive";
+
+	    	if(viewMain == true && d <= NUM_MAIN) {
+	    	    ctx.fillText(buildings[d].price + "$", 50, yRec + 60);
+	        }
+
+	    	ctx.restore();
+
+	    	if(buildings[d].select == true) {
+	    		ctx.save();
+	    		ctx.globalAlpha = 0.6;
+	    		ctx.strokeStyle = "#FF4B0F";
+	    		ctx.fillStyle = "red";
+	    		ctx.drawImage(buildImages[d], preBuild.x, preBuild.y, 64, 64);
+	    		if(preBuild.empty == false) {
+	    			ctx.strokeRect(preBuild.x, preBuild.y, 64, 64);
+	    			ctx.fillRect(preBuild.x, preBuild.y, 64, 64);
+	    		}
+	    		ctx.restore();
+	    	}
+	    	yRec+=80;
+	      }
+	      yRec = 30;
+	    }
+
+	    //Player data
+	    ctx.save();
+	    ctx.textAlign = "right";
+	    ctx.fillStyle = "#fff";
+	    ctx.font = "30px cursive";
+	    ctx.fillText(mapsGame[idMap].playerData.money.toLocaleString() + "$", WIDTH - 8, 32);
+	    if(gameConfig[0].leng == "en") {
+	        ctx.fillText("+"+mapsGame[idMap].playerData.addMoney.toLocaleString() + "$/sec", WIDTH - 8, 64);
+	    }else {
+	    	ctx.fillText("+"+mapsGame[idMap].playerData.addMoney.toLocaleString() + "$/сек", WIDTH - 8, 64);
+	    }
+	    ctx.textAlign = "center";
+	    ctx.fillStyle = "red";
+	    ctx.fillText(mapsGame[idMap].playerData.laut, WIDTH/2 + 20, HEIGHT - 10);
+	    ctx.fillStyle = "yellow";
+	    if(gameConfig[0].leng == "en") {
+	        ctx.fillText(mapsGame[idMap].playerData.time + "s", WIDTH/2 - 40, HEIGHT - 10);
+	    }else {
+	    	ctx.fillText(mapsGame[idMap].playerData.time + "с", WIDTH/2 - 40, HEIGHT - 10);
+	    }
+	    ctx.restore();
+
+	    if(_gameOver == true) {
+	    	ctx.save();
+	        ctx.textAlign = "center";
+	        ctx.fillStyle = "red";
+	        ctx.font = "120px cursive";
+	        ctx.fillText("Game over!", WIDTH/2, HEIGHT/2);
+	        ctx.restore();
+	    }else if(_gameVictory == true) {
+	    	ctx.save();
+	        ctx.textAlign = "center";
+	        ctx.fillStyle = "red";
+	        ctx.font = "120px cursive";
+	        ctx.fillText("Victory!", WIDTH/2, HEIGHT/2);
+	        ctx.restore();
 	    }
 
 	    //Pause
@@ -309,7 +470,12 @@ function drawScene() {
 			loop2:
 			for(let l = 0; l < levelsPar[0].size; l++) {
 	            if(TILE_SIZE * k - movAddX > -viewDis && TILE_SIZE * k - movAddX < WIDTH + viewDis && TILE_SIZE * l - movAddY > -viewDis && TILE_SIZE * l - movAddY < HEIGHT + viewDis){
-					ctx.drawImage(groundImages[levelsMaps[0].map[k][l].img], TILE_SIZE * k - movAddX, TILE_SIZE * l - movAddY, TILE_SIZE, TILE_SIZE);
+	            	//------------------------------------
+	            	if(levelsMaps[0].map[k][l].img == 8) {
+					    ctx.drawImage(groundImages[levelsMaps[0].map[k][l].img], animatGrX, animatGrY, 64, 64, TILE_SIZE * k - movAddX, TILE_SIZE * l - movAddY, TILE_SIZE, TILE_SIZE);
+				    }else {
+				    	ctx.drawImage(groundImages[levelsMaps[0].map[k][l].img], TILE_SIZE * k - movAddX, TILE_SIZE * l - movAddY, TILE_SIZE, TILE_SIZE);
+				    }
 				}
 		    }
 		}
@@ -341,8 +507,12 @@ function drawScene() {
 		    }else {
 		    	ctx.strokeStyle = "#F5B339";
 		    }
-			if(i >= 1) {
-			    ctx.drawImage(groundImages[i], xS * (i + 1), 40);
+			if(i > 0) {
+				if(i == 8) {
+			        ctx.drawImage(groundImages[i], animatGrX, animatGrY, 64, 64, xS * (i + 1), 40, 64, 64);
+			    }else {
+			    	ctx.drawImage(groundImages[i], xS * (i + 1), 40, 64, 64);
+			    }
 			    ctx.fillText(i, xT * (i + 1)/devText, 30);
 			    ctx.strokeRect(xS * (i + 1), 40, 64, 64);
 		    }else {
@@ -492,7 +662,8 @@ if(stopGame == false) {
 		}
 	}
   }else if(gameConfig[0].position == "free" || gameConfig[0].position == "level") {
-  	for(let i = 1; i < 11; i++) {
+  	if(viewMain == true) {
+  	for(let i = 1; i < NUM_MAIN; i++) {
 		if(keyCode == keyCodes[i].code) {
 			i--;
 			if(buildings[i].select == true) {
@@ -506,7 +677,26 @@ if(stopGame == false) {
 				preBuild.empty = false;
 			i++;
 		}
-	}
+	  }
+    }//----
+  }
+
+  //builds
+  if(keyCode == 90) {
+  	if(viewMain == true) {
+  		viewMain = false;
+  	}else if(viewMain == false) {
+  		viewMain = true;
+  		viewSpesial = false;
+  	}
+  }
+  if(keyCode == 88) {
+  	if(viewSpesial == true) {
+  		viewSpesial = false;
+  	}else if(viewSpesial == false) {
+  		viewSpesial = true;
+  		viewMain = false;
+  	}
   }
 
 
@@ -594,7 +784,66 @@ function moveObjects() {
 					}
 				}
 			}
-		}, 3000);
+		}, 1400);
+	}
+
+	loop8:
+	for(let q = 0; q < objectsGame.length; q++) {
+			if(objectsGame[q].type == "player" && objBazeEnemy.type == "enemy") {
+				if(objectsGame[q].x - objectsGame[q].radius > objBazeEnemy.x && objectsGame[q].animation == 128 && objectsGame[q].y - objectsGame[q].radius == objBazeEnemy.y || objectsGame[q].x - objectsGame[q].radius < objBazeEnemy.x && objectsGame[q].animation == 0 && objectsGame[q].y - objectsGame[q].radius == objBazeEnemy.y) {
+					objectsGame[q].faer = true;
+					continue loop8;
+				}else {
+					objectsGame[q].faer = false;
+				}
+
+				if(objectsGame[q].y - objectsGame[q].radius > objBazeEnemy.y && objectsGame[q].animation == 192 && objectsGame[q].x - objectsGame[q].radius == objBazeEnemy.x || objectsGame[q].y - objectsGame[q].radius < objBazeEnemy.y && objectsGame[q].animation == 64 && objectsGame[q].x - objectsGame[q].radius == objBazeEnemy.x) {
+					objectsGame[q].faer = true;
+					continue loop8;
+				}else {
+					objectsGame[q].faer = false;
+				}
+			}
+	}
+
+	loop5:
+	for(let q = 0; q < objectsGame.length; q++) {
+			if(objectsGame[q].type == "enemy" && objBaze.type == "player") {
+				if(objectsGame[q].x - objectsGame[q].radius > objBaze.x - objBaze.radius && objectsGame[q].animation == 128 && objectsGame[q].y - objectsGame[q].radius == objBaze.y - objBaze.radius || objectsGame[q].x - objectsGame[q].radius < objBaze.x - objBaze.radius && objectsGame[q].animation == 0 && objectsGame[q].y - objectsGame[q].radius == objBaze.y - objBaze.radius) {
+					objectsGame[q].faer = true;
+					continue loop5;
+				}else {
+					objectsGame[q].faer = false;
+				}
+
+				if(objectsGame[q].y - objectsGame[q].radius > objBaze.y - objBaze.radius && objectsGame[q].animation == 192 && objectsGame[q].x - objectsGame[q].radius == objBaze.x - objBaze.radius || objectsGame[q].y - objectsGame[q].radius < objBaze.y - objBaze.radius && objectsGame[q].animation == 64 && objectsGame[q].x - objectsGame[q].radius == objBaze.x - objBaze.radius) {
+					objectsGame[q].faer = true;
+					continue loop5;
+				}else {
+					objectsGame[q].faer = false;
+				}
+			}
+	}
+
+	loop2:
+	for(let q = 0; q < objectsGame.length; q++) {
+		for(let a = 0; a < buildsGame.length; a++) {
+			if(objectsGame[q].type == "enemy" && buildsGame[a].type == "player") {
+				if(objectsGame[q].x - objectsGame[q].radius > buildsGame[a].x - buildsGame[a].radius && objectsGame[q].animation == 128 && objectsGame[q].faer == false && objectsGame[q].y - objectsGame[q].radius == buildsGame[a].y - buildsGame[a].radius || objectsGame[q].x - objectsGame[q].radius < buildsGame[a].x - buildsGame[a].radius && objectsGame[q].faer == false && objectsGame[q].animation == 0 && objectsGame[q].y - objectsGame[q].radius == buildsGame[a].y - buildsGame[a].radius) {
+					objectsGame[q].faer = true;
+					continue loop2;
+				}else {
+					objectsGame[q].faer = false;
+				}
+
+				if(objectsGame[q].y - objectsGame[q].radius > buildsGame[a].y - buildsGame[a].radius && objectsGame[q].animation == 192 && objectsGame[q].faer == false && objectsGame[q].x - objectsGame[q].radius == buildsGame[a].x - buildsGame[a].radius || objectsGame[q].y - objectsGame[q].radius < buildsGame[a].y - buildsGame[a].radius && objectsGame[q].faer == false && objectsGame[q].animation == 64 && objectsGame[q].x - objectsGame[q].radius == buildsGame[a].x - buildsGame[a].radius) {
+					objectsGame[q].faer = true;
+					continue loop2;
+				}else {
+					objectsGame[q].faer = false;
+				}
+			}
+		}
 	}
 
 	loop1:
@@ -632,46 +881,6 @@ function moveObjects() {
 			}
 		}
 	}
-
-	loop2:
-	for(let q = 0; q < objectsGame.length; q++) {
-		for(let a = 0; a < buildsGame.length; a++) {
-			if(objectsGame[q].type == "enemy") {
-				if(objectsGame[q].x - objectsGame[q].radius > buildsGame[a].x - buildsGame[a].radius && objectsGame[q].animation == 128 && objectsGame[q].y - objectsGame[q].radius == buildsGame[a].y - buildsGame[a].radius || objectsGame[q].x - objectsGame[q].radius < buildsGame[a].x - buildsGame[a].radius && objectsGame[q].animation == 0 && objectsGame[q].y - objectsGame[q].radius == buildsGame[a].y - buildsGame[a].radius) {
-					objectsGame[q].faer = true;
-					continue loop2;
-				}else {
-					objectsGame[q].faer = false;
-				}
-
-				if(objectsGame[q].y - objectsGame[q].radius > buildsGame[a].y - buildsGame[a].radius && objectsGame[q].animation == 192 && objectsGame[q].x - objectsGame[q].radius == buildsGame[a].x - buildsGame[a].radius || objectsGame[q].y - objectsGame[q].radius < buildsGame[a].y - buildsGame[a].radius && objectsGame[q].animation == 64 && objectsGame[q].x - objectsGame[q].radius == buildsGame[a].x - buildsGame[a].radius) {
-					objectsGame[q].faer = true;
-					continue loop2;
-				}else {
-					objectsGame[q].faer = false;
-				}
-			}
-		}
-	}
-
-	loop5:
-	for(let q = 0; q < objectsGame.length; q++) {
-			if(objectsGame[q].type == "enemy") {
-				if(objectsGame[q].x - objectsGame[q].radius > objBaze.x - objBaze.radius && objectsGame[q].animation == 128 && objectsGame[q].y - objectsGame[q].radius == objBaze.y - objBaze.radius || objectsGame[q].x - objectsGame[q].radius < objBaze.x - objBaze.radius && objectsGame[q].animation == 0 && objectsGame[q].y - objectsGame[q].radius == objBaze.y - objBaze.radius) {
-					objectsGame[q].faer = true;
-					continue loop5;
-				}else {
-					objectsGame[q].faer = false;
-				}
-
-				if(objectsGame[q].y - objectsGame[q].radius > objBaze.y - objBaze.radius && objectsGame[q].animation == 192 && objectsGame[q].x - objectsGame[q].radius == objBaze.x - objBaze.radius || objectsGame[q].y - objectsGame[q].radius < objBaze.y - objBaze.radius && objectsGame[q].animation == 64 && objectsGame[q].x - objectsGame[q].radius == objBaze.x - objBaze.radius) {
-					objectsGame[q].faer = true;
-					continue loop5;
-				}else {
-					objectsGame[q].faer = false;
-				}
-			}
-	}
 }
 
 //Collisions
@@ -702,6 +911,8 @@ function collisionsObjects() {
 		    }
 	    }
 
+	    if(gameConfig[0].position == "free") {
+
 	    if(objectsGame[n].y == TILE_SIZE*2 || objectsGame[n].y == TILE_SIZE*3) {
 		    objectsGame[n].point.y += TILE_SIZE*3;
 		}
@@ -715,7 +926,22 @@ function collisionsObjects() {
 		if(objectsGame[n].x >= mapsGame[idMap].map.length * TILE_SIZE + TILE_SIZE*2 || objectsGame[n].x >= mapsGame[idMap].map.length * TILE_SIZE + TILE_SIZE*3) {
 		    objectsGame[n].point.x -= TILE_SIZE*3;
 		}
+	}else if(gameConfig[0].position == "level") {
+		if(objectsGame[n].y == TILE_SIZE*2 || objectsGame[n].y == TILE_SIZE*3) {
+		    objectsGame[n].point.y += TILE_SIZE*3;
+		}
+		if(objectsGame[n].x == TILE_SIZE*2 || objectsGame[n].x == TILE_SIZE*3) {
+		    objectsGame[n].point.x += TILE_SIZE*3;
+		}
+
+		if(objectsGame[n].y >= levelsPar[select_level].size * TILE_SIZE + TILE_SIZE*2 || objectsGame[n].x >= levelsPar[select_level].size * TILE_SIZE + TILE_SIZE*3) {
+		    objectsGame[n].point.y -= TILE_SIZE*3;
+		}
+		if(objectsGame[n].x >= levelsPar[select_level].size * TILE_SIZE + TILE_SIZE*2 || objectsGame[n].x >= levelsPar[select_level].size * TILE_SIZE + TILE_SIZE*3) {
+		    objectsGame[n].point.x -= TILE_SIZE*3;
+		}
 	}
+  }
 
 	for(let u = 0; u < objectsGame.length; u++) {
 	  for(let i = 0; i < mapsGame[idMap].map.length; i++) {
@@ -758,8 +984,12 @@ function collisionsObjects() {
   			if(objBull[b].y >= objectsGame[o].y - objectsGame[o].radius && objBull[b].y <= objectsGame[o].y + 64 - objectsGame[o].radius) {
   				if(objectsGame[o].type != objBull[b].type) {
   					for(let q = 0; q < objectsGame.length; q++) {
-  						if(q!=o && objBull[b].name == objectsGame[q].name) {
-  					        objectsGame[o].health -= objectsGame[q].ataca;
+  						if(q!=o) {
+  							if(objBull[b].name == "bazeEnemy") {
+  					            objectsGame[o].health -= objBazeEnemy.ataca;
+  					        }else {
+  					        	objectsGame[o].health -= objectsGame[q].ataca;
+  					        }
 
   					        if(objBull[b].anim == 0) {
 
@@ -782,29 +1012,12 @@ function collisionsObjects() {
   					        	objectsGame[q].animation = 192;
 
   					        }
+  					        objectsGame[o].faer = true;
+  					        objectsGame[q].faer = true;
+
   					        objBull.splice(b, 1);
 
   					        continue loop3;
-  					    }
-  				    }
-  				}
-  			}
-  		}
-  	}
-  }
-
-  loop4:
-  for(let o = 0; o < buildsGame.length; o++) {
-	 for(let b = 0; b < objBull.length; b++) {
-  		if(objBull[b].x >= buildsGame[o].x - buildsGame[o].radius && objBull[b].x <= buildsGame[o].x + 64 - buildsGame[o].radius) {
-  			if(objBull[b].y >= buildsGame[o].y - buildsGame[o].radius && objBull[b].y <= buildsGame[o].y + 64 - buildsGame[o].radius) {
-  				if(objBull[b].type == "enemy") {
-  					for(let q = 0; q < objectsGame.length; q++) {
-  						if(q!=o && objBull[b].name == objectsGame[q].name) {
-  					        buildsGame[o].health -= objectsGame[q].ataca;
-  					        objBull.splice(b, 1);
-
-  					        continue loop4;
   					    }
   				    }
   				}
@@ -817,7 +1030,7 @@ function collisionsObjects() {
 	 for(let b = 0; b < objBull.length; b++) {
   		if(objBull[b].x >= objBaze.x - objBaze.radius && objBull[b].x <= objBaze.x + 64 - objBaze.radius) {
   			if(objBull[b].y >= objBaze.y - objBaze.radius && objBull[b].y <= objBaze.y + 64 - objBaze.radius) {
-  				if(objBull[b].type == "enemy") {
+  				if(objBull[b].type == "enemy" && objBaze.type == "player") {
   					for(let q = 0; q < objectsGame.length; q++) {
   						if(objBull[b].name == objectsGame[q].name) {
   					        objBaze.health -= objectsGame[q].ataca;
@@ -830,6 +1043,39 @@ function collisionsObjects() {
   			}
   		}
   	}
+
+  loop4:
+  for(let o = 0; o < buildsGame.length; o++) {
+	 for(let b = 0; b < objBull.length; b++) {
+  		if(objBull[b].x >= buildsGame[o].x - buildsGame[o].radius && objBull[b].x <= buildsGame[o].x + 64 - buildsGame[o].radius) {
+  			if(objBull[b].y >= buildsGame[o].y - buildsGame[o].radius && objBull[b].y <= buildsGame[o].y + 64 - buildsGame[o].radius) {
+  				if(objBull[b].type == "enemy" && buildsGame[o].type == "player") {
+  					for(let q = 0; q < objectsGame.length; q++) {
+  						if(q!=o && objBull[b].name == objectsGame[q].name) {
+  					        buildsGame[o].health -= objectsGame[q].ataca;
+  					        objBull.splice(b, 1);
+
+  					        continue loop4;
+  					    }
+  				    }
+  				}
+  			}
+  		}else if(objBull[b].x >= objBazeEnemy.x && objBull[b].x <= objBazeEnemy.x + 64) {
+  			if(objBull[b].y >= objBazeEnemy.y && objBull[b].y <= objBazeEnemy.y + 64) {
+  				if(objBull[b].type == "player") {
+  					for(let q = 0; q < objectsGame.length; q++) {
+  						if(q!=o) {
+  					        objBazeEnemy.health -= objectsGame[q].ataca;
+  					        objBull.splice(b, 1);
+
+  					        continue loop4;
+  					    }
+  				    }
+  				}
+  			}
+  		}
+  	}
+  }
 }
 }
 
@@ -847,10 +1093,14 @@ function killObjects() {
 		}
 	}
 	if(objBaze.health <= 0) {
-		delete objBaze;
 		stopGame = true;
 		pause = true;
 		gameOver();
+	}else if(objBazeEnemy.health <= 0) {
+		delete objBaze;
+		stopGame = true;
+		pause = true;
+		gameVictory();
 	}
 }
 
@@ -858,6 +1108,19 @@ function gameOver() {
 	_gameOver = true;
 	movAddX = -64;
 	movAddY = -64;
+	musikPlay = false;
+	musik.pause();
+	setTimeout(function () {
+		window.location.reload();
+	}, 4000);
+}
+
+function gameVictory() {
+	_gameVictory = true;
+	movAddX = objBazeEnemy.x - 384;
+	movAddY = objBazeEnemy.y - 256;
+	musikPlay = false;
+	musik.pause();
 	setTimeout(function () {
 		window.location.reload();
 	}, 4000);
@@ -901,13 +1164,24 @@ function moveEnemy() {
 function timerLauts() {
 	setInterval(function () {
 		if(mapsGame.length > 0 && stopGame == false) {
-			if(gameConfig[0].position == "free" || gameConfig[0].position == "level") {
+			if(gameConfig[0].position == "free") {
 		      if(mapsGame[idMap].playerData.time > 0) {
 		          mapsGame[idMap].playerData.time -= 1;
 	          }else {
 	          	mapsGame[idMap].playerData.time = lastTime + 20;
 	          	lastTime = lastTime + 20;
 	          	mapsGame[idMap].playerData.laut += 1;
+	          	createEnemy();
+	          }
+	      }
+	    }else if(gameConfig[0].position == "level") {
+	    	if(gameConfig[0].position == "level") {
+		      if(levelsMaps[select_level].map[0].playerData.time > 0) {
+		          levelsMaps[select_level].map[0].playerData.time -= 1;
+	          }else {
+	          	levelsMaps[select_level].map[0].playerData.time = lastTime + 20;
+	          	lastTime = lastTime + 20;
+	          	levelsMaps[select_level].map[0].playerData.laut += 1;
 	          	createEnemy();
 	          }
 	      }
@@ -919,9 +1193,27 @@ timerLauts();
 
 //Enemy
 function createEnemy() {
+	if(gameConfig[0].position == "free") {
 	for(let k = 0; k < mapsGame[idMap].playerData.laut * 10; k++) {
-	    objectsGame.push(new gameObject("tank_enemy", objectImagesEnemy[0], "enemy", "dis", 256, 256, idMap, 1, 100, 10, 50));
+	    objectsGame.push(new gameObject("tank_enemy", objectImagesEnemy[0], "enemy", "dis", objBazeEnemy.x, objBazeEnemy.y, idMap, 1, 100, 10, 50));
+	    for(let l = 0; l < objectsGame.length; l++) {
+	    	if(objectsGame[l].type == "enemy") {
+	    		objectsGame[l].point.x = objBaze.x - objBaze.radius;
+	    		objectsGame[l].point.y = objBaze.y - objBaze.radius;
+	    	}
+	    }
     }
+  }else if(gameConfig[0].position == "level") {
+  	for(let k = 0; k < levelsMaps[select_level].map[0].playerData.laut * 10; k++) {
+	    objectsGame.push(new gameObject("tank_enemy", objectImagesEnemy[0], "enemy", "dis", objBazeEnemy.x, objBazeEnemy.y, idMap, 1, 100, 10, 50));
+	    for(let l = 0; l < objectsGame.length; l++) {
+	    	if(objectsGame[l].type == "enemy") {
+	    		objectsGame[l].point.x = objBaze.x - objBaze.radius;
+	    		objectsGame[l].point.y = objBaze.y - objBaze.radius;
+	    	}
+	    }
+    }
+  }
 }
 
 window.onkeydown = keyEvent;
@@ -938,8 +1230,4 @@ canvas.onmousedown = function (e) {
 }
 canvas.onmouseup = function (e) {
 	clicked = false;
-	select.x = -64;
-	select.y = -64;
-	select.width = 0;
-	select.height = 0;
 }

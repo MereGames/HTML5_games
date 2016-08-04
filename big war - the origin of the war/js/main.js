@@ -11,18 +11,12 @@
 
 //Constants:
 const TILE_SIZE = 64;
-const NUM_MENU = 2, NUM_BUTTONS = 9, NUM_GROUND = 10, NUM_BORDERS = 2, NUM_BUILDS = 2, NUM_ENEMY = 1;
+const NUM_MENU = 2, NUM_BUTTONS = 9, NUM_GROUND = 10, NUM_BORDERS = 2, NUM_BUILDS = 3, NUM_ENEMY = 1;
 const WIDTH = (TILE_SIZE*14), HEIGHT = (TILE_SIZE*8);
 
 //Canvas
 var canvas = document.getElementById("canvas"), ctx = canvas.getContext("2d");
 canvas.width = WIDTH; canvas.height = HEIGHT;
-//Main Global-Virabels
-var musikPlay = true;
-var musik = new Audio();
-musik.src = "audio/ms_1.mp3";
-musik.loop = true;
-musik.play();
 
 //Time for save_data.js
 var timeSave = 800;
@@ -50,11 +44,8 @@ for(let num = 0; num < NUM_BUTTONS; num++) {
 //Ground
 for(let num = 0; num < NUM_GROUND; num++) {
 	let img = new Image();
-	if(num == 8) {
-		img.src="img/ground_" + num + ".gif";
-	}else {
-	    img.src="img/ground_" + num + ".png";
-    }
+	img.src="img/ground_" + num + ".png";
+
     groundImages.push(img);
 }
 
@@ -437,7 +428,9 @@ function drawMenu() {
 	    			ctx.fillText("Official site:", WIDTH/2 - 40, 180);
 	    			ctx.fillText('http://meregames.ru', WIDTH/2 - 80, 210);
 	    			ctx.fillText("Developer:", WIDTH/2 - 40, 250);
-	    			ctx.fillText('Rodion Kraynov', WIDTH/2 - 70, 280);
+	    			ctx.fillText('Kraynov Rodion', WIDTH/2 - 70, 280);
+	    			ctx.fillText("Artist:", WIDTH/2 - 30, 310);
+	    			ctx.fillText('Kraynov Vitaliy', WIDTH/2 - 70, 330);
 	    			ctx.restore();
 	    		}else if(gameConfig[0].leng == "ru") {
 	    			ctx.save();
@@ -451,6 +444,8 @@ function drawMenu() {
 	    			ctx.fillText('http://meregames.ru', WIDTH/2 - 80, 210);
 	    			ctx.fillText("Разработчик:", WIDTH/2 - 55, 250);
 	    			ctx.fillText('Родион Крайнов', WIDTH/2 - 70, 280);
+	    			ctx.fillText("Художник:", WIDTH/2 - 30, 310);
+	    			ctx.fillText('Крайнов Виталий', WIDTH/2 - 70, 330);
 	    			ctx.restore();
 	    		}
 	    	}else if(gameConfig[0].pre_position == "_menu") {
@@ -652,11 +647,13 @@ function moveEvent(e) {
 		    	if(buildings[d].select == true && stopGame == false) {
 		    		for(let i = 0; i < mapsGame[idMap].map.length; i++) {
 		    			for(let j = 0; j < mapsGame[idMap].map.length; j++) {
+		    				for(let w = 0; w < buildsGame.length; w++) {
 		    			    if(x >= TILE_SIZE * i - movAddX && x <= TILE_SIZE * i - movAddX + TILE_SIZE &&  y >= TILE_SIZE * j - movAddY && y <= TILE_SIZE * j - movAddY + TILE_SIZE) {
 								preBuild.x = TILE_SIZE * i - movAddX;
 								preBuild.y = TILE_SIZE * j - movAddY;
-								if(buildsGame.length > 1) {
-									if(buildsGame[d].x == preBuild.x + movAddX + buildings[d].radius && buildsGame[d].y == preBuild.y + movAddY + buildings[d].radius) {
+								if(buildsGame.length > 0) {
+									preBuild.empty = true;
+									if(buildsGame[w].x == preBuild.x + movAddX + buildings[d].radius && buildsGame[w].y == preBuild.y + movAddY + buildings[d].radius && buildsGame[w].map == idMap) {
 										preBuild.empty = false;
 										return;
 									}else {
@@ -691,40 +688,10 @@ function moveEvent(e) {
 											preBuild.empty = true;
 										}
 									}
-							}else {
-								preBuild.empty = true;
-
-								if(objBaze.x == preBuild.x + movAddX + buildings[d].radius && objBaze.y == preBuild.y + movAddY + buildings[d].radius && stopGame == false) {
-										preBuild.empty = false;
-										return;
-									}else {
-										preBuild.empty = true;
-									}
-
-									if(mapsGame[idMap].playerData.money < buildings[d].price) {
-										preBuild.empty = false;
-									}
-
-									if(mapsGame[idMap].map[i][j].img == 9 || mapsGame[idMap].map[i][j].img == 3 || mapsGame[idMap].map[i][j].img == 7 || mapsGame[idMap].map[i][j].img == 1 || mapsGame[idMap].map[i][j].img == 2 || mapsGame[idMap].map[i][j].img == 5 || mapsGame[idMap].map[i][j].img == 6) {
-										if(buildings[d].name != "factory_1") {
-										    preBuild.empty = false;
-									    }else if(buildings[d].name == "factory_1"){
-									    	preBuild.empty = true;
-									    	return;
-									    }
-									}
-									if(mapsGame[idMap].map[i][j].img == 8) {
-										preBuild.empty = false;
-									}
-									if(buildings[d].name == "factory_1") {
-										preBuild.empty = false;
-										if(mapsGame[idMap].map[i][j].img == 9 || mapsGame[idMap].map[i][j].img == 3) {
-											preBuild.empty = true;
-										}
-									}
 							}
 						  }
 		    		    }
+		    		  }
 		    		}
 		    	}
 		    }
@@ -734,8 +701,10 @@ function moveEvent(e) {
 		    	for(let p = 1; p < viewBorders.length; p++) {
 		    		if(x >= buildsGame[num].x - buildsGame[num].radius - movAddX && x <= buildsGame[num].x - buildsGame[num].radius - movAddX + 64 && y >= buildsGame[num].y - buildsGame[num].radius - movAddY && y <= buildsGame[num].y - buildsGame[num].radius - movAddY + 64 && stopGame == false) {
 				        if(gameConfig[0].position == "free" || gameConfig[0].position == "level") {
+				        	if(buildsGame[num].name == "army" && buildsGame[num].map == idMap) {
 					        viewBorders[p].view = true;
 					        return;
+					      }
 				        }
 		                }else {
 		    	            viewBorders[p].view = false;
@@ -854,7 +823,7 @@ function clickEvent(e) {
 		    				if(mapsGame[idMap].playerData.money >= buildings[d].price) {
 		    					preBuild.x += buildings[d].radius;
 		    					preBuild.y += buildings[d].radius;
-		    				    buildsGame.push(new build(buildings[d].name, buildImages[d], preBuild.x + movAddX, preBuild.y + movAddY, buildings[d].radius, buildings[d].time, idMap));
+		    				    buildsGame.push(new build(buildings[d].name, buildImages[d], preBuild.x + movAddX, preBuild.y + movAddY, buildings[d].radius, buildings[d].time, idMap, "player", buildings[d].faer, buildings[d].reload, buildings[d].ataca, buildings[d].health));
 		    				    viewBorders.push({name: buildings[d].name, view: false});
 		    				    if(buildings[d].name == "factory_1") {
 		    				    	mapsGame[idMap].playerData.addMoney += 43;
@@ -935,6 +904,7 @@ function checkPosMouse(x, y, xo, yo, width, height) {
 
 canvas.onmousemove = moveEvent;
 canvas.onclick = clickEvent;
+//----------------------------------
 requestAnimationFrame(loop, canvas);
 window.onload = startGame;
 

@@ -7,6 +7,7 @@ var preBuild = {
 };
 
 var buildings = [
-    {name: "army", price: 500, select: false, radius: 64*3, time: 100},
-    {name: "factory_1", price: 1000, select: false, radius: 64*3, time: 0}
+    {name: "army", price: 500, select: false, radius: 64*3, time: 100, faer: false, reload: 0, ataca: 0, health: 120},
+    {name: "factory_1", price: 1000, select: false, radius: 64*3, time: 0, faer: false, reload: 0, ataca: 0, health: 150},
+    {name: "touer", price: 3000, select: false, radius: 64*3, time: 0, faer: true, reload: 40, ataca: 50, health: 200}
 ];

@@ -94,6 +94,7 @@ levelsMaps[0].map = JSON.parse(levelsMaps[0].map);
 				}
 				//Maps save
 				mapsGame.push({name: "map_" + mapsGame.length, map: levelsMaps[0].map, playerData: {money: 99000, addMoney: 5, laut: 1, time: 10}});
+				console.log(JSON.stringify(mapsGame));
 				for(let i = (mapsGame.length - 1); i < mapsGame.length; i++) {
 					if(i < 0) {
 						i = 0;
@@ -121,18 +122,46 @@ levelsMaps[0].map = JSON.parse(levelsMaps[0].map);
 }
 
 //Bullet
-function bullet(x, y, anim, type, name, map) {
+function bullet(x, y, anim, type, name) {
 	this.x = x;
 	this.y = y;
 	this.anim = anim;
 	this.speed = 8;
-	this.time = 100;
+	this.time = 60;
 	this.type = type;
 	this.name = name;
-	this.map = map;
+	this.drawBol = true;
 
 	this.draw = function () {
-		ctx.drawImage(otherImages[2], this.x - movAddX, this.y - movAddY, 7, 7);
+		if(this.drawBol == true) {
+		    ctx.drawImage(otherImages[2], this.x - movAddX, this.y - movAddY, 7, 7);
+	    }
+
+		if(gameConfig[0].position == "free"){
+			for(let i = 0; i < mapsGame[idMap].map.length; i++) {
+				for(let j = 0; j < mapsGame[idMap].map.length; j++) {
+						if(this.x >= 64 * i && this.x <= 64 * i + 64 &&  this.y >= 64 * j && this.y <= 64 * j + 64) {
+						    if(mapsGame[idMap].map[i][j].tum == true) {
+						    	this.drawBol = false;
+						    }else {
+						    	this.drawBol = true;
+						    }
+					    }
+				}
+			}
+		}else if(gameConfig[0].position == "level") {
+			for(let i = 0; i < levelsMaps[select_level].map.length; i++) {
+				for(let j = 0; j < levelsMaps[select_level].map.length; j++) {
+						if(this.x >= 64 * i && this.x <= 64 * i + 64 &&  this.y >= 64 * j && this.y <= 64 * j + 64) {
+						    if(levelsMaps[select_level].map[i][j].tum == true) {
+						    	this.drawBol = false;
+						    }else {
+						    	this.drawBol = true;
+						    }
+					    }
+				}
+			}
+		}
 	}
 }
 
@@ -179,12 +208,12 @@ function gameObject(name, img, type, prof, x, y, map, speed, health, ataca, relo
 		    }else if(this.health >= 150){
 		    	ctx.fillRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 55, this.health/5, 5);
 		        ctx.strokeRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 55, this._health/5, 5);
-		    }else if(this.health >= 65){
+		    }else if(this.health >= 70){
+		    	ctx.fillRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 55, this.health/3, 5);
+		        ctx.strokeRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 55, this._health/3, 5);
+		    }else {
 		    	ctx.fillRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 55, this.health/2, 5);
 		        ctx.strokeRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 55, this._health/2, 5);
-		    }else {
-		    	ctx.fillRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 55, this.health, 5);
-		        ctx.strokeRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 55, this._health, 5);
 		    }
 		    ctx.restore();
 		    if(this.select == true) {
@@ -196,13 +225,13 @@ function gameObject(name, img, type, prof, x, y, map, speed, health, ataca, relo
 	    if(this.faer == true && stopGame == false) {
 		    	if(this.reload >= this._reload) {
 		    		if(this.animation == 0) {
-		    	        objBull.push(new bullet(this.x - this.radius + 64, this.y - this.radius + 32, this.animation, this.type, this.name, this.map));
+		    	        objBull.push(new bullet(this.x - this.radius + 64, this.y - this.radius + 32, this.animation, this.type, this.name));
 		    	    }else if(this.animation == 128) {
-		    	    	objBull.push(new bullet(this.x - this.radius, this.y - this.radius + 32, this.animation, this.type, this.name, this.map));
+		    	    	objBull.push(new bullet(this.x - this.radius, this.y - this.radius + 32, this.animation, this.type, this.name));
 		    	    }else if(this.animation == 64) {
-		    	    	objBull.push(new bullet(this.x - this.radius + 32, this.y - this.radius + 64, this.animation, this.type, this.name, this.map));
+		    	    	objBull.push(new bullet(this.x - this.radius + 32, this.y - this.radius + 64, this.animation, this.type, this.name));
 		    	    }else if(this.animation == 192) {
-		    	    	objBull.push(new bullet(this.x - this.radius + 32, this.y - this.radius, this.animation, this.type, this.name, this.map));
+		    	    	objBull.push(new bullet(this.x - this.radius + 32, this.y - this.radius, this.animation, this.type, this.name));
 		    	    }
 		    	    this.reload = 0;
 		        }
@@ -221,10 +250,10 @@ function gameObject(name, img, type, prof, x, y, map, speed, health, ataca, relo
 				}
 			}
 		}else if(gameConfig[0].position == "level" && this.type != "enemy") {
-			for(let i = 0; i < levelsMaps[select_level].map.length; i++) {
-				for(let j = 0; j < levelsMaps[select_level].map.length; j++) {
+			for(let i = 0; i < levelsPar[select_level].size; i++) {
+				for(let j = 0; j < levelsPar[select_level].size; j++) {
 						if(this.x - 64 - movAddX >= 64 * i - movAddX && this.x - 64 - movAddX <= 64 * i - movAddX + 64 + this.radius &&  this.y - 64 - movAddY >= 64 * j - movAddY && this.y - 64 - movAddY <= 64 * j - movAddY + 64 + this.radius) {
-						    levelsMaps[select_level].map[i][j].tum = false;
+						    levelsMaps[select_level].map[0].map[i][j].tum = false;
 					    }
 				}
 			}
@@ -245,7 +274,7 @@ function gameObject(name, img, type, prof, x, y, map, speed, health, ataca, relo
 	}
 }
 
-function build(name, img, x, y, radius, time, map) {
+function build(name, img, x, y, radius, time, map, type, canFaer, reload, ataca, health) {
 	this.name = name;
 	this.img = img;
 	this.x = x;
@@ -255,8 +284,13 @@ function build(name, img, x, y, radius, time, map) {
 	this._timeOut = time;
 	this.num = 0;
 	this.map = map;
-	this.health = 120;
-	this._health = 120;
+	this.health = health;
+	this._health = health;
+	this.type = type;
+	this.canFaer = canFaer;
+	this.reload = reload;
+	this._reload = reload;
+	this.ataca = ataca;
 
 	this.draw = function () {
 		if(this.x - this.radius - movAddX <= WIDTH + viewDis && this.x - this.radius - movAddX >= -viewDis && this.y - this.radius - movAddY <= HEIGHT + viewDis && this.y - this.radius - movAddY >= -viewDis) {
@@ -295,6 +329,21 @@ function build(name, img, x, y, radius, time, map) {
 		        }
 		    }
 		    ctx.restore();
+
+		    if(this.canFaer == true && stopGame == false) {
+		    	if(this.reload >= this._reload) {
+		    	    objBull.push(new bullet(this.x - this.radius + 64, this.y - this.radius + 32, 0, this.type, this.name));
+		    	    objBull.push(new bullet(this.x - this.radius, this.y - this.radius + 32, 128, this.type, this.name, this.map));
+		    	    objBull.push(new bullet(this.x - this.radius + 32, this.y - this.radius + 64, 64, this.type, this.name));
+		    	    objBull.push(new bullet(this.x - this.radius + 32, this.y - this.radius, 192, this.type, this.name));
+
+		    	    this.reload = 0;
+		        }
+		    }
+
+		    if(this.reload < this._reload && stopGame == false) {
+		    	this.reload += 1;
+		    }
 	}
 
 	if(gameConfig[0].position == "free") {
@@ -306,10 +355,10 @@ function build(name, img, x, y, radius, time, map) {
 				}
 			}
 		}else if(gameConfig[0].position == "level") {
-			for(let i = 0; i < levelsMaps[select_level].map.length; i++) {
-				for(let j = 0; j < levelsMaps[select_level].map.length; j++) {
+			for(let i = 0; i < levelsPar[select_level].size; i++) {
+				for(let j = 0; j < levelsPar[select_level].size; j++) {
 						if(this.x - 64 - movAddX >= 64 * i - movAddX && this.x - 64 - movAddX <= 64 * i - movAddX + 64 + this.radius &&  this.y - 64 - movAddY >= 64 * j - movAddY && this.y - 64 - movAddY <= 64 * j - movAddY + 64 + this.radius) {
-						    levelsMaps[select_level].map[i][j].tum = false;
+						    levelsMaps[select_level].map[0].map[i][j].tum = false;
 					    }
 				}
 			}
