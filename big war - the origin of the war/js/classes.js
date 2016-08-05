@@ -67,6 +67,9 @@ var button = function (name, x, y, xt, yt, width, height, text, font, action, ty
 levelsMaps[0].map = JSON.stringify(levelsMaps[0].map);
 levelsMaps[0].map = JSON.parse(levelsMaps[0].map);
 			}
+			if(this.action == "menuRel") {
+				window.location.reload();
+			}
 			loadLocation(timesLoad[0].time);
 		}else if(this.typeAction == "pre_position") {
 			gameConfig[0].pre_position = this.action;
@@ -94,7 +97,7 @@ levelsMaps[0].map = JSON.parse(levelsMaps[0].map);
 				}
 				//Maps save
 				mapsGame.push({name: "map_" + mapsGame.length, map: levelsMaps[0].map, playerData: {money: 99000, addMoney: 5, laut: 1, time: 10}});
-				console.log(JSON.stringify(mapsGame));
+				console.log("---------------------New Map------------------\n" + JSON.stringify(mapsGame));
 				for(let i = (mapsGame.length - 1); i < mapsGame.length; i++) {
 					if(i < 0) {
 						i = 0;
@@ -150,10 +153,10 @@ function bullet(x, y, anim, type, name) {
 				}
 			}
 		}else if(gameConfig[0].position == "level") {
-			for(let i = 0; i < levelsMaps[select_level].map.length; i++) {
-				for(let j = 0; j < levelsMaps[select_level].map.length; j++) {
+			for(let i = 0; i < levelsPar[select_level].size; i++) {
+				for(let j = 0; j < levelsPar[select_level].size; j++) {
 						if(this.x >= 64 * i && this.x <= 64 * i + 64 &&  this.y >= 64 * j && this.y <= 64 * j + 64) {
-						    if(levelsMaps[select_level].map[i][j].tum == true) {
+						    if(levelsMaps[select_level].map[0].map[i][j].tum == true) {
 						    	this.drawBol = false;
 						    }else {
 						    	this.drawBol = true;
@@ -270,11 +273,23 @@ function gameObject(name, img, type, prof, x, y, map, speed, health, ataca, relo
 					    }
 				}
 			}
+		}else if(gameConfig[0].position == "level" && this.type == "enemy"){
+			for(let i = 0; i < levelsPar[select_level].size; i++) {
+				for(let j = 0; j < levelsPar[select_level].size; j++) {
+						if(this.x - this.radius >= 64 * i && this.x - this.radius <= 64 * i + 64 &&  this.y - this.radius >= 64 * j && this.y - this.radius <= 64 * j + 64) {
+						    if(levelsMaps[select_level].map[0].map[i][j].tum == true) {
+						    	this.drawBol = false;
+						    }else {
+						    	this.drawBol = true;
+						    }
+					    }
+				}
+			}
 		}
 	}
 }
 
-function build(name, img, x, y, radius, time, map, type, canFaer, reload, ataca, health) {
+function build(name, img, x, y, radius, time, map, type, canFaer, reload, ataca, health, addRes) {
 	this.name = name;
 	this.img = img;
 	this.x = x;
@@ -291,6 +306,7 @@ function build(name, img, x, y, radius, time, map, type, canFaer, reload, ataca,
 	this.reload = reload;
 	this._reload = reload;
 	this.ataca = ataca;
+	this.addRes = addRes;
 
 	this.draw = function () {
 		if(this.x - this.radius - movAddX <= WIDTH + viewDis && this.x - this.radius - movAddX >= -viewDis && this.y - this.radius - movAddY <= HEIGHT + viewDis && this.y - this.radius - movAddY >= -viewDis) {
@@ -324,7 +340,11 @@ function build(name, img, x, y, radius, time, map, type, canFaer, reload, ataca,
 		        	this.num -= 1;
 		        	this.timeOut = 0;
 		        	if(this.name == "army") {
-		        	    objectsGame.push(new gameObject("tank", objectImages[2], "player", "dis", this.x + 64, this.y, idMap, 2, 100, 30, 40));
+		        		if(gameConfig[0].position == "free") {
+		        	        objectsGame.push(new gameObject("tank", objectImages[2], "player", "dis", this.x + 64, this.y, idMap, 2, 100, 30, 40));
+		        	    }else {
+		        	    	objectsGame.push(new gameObject("tank", objectImages[2], "player", "dis", this.x + 64, this.y, levelsMaps[select_level].map[0].name, 2, 100, 30, 40));
+		        	    }
 		            }
 		        }
 		    }

@@ -39,7 +39,11 @@ var objBaze = {
 		        }else if(this.timeOut >= this._timeOut) {
 		        	this.num -= 1;
 		        	this.timeOut = 0;
-		        	objectsGame.push(new gameObject("robot", objectImages[1], "player", "bliz", this.x + 64, this.y, idMap, 2, 50, 10, 80));
+		        	if(gameConfig[0].position == "free") {
+		        	    objectsGame.push(new gameObject("robot", objectImages[1], "player", "bliz", this.x + 64, this.y, idMap, 2, 50, 10, 80));
+		            }else {
+		            	objectsGame.push(new gameObject("robot", objectImages[1], "player", "bliz", this.x + 64, this.y, levelsMaps[select_level].map[0].name, 2, 50, 10, 80));
+		            }
 		        }
 		    }
 		    ctx.restore();
@@ -120,6 +124,18 @@ var objBazeEnemy = {
 				for(let j = 0; j < mapsGame[idMap].map.length; j++) {
 						if(this.x >= 64 * i && this.x <= 64 * i + 64 &&  this.y >= 64 * j && this.y <= 64 * j + 64) {
 						    if(mapsGame[idMap].map[i][j].tum == true) {
+						    	this.drawBol = false;
+						    }else {
+						    	this.drawBol = true;
+						    }
+					    }
+				}
+			}
+		}else if(gameConfig[0].position == "level" && this.type == "enemy"){
+			for(let i = 0; i < levelsPar[select_level].size; i++) {
+				for(let j = 0; j < levelsPar[select_level].size; j++) {
+						if(this.x >= 64 * i && this.x <= 64 * i + 64 &&  this.y >= 64 * j && this.y <= 64 * j + 64) {
+						    if(levelsMaps[select_level].map[0].map[i][j].tum == true) {
 						    	this.drawBol = false;
 						    }else {
 						    	this.drawBol = true;
