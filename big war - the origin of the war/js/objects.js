@@ -40,9 +40,9 @@ var objBaze = {
 		        	this.num -= 1;
 		        	this.timeOut = 0;
 		        	if(gameConfig[0].position == "free") {
-		        	    objectsGame.push(new gameObject("robot", objectImages[1], "player", "bliz", this.x + 64, this.y, idMap, 2, 50, 10, 80));
+		        	    objectsGame.push(new gameObject("robot", objectImages[1], "player", "bliz", this.x + 64, this.y, idMap, objsProp.player.robot.speed, objsProp.player.robot.health, objsProp.player.robot.ataca, objsProp.player.robot.reload));
 		            }else {
-		            	objectsGame.push(new gameObject("robot", objectImages[1], "player", "bliz", this.x + 64, this.y, levelsMaps[select_level].map[0].name, 2, 50, 10, 80));
+		            	objectsGame.push(new gameObject("robot", objectImages[1], "player", "bliz", this.x + 64, this.y, levelsMaps[select_level].map[0].name,  objsProp.player.robot.speed, objsProp.player.robot.health, objsProp.player.robot.ataca, objsProp.player.robot.reload));
 		            }
 		        }
 		    }
@@ -147,3 +147,25 @@ var objBazeEnemy = {
 	}
 }
 
+
+var miniMap = {
+	width: 200,
+	heigth: 200,
+	x: 696,
+	y: 312,
+
+	draw: function () {
+		ctx.save();
+		ctx.fillStyle = "#9D6B0F";
+		ctx.textAlign = "right";
+		ctx.fillRect(872, 290, 25, 25);
+		ctx.fillStyle = "#fff";
+		ctx.font = "20px Arial";
+		ctx.fillText("M", 892, 308);
+		ctx.fillStyle = "green";
+		ctx.fillRect(this.x, this.y, this.width, this.heigth);
+		ctx.strokeStyle = "#fff";
+		ctx.strokeRect(697, 313, this.width, this.heigth);
+		ctx.restore();
+	}
+}

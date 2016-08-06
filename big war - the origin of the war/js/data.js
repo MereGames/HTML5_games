@@ -74,3 +74,44 @@ var groundImages = [];
 var objectImages = [];
 var objectImagesEnemy = [];
 var otherImages = [];
+
+
+//Prop for objsGame ------------- ----------- ------------
+var objsProp = {
+	//Player
+	player: {
+		robot: {
+			reload: 35,
+			speed: 1,
+			ataca: 12,
+			health: 55,
+			price: 50
+		},
+
+		tank: {
+			reload: 70,
+			speed: 2,
+			ataca: 17,
+			health: 70,
+			price: 75
+		},
+
+		tank_hard: {
+			reload: 75,
+			speed: 1,
+			ataca: 20,
+			health: 150,
+			price: 150
+		}
+	},
+
+	//Enemy
+	enemy: {
+		tank_enemy: {
+			reload: 70,
+			speed: 2,
+			ataca: 16,
+			health: 65
+		}
+	}
+};

@@ -11,7 +11,7 @@
 
 //Constants:
 const TILE_SIZE = 64;
-const NUM_MENU = 2, NUM_BUTTONS = 9, NUM_GROUND = 10, NUM_BORDERS = 2, NUM_BUILDS = 3, NUM_ENEMY = 1;
+const NUM_MENU = 2, NUM_BUTTONS = 9, NUM_GROUND = 10, NUM_BORDERS = 3, NUM_BUILDS = 4, NUM_ENEMY = 1, NUM_OBJS = 3;
 const WIDTH = (TILE_SIZE*14), HEIGHT = (TILE_SIZE*8);
 
 //Canvas
@@ -68,7 +68,7 @@ objImg.src = "img/baze_0.png";
 objectImages.push(objImg);
 
 //objs
-for(let num = 0; num < 2; num++) {
+for(let num = 0; num < NUM_OBJS; num++) {
 	var objImg2 = new Image();
     objImg2.src = "img/obj_"+num+".png";
     objectImages.push(objImg2);
@@ -148,6 +148,9 @@ var othrObj = new Image();
 othrObj.src = "img/bull_0.png";
 otherImages.push(othrObj);
 
+var tutImg = new Image();
+tutImg.src = "img/tutorial.png";
+otherImages.push(tutImg);
 
 //Start Game func
 function startGame() {
@@ -708,7 +711,7 @@ function moveEvent(e) {
 										preBuild.empty = false;
 										return;
 									}
-									if(buildsGame[w].x == preBuild.x + movAddX + buildings[d].radius && buildsGame[w].y == preBuild.y + movAddY + buildings[d].radius && buildsGame[w].map == idMap) {
+									if(buildsGame[w].x == preBuild.x + movAddX + buildings[d].radius && buildsGame[w].y == preBuild.y + movAddY + buildings[d].radius && buildsGame[w].map == levelsMaps[select_level].map[0].name) {
 										preBuild.empty = false;
 										return;
 									}else {
@@ -753,12 +756,16 @@ function moveEvent(e) {
 		    	for(let p = 1; p < viewBorders.length; p++) {
 		    		if(x >= buildsGame[num].x - buildsGame[num].radius - movAddX && x <= buildsGame[num].x - buildsGame[num].radius - movAddX + 64 && y >= buildsGame[num].y - buildsGame[num].radius - movAddY && y <= buildsGame[num].y - buildsGame[num].radius - movAddY + 64 && stopGame == false) {
 				        if(gameConfig[0].position == "free" || gameConfig[0].position == "level") {
-				        	if(buildsGame[num].name == "army" && buildsGame[num].map == idMap && gameConfig[0].position == "free") {
-					        viewBorders[p].view = true;
-					        return;
-					      }else if(buildsGame[num].name == "army" && buildsGame[num].map == levelsMaps[select_level].map[0].name && gameConfig[0].position == "level"){
-					      	viewBorders[p].view = true;
-					        return;
+				        	if(buildsGame[num].map == idMap && gameConfig[0].position == "free") {
+					            if(buildsGame[num].name == "army" || buildsGame[num].name == "armyHard") {
+					      	        viewBorders[p].view = true;
+					                return;
+					            }
+					      }else if(buildsGame[num].map == levelsMaps[select_level].map[0].name && gameConfig[0].position == "level"){
+					      	if(buildsGame[num].name == "army" || buildsGame[num].name == "armyHard") {
+					      	    viewBorders[p].view = true;
+					            return;
+					        }
 					      }
 				        }
 		                }else {
@@ -826,6 +833,9 @@ function clickEvent(e) {
 			for(let i = 0; i < levels.length; i++) {
 				if(checkPosMouse(x, y, levels[i].x, levels[i].y - 65, 65, 65) && levels[i].open == true) {
 					select_level = levels[i].level;
+					if(select_level == 1) {
+						tutorial = true;
+					}
 					gameConfig[0].endLoad = "level";
 					loadLocation(timesLoad[2].time);
 				}
@@ -855,14 +865,14 @@ function clickEvent(e) {
 			//Baze main
 			if(x >= objBaze.x - objBaze.radius - movAddX && x <= objBaze.x - objBaze.radius - movAddX + 64 && y >= objBaze.y - objBaze.radius - movAddY && y <= objBaze.y - objBaze.radius - movAddY + 64 && stopGame == false && e.shiftKey == false) {
 				if(gameConfig[0].position == "free") {
-				if(mapsGame[idMap].playerData.money >= 150) {
+				if(mapsGame[idMap].playerData.money >= objsProp.player.robot.price) {
 					objBaze.num += 1;
-				    mapsGame[idMap].playerData.money -= 150;
+				    mapsGame[idMap].playerData.money -= objsProp.player.robot.price;
 			    }
 			    }else if(gameConfig[0].position == "level") {
-			    	if(levelsMaps[select_level].map[0].playerData.money >= 150) {
+			    	if(levelsMaps[select_level].map[0].playerData.money >= objsProp.player.robot.price) {
 					objBaze.num += 1;
-				    levelsMaps[select_level].map[0].playerData.money -= 150;
+				    levelsMaps[select_level].map[0].playerData.money -= objsProp.player.robot.price;
 			    }
 			    }
 		    }
@@ -872,14 +882,26 @@ function clickEvent(e) {
 		    	if(x >= buildsGame[ar].x - buildsGame[ar].radius - movAddX && x <= buildsGame[ar].x - buildsGame[ar].radius - movAddX + 64 && y >= buildsGame[ar].y - buildsGame[ar].radius - movAddY && y <= buildsGame[ar].y - buildsGame[ar].radius - movAddY + 64 && stopGame == false && e.shiftKey == false) {
 		    		if(buildsGame[ar].name == "army") {
 		    			if(gameConfig[0].position == "free") {
-				if(mapsGame[idMap].playerData.money >= 300) {
+				if(mapsGame[idMap].playerData.money >= objsProp.player.tank.price) {
 					buildsGame[ar].num += 1;
-				    mapsGame[idMap].playerData.money -= 300;
+				    mapsGame[idMap].playerData.money -= objsProp.player.tank.price;
 			    }
 			    }else if(gameConfig[0].position == "level") {
-			    	if(levelsMaps[select_level].map[0].playerData.money >= 300) {
+			    	if(levelsMaps[select_level].map[0].playerData.money >= objsProp.player.tank.price) {
 					buildsGame[ar].num += 1;
-				    levelsMaps[select_level].map[0].playerData.money -= 300;
+				    levelsMaps[select_level].map[0].playerData.money -= objsProp.player.tank.price;
+			    }
+			    }
+			  }else if(buildsGame[ar].name == "armyHard") {
+		    			if(gameConfig[0].position == "free") {
+				if(mapsGame[idMap].playerData.money >= objsProp.player.tank_hard.price) {
+					buildsGame[ar].num += 1;
+				    mapsGame[idMap].playerData.money -= objsProp.player.tank_hard.price;
+			    }
+			    }else if(gameConfig[0].position == "level") {
+			    	if(levelsMaps[select_level].map[0].playerData.money >= objsProp.player.tank_hard.price) {
+					buildsGame[ar].num += 1;
+				    levelsMaps[select_level].map[0].playerData.money -= objsProp.player.tank_hard.price;
 			    }
 			    }
 			  }

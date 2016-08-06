@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<Document xmlns="http://www.evolus.vn/Namespace/Pencil"><Properties/><Pages><Page><Properties><Property name="name">tutorial</Property><Property name="id">1470494732848_3595</Property><Property name="width">256</Property><Property name="height">64</Property><Property name="dimBackground"/><Property name="transparentBackground">true</Property><Property name="backgroundColor">#FFFFFFFF</Property><Property name="background">transparent</Property></Properties><Content><g xmlns="http://www.w3.org/2000/svg" p:type="Shape" xmlns:p="http://www.evolus.vn/Namespace/Pencil" p:def="Evolus.Common:Bitmap" id="d60e075d23a446c09385b12922c2c95a" transform="matrix(1,0,0,1,0,0)"><p:metadata><p:property name="box"><![CDATA[64,64]]></p:property><p:property name="imageData"><![CDATA[64,64,../img/obj_2.png]]></p:property><p:property name="withBlur"><![CDATA[false]]></p:property><p:property name="fillColor"><![CDATA[#FFFFFF00]]></p:property><p:property name="strokeColor"><![CDATA[#000000FF]]></p:property><p:property name="strokeStyle"><![CDATA[0|]]></p:property></p:metadata>
+            <defs>
+                <filter height="1.2558399" y="-0.12792" width="1.06396" x="-0.03198" p:name="imageShading" id="fe6522ce5a9742ebaeb2cf6019099bdc">
+                    <feGaussianBlur stdDeviation="1.3325" in="SourceAlpha"/>
+                </filter>
+                <g p:name="container" id="77f6b501d38e435b8b125bee9ddcc8eb">
+                    <rect style="fill: rgb(255, 255, 255); stroke: rgb(0, 0, 0); stroke-opacity: 1; stroke-width: 0; fill-opacity: 0;" p:name="bgRect" id="5cae4d3903be40e79336610d9b30a616" width="64" height="64" transform="translate(0,0)"/>
+                    <g p:name="imageContainer" id="eb4c13d53c1d443cb806e3b5b8b95850" transform="scale(1,1)">
+                        <image x="0" y="0" p:name="image" id="f8ccdcccbf7641a2a3fcf247b5deb05d" xlink:href="../img/obj_2.png" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="64"/>
+                    </g>
+                </g>
+            </defs>
+            <use xlink:href="#77f6b501d38e435b8b125bee9ddcc8eb" xmlns:xlink="http://www.w3.org/1999/xlink" transform="translate(1, 1)" p:filter="url(#fe6522ce5a9742ebaeb2cf6019099bdc)" style="opacity: 0.6; visibility: hidden; display: none;" p:name="bgCopy" id="db5336459c4e424b9d4dc8f7cab3258e"/>
+            <use xlink:href="#77f6b501d38e435b8b125bee9ddcc8eb" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+        </g><g xmlns="http://www.w3.org/2000/svg" p:type="Shape" xmlns:p="http://www.evolus.vn/Namespace/Pencil" p:def="Evolus.Common:Bitmap" id="0b6a70736c304cddbedf2df89c08b33d" transform="matrix(4.4896593387466766e-11,1,-1,4.4896593387466766e-11,128,-1.4366889899974922e-9)"><p:metadata><p:property name="box"><![CDATA[64,64]]></p:property><p:property name="imageData"><![CDATA[64,64,../img/obj_2.png]]></p:property><p:property name="withBlur"><![CDATA[false]]></p:property><p:property name="fillColor"><![CDATA[#FFFFFF00]]></p:property><p:property name="strokeColor"><![CDATA[#000000FF]]></p:property><p:property name="strokeStyle"><![CDATA[0|]]></p:property></p:metadata>
+            <defs>
+                <filter height="1.2558399" y="-0.12792" width="1.06396" x="-0.03198" p:name="imageShading" id="b3d8442200bc4d6593e39398539be734">
+                    <feGaussianBlur stdDeviation="1.3325" in="SourceAlpha"/>
+                </filter>
+                <g p:name="container" id="539ac9b3eb754ba5ad5d65900bad675a">
+                    <rect style="fill: rgb(255, 255, 255); stroke: rgb(0, 0, 0); stroke-opacity: 1; stroke-width: 0; fill-opacity: 0;" p:name="bgRect" id="dc58edfc49754a2fba1147864fe4cd68" width="64" height="64" transform="translate(0,0)"/>
+                    <g p:name="imageContainer" id="30f2482d1b0f48c3a26c98ec086aca41" transform="scale(1,1)">
+                        <image x="0" y="0" p:name="image" id="46aa6a0f3e4d44898b346f3d99624d2a" xlink:href="../img/obj_2.png" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="64"/>
+                    </g>
+                </g>
+            </defs>
+            <use xlink:href="#539ac9b3eb754ba5ad5d65900bad675a" xmlns:xlink="http://www.w3.org/1999/xlink" transform="translate(1, 1)" p:filter="url(#b3d8442200bc4d6593e39398539be734)" style="opacity: 0.6; visibility: hidden; display: none;" p:name="bgCopy" id="965c22ddb53045399b8f8ff72eb9dbd2"/>
+            <use xlink:href="#539ac9b3eb754ba5ad5d65900bad675a" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+        </g><g xmlns="http://www.w3.org/2000/svg" p:type="Shape" xmlns:p="http://www.evolus.vn/Namespace/Pencil" p:def="Evolus.Common:Bitmap" id="804dd073a4be47799ee6b47ed37b80c5" transform="matrix(-1,8.979317983603963e-11,-8.979317983603963e-11,-1,192,64)"><p:metadata><p:property name="box"><![CDATA[64,64]]></p:property><p:property name="imageData"><![CDATA[64,64,../img/obj_2.png]]></p:property><p:property name="withBlur"><![CDATA[false]]></p:property><p:property name="fillColor"><![CDATA[#FFFFFF00]]></p:property><p:property name="strokeColor"><![CDATA[#000000FF]]></p:property><p:property name="strokeStyle"><![CDATA[0|]]></p:property></p:metadata>
+            <defs>
+                <filter height="1.2558399" y="-0.12792" width="1.06396" x="-0.03198" p:name="imageShading" id="0648fa6cfbfc4bb4bd81d9e40ef228b7">
+                    <feGaussianBlur stdDeviation="1.3325" in="SourceAlpha"/>
+                </filter>
+                <g p:name="container" id="b47f4307549e44d1a28a8d25d6d8aecd">
+                    <rect style="fill: rgb(255, 255, 255); stroke: rgb(0, 0, 0); stroke-opacity: 1; stroke-width: 0; fill-opacity: 0;" p:name="bgRect" id="efd5b91c68e943a48c39ab834d16ce10" width="64" height="64" transform="translate(0,0)"/>
+                    <g p:name="imageContainer" id="57f238712c0948b4942428b3a4598660" transform="scale(1,1)">
+                        <image x="0" y="0" p:name="image" id="7a836bb2cdb243b7a6f497810075dd74" xlink:href="../img/obj_2.png" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="64"/>
+                    </g>
+                </g>
+            </defs>
+            <use xlink:href="#b47f4307549e44d1a28a8d25d6d8aecd" xmlns:xlink="http://www.w3.org/1999/xlink" transform="translate(1, 1)" p:filter="url(#0648fa6cfbfc4bb4bd81d9e40ef228b7)" style="opacity: 0.6; visibility: hidden; display: none;" p:name="bgCopy" id="593754618fa74bb1856f1e1245ce0cba"/>
+            <use xlink:href="#b47f4307549e44d1a28a8d25d6d8aecd" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+        </g><g xmlns="http://www.w3.org/2000/svg" p:type="Shape" xmlns:p="http://www.evolus.vn/Namespace/Pencil" p:def="Evolus.Common:Bitmap" id="a1daa43f0eb04bfaae73101f30c49a5f" transform="matrix(4.4896593387466766e-11,-1,1,4.4896593387466766e-11,192,64)"><p:metadata><p:property name="box"><![CDATA[64,64]]></p:property><p:property name="imageData"><![CDATA[64,64,../img/obj_2.png]]></p:property><p:property name="withBlur"><![CDATA[false]]></p:property><p:property name="fillColor"><![CDATA[#FFFFFF00]]></p:property><p:property name="strokeColor"><![CDATA[#000000FF]]></p:property><p:property name="strokeStyle"><![CDATA[0|]]></p:property></p:metadata>
+            <defs>
+                <filter height="1.2558399" y="-0.12792" width="1.06396" x="-0.03198" p:name="imageShading" id="b838d9e91b2145439631fd2bee71539d">
+                    <feGaussianBlur stdDeviation="1.3325" in="SourceAlpha"/>
+                </filter>
+                <g p:name="container" id="1ec8ba0c31b74d49bab281c9234fcec6">
+                    <rect style="fill: rgb(255, 255, 255); stroke: rgb(0, 0, 0); stroke-opacity: 1; stroke-width: 0; fill-opacity: 0;" p:name="bgRect" id="607b04cee66748cca6c249eda03576ed" width="64" height="64" transform="translate(0,0)"/>
+                    <g p:name="imageContainer" id="4408a836e3f94c7bb434a2598d95ff56" transform="scale(1,1)">
+                        <image x="0" y="0" p:name="image" id="db5d6d87c322419ca6e00645a4136fa9" xlink:href="../img/obj_2.png" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="64"/>
+                    </g>
+                </g>
+            </defs>
+            <use xlink:href="#1ec8ba0c31b74d49bab281c9234fcec6" xmlns:xlink="http://www.w3.org/1999/xlink" transform="translate(1, 1)" p:filter="url(#b838d9e91b2145439631fd2bee71539d)" style="opacity: 0.6; visibility: hidden; display: none;" p:name="bgCopy" id="57df00586b35406ab34b8f21729cd528"/>
+            <use xlink:href="#1ec8ba0c31b74d49bab281c9234fcec6" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+        </g></Content></Page></Pages></Document>

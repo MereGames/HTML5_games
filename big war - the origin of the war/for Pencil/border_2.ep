@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<Document xmlns="http://www.evolus.vn/Namespace/Pencil"><Properties/><Pages><Page><Properties><Property name="name">tutorial</Property><Property name="id">1470494732848_3595</Property><Property name="width">64</Property><Property name="height">64</Property><Property name="dimBackground"/><Property name="transparentBackground">true</Property><Property name="backgroundColor">#FFFFFFFF</Property><Property name="background">transparent</Property></Properties><Content><g xmlns="http://www.w3.org/2000/svg" p:type="Shape" xmlns:p="http://www.evolus.vn/Namespace/Pencil" p:def="Evolus.Common:Bitmap" id="4cfa9397f9d743eaaeebad5e1c8eddb6" transform="matrix(1,0,0,1,0,0)"><p:metadata><p:property name="box"><![CDATA[64,64]]></p:property><p:property name="imageData"><![CDATA[64,64,../img/border.png]]></p:property><p:property name="withBlur"><![CDATA[false]]></p:property><p:property name="fillColor"><![CDATA[#FFFFFF00]]></p:property><p:property name="strokeColor"><![CDATA[#000000FF]]></p:property><p:property name="strokeStyle"><![CDATA[0|]]></p:property></p:metadata>
+            <defs>
+                <filter height="1.2558399" y="-0.12792" width="1.06396" x="-0.03198" p:name="imageShading" id="430be43b9fa348348892df877b26a029">
+                    <feGaussianBlur stdDeviation="1.3325" in="SourceAlpha"/>
+                </filter>
+                <g p:name="container" id="80e47764175d436ca1379f88754fb594">
+                    <rect style="fill: rgb(255, 255, 255); stroke: rgb(0, 0, 0); stroke-opacity: 1; stroke-width: 0; fill-opacity: 0;" p:name="bgRect" id="528b64ae89dd4c148099de240469222d" width="64" height="64" transform="translate(0,0)"/>
+                    <g p:name="imageContainer" id="74eb54962e4742509602112cf1aec85d" transform="scale(1,1)">
+                        <image x="0" y="0" p:name="image" id="699157a028ed43ff82b3ebe1e377d98c" xlink:href="../img/border.png" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="64"/>
+                    </g>
+                </g>
+            </defs>
+            <use xlink:href="#80e47764175d436ca1379f88754fb594" xmlns:xlink="http://www.w3.org/1999/xlink" transform="translate(1, 1)" p:filter="url(#430be43b9fa348348892df877b26a029)" style="opacity: 0.6; visibility: hidden; display: none;" p:name="bgCopy" id="ad7adbc44cd540b78bf22a2590645d20"/>
+            <use xlink:href="#80e47764175d436ca1379f88754fb594" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+        </g><g xmlns="http://www.w3.org/2000/svg" p:type="Shape" xmlns:p="http://www.evolus.vn/Namespace/Pencil" p:def="Evolus.Common:Bitmap" id="1c8f402c9ecf4ee8a0f54468f97c7b0c" transform="matrix(1,0,0,1,1,-10)"><p:metadata><p:property name="box"><![CDATA[256,64]]></p:property><p:property name="imageData"><![CDATA[256,64,../img/obj_2.png]]></p:property><p:property name="withBlur"><![CDATA[false]]></p:property><p:property name="fillColor"><![CDATA[#FFFFFF00]]></p:property><p:property name="strokeColor"><![CDATA[#000000FF]]></p:property><p:property name="strokeStyle"><![CDATA[0|]]></p:property></p:metadata>
+            <defs>
+                <filter height="1.2558399" y="-0.12792" width="1.06396" x="-0.03198" p:name="imageShading" id="30ba30ee3d7240509de24f75580d4314">
+                    <feGaussianBlur stdDeviation="1.3325" in="SourceAlpha"/>
+                </filter>
+                <g p:name="container" id="24390d35621e4ea7b90d57c10aab3d39">
+                    <rect style="fill: rgb(255, 255, 255); stroke: rgb(0, 0, 0); stroke-opacity: 1; stroke-width: 0; fill-opacity: 0;" p:name="bgRect" id="e4fdeeab2dd94ffebe76dc7270b8a749" width="256" height="64" transform="translate(0,0)"/>
+                    <g p:name="imageContainer" id="146aab928a9f4113a4cc2b18c45f0adb" transform="scale(1,1)">
+                        <image x="0" y="0" p:name="image" id="99e2facd601f41a0a359d21720595f83" xlink:href="../img/obj_2.png" xmlns:xlink="http://www.w3.org/1999/xlink" width="256" height="64"/>
+                    </g>
+                </g>
+            </defs>
+            <use xlink:href="#24390d35621e4ea7b90d57c10aab3d39" xmlns:xlink="http://www.w3.org/1999/xlink" transform="translate(1, 1)" p:filter="url(#30ba30ee3d7240509de24f75580d4314)" style="opacity: 0.6; visibility: hidden; display: none;" p:name="bgCopy" id="aca450c55c26491f9c2e6e3ec8ffef56"/>
+            <use xlink:href="#24390d35621e4ea7b90d57c10aab3d39" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+        </g><g xmlns="http://www.w3.org/2000/svg" p:type="Shape" xmlns:p="http://www.evolus.vn/Namespace/Pencil" p:def="Evolus.Common:RichTextBoxV2" p:sc="HTML Texts" id="6943105a27a848cbad9891d226a8f97c" transform="matrix(1,0,0,1,17,47)"><p:metadata><p:property name="width"><![CDATA[200,0]]></p:property><p:property name="fixedWidth"><![CDATA[false]]></p:property><p:property name="textContent"><![CDATA[150$]]></p:property><p:property name="textFont"><![CDATA[Arial|normal|normal|13px|none]]></p:property><p:property name="textColor"><![CDATA[#FFCC33FF]]></p:property><p:property name="customStyle"><![CDATA[
+                ]]></p:property></p:metadata>
+
+            <foreignObject x="0" y="0" width="28" height="16" p:name="htmlObject" id="ffc04f9a6f304167bd78c62abc7e37f3" style="color: rgb(255, 204, 51); opacity: 1; font-family: Arial; font-size: 13px; font-weight: normal; font-style: normal; text-decoration: none;">
+                <div xmlns="http://www.w3.org/1999/xhtml" p:name="textDiv" id="548261a68c664d4aba56290eec659083" style="display: inline-block; white-space: nowrap; text-decoration: none;"><div xmlns="http://www.w3.org/1999/xhtml">150$</div></div>
+            </foreignObject>
+        </g><g xmlns="http://www.w3.org/2000/svg" p:type="Shape" xmlns:p="http://www.evolus.vn/Namespace/Pencil" p:def="Evolus.Common:RichTextBoxV2" p:sc="HTML Texts" id="206cceb7e8064a14bd6d092170029ac5" transform="matrix(1,0,0,1,-24,37)"><p:metadata><p:property name="width"><![CDATA[200,0]]></p:property><p:property name="fixedWidth"><![CDATA[false]]></p:property><p:property name="textContent"><![CDATA[110]]></p:property><p:property name="textFont"><![CDATA["Liberation Sans",Arial,sans-serif|normal|normal|13px|none]]></p:property><p:property name="textColor"><![CDATA[#000000FF]]></p:property><p:property name="customStyle"><![CDATA[
+                ]]></p:property></p:metadata>
+
+            <foreignObject x="0" y="0" width="20" height="16" p:name="htmlObject" id="30be065538bc43ba8f6dd23ff6ffad19" style="color: rgb(0, 0, 0); opacity: 1; font-family: &quot;Liberation Sans&quot;,Arial,sans-serif; font-size: 13px; font-weight: normal; font-style: normal; text-decoration: none;">
+                <div xmlns="http://www.w3.org/1999/xhtml" p:name="textDiv" id="e5ea2d2725284ff29b41bc99507064b8" style="display: inline-block; white-space: nowrap; text-decoration: none;"><div xmlns="http://www.w3.org/1999/xhtml">110</div></div>
+            </foreignObject>
+        </g><g xmlns="http://www.w3.org/2000/svg" p:type="Shape" xmlns:p="http://www.evolus.vn/Namespace/Pencil" p:def="Evolus.Common:RichTextBoxV2" p:sc="HTML Texts" id="a4040fccd8d14e2d85b026cf5a6673aa" transform="matrix(1,0,0,1,4,36)"><p:metadata><p:property name="width"><![CDATA[200,0]]></p:property><p:property name="fixedWidth"><![CDATA[false]]></p:property><p:property name="textContent"><![CDATA[110]]></p:property><p:property name="textFont"><![CDATA[Arial|normal|normal|10px|none]]></p:property><p:property name="textColor"><![CDATA[#FFFFFFFF]]></p:property><p:property name="customStyle"><![CDATA[
+                ]]></p:property></p:metadata>
+
+            <foreignObject x="0" y="0" width="17" height="14" p:name="htmlObject" id="490e32276bc54d1d8f42b718b9e1f70d" style="color: rgb(255, 255, 255); opacity: 1; font-family: Arial; font-size: 10px; font-weight: normal; font-style: normal; text-decoration: none;">
+                <div xmlns="http://www.w3.org/1999/xhtml" p:name="textDiv" id="b12cc6f5ec4345998392cc459761cfc3" style="display: inline-block; white-space: nowrap; text-decoration: none;"><div xmlns="http://www.w3.org/1999/xhtml">110</div></div>
+            </foreignObject>
+        </g><g xmlns="http://www.w3.org/2000/svg" p:type="Shape" xmlns:p="http://www.evolus.vn/Namespace/Pencil" p:def="Evolus.Common:RichTextBoxV2" p:sc="HTML Texts" id="9a7f043d6c09466eb971d4fe8e168818" transform="matrix(1,0,0,1,23,36)"><p:metadata><p:property name="width"><![CDATA[200,0]]></p:property><p:property name="fixedWidth"><![CDATA[false]]></p:property><p:property name="textContent"><![CDATA[HP]]></p:property><p:property name="textFont"><![CDATA[Arial|normal|normal|10px|none]]></p:property><p:property name="textColor"><![CDATA[#FF0000FF]]></p:property><p:property name="customStyle"><![CDATA[
+                ]]></p:property></p:metadata>
+
+            <foreignObject x="0" y="0" width="14" height="14" p:name="htmlObject" id="a03ad6cfa31948f3bded88d3e285b85d" style="color: rgb(255, 0, 0); opacity: 1; font-family: Arial; font-size: 10px; font-weight: normal; font-style: normal; text-decoration: none;">
+                <div xmlns="http://www.w3.org/1999/xhtml" p:name="textDiv" id="d5c23e5634214cdfa385a2fd027d299a" style="display: inline-block; white-space: nowrap; text-decoration: none;"><div xmlns="http://www.w3.org/1999/xhtml">HP</div></div>
+            </foreignObject>
+        </g><g xmlns="http://www.w3.org/2000/svg" p:type="Shape" xmlns:p="http://www.evolus.vn/Namespace/Pencil" p:def="Evolus.Common:RichTextBoxV2" p:sc="HTML Texts" id="f1c921bed75e486ea1d6361762a19df1" transform="matrix(1,0,0,1,40,36)"><p:metadata><p:property name="width"><![CDATA[200,0]]></p:property><p:property name="fixedWidth"><![CDATA[false]]></p:property><p:property name="textContent"><![CDATA[20]]></p:property><p:property name="textFont"><![CDATA[Arial|normal|normal|10px|none]]></p:property><p:property name="textColor"><![CDATA[#FFFFFFFF]]></p:property><p:property name="customStyle"><![CDATA[
+                ]]></p:property></p:metadata>
+
+            <foreignObject x="0" y="0" width="12" height="14" p:name="htmlObject" id="485d227e572f4ab59df22e80e83ecefb" style="color: rgb(255, 255, 255); opacity: 1; font-family: Arial; font-size: 10px; font-weight: normal; font-style: normal; text-decoration: none;">
+                <div xmlns="http://www.w3.org/1999/xhtml" p:name="textDiv" id="35df82cc7ea44df08b8bf719fe17de91" style="display: inline-block; white-space: nowrap; text-decoration: none;"><div xmlns="http://www.w3.org/1999/xhtml">20</div></div>
+            </foreignObject>
+        </g><g xmlns="http://www.w3.org/2000/svg" p:type="Shape" xmlns:p="http://www.evolus.vn/Namespace/Pencil" p:def="Evolus.Common:RichTextBoxV2" p:sc="HTML Texts" id="0a1e0de2f20f4b92994bf1b338605e6c" transform="matrix(1,0,0,1,-17,37)"><p:metadata><p:property name="width"><![CDATA[200,0]]></p:property><p:property name="fixedWidth"><![CDATA[false]]></p:property><p:property name="textContent"><![CDATA[AT]]></p:property><p:property name="textFont"><![CDATA["Liberation Sans",Arial,sans-serif|normal|normal|13px|none]]></p:property><p:property name="textColor"><![CDATA[#000000FF]]></p:property><p:property name="customStyle"><![CDATA[
+                ]]></p:property></p:metadata>
+
+            <foreignObject x="0" y="0" width="15" height="16" p:name="htmlObject" id="c2b8b8a7fd584fbdb80d2431ef288d04" style="color: rgb(0, 0, 0); opacity: 1; font-family: &quot;Liberation Sans&quot;,Arial,sans-serif; font-size: 13px; font-weight: normal; font-style: normal; text-decoration: none;">
+                <div xmlns="http://www.w3.org/1999/xhtml" p:name="textDiv" id="552590f4bd104a4e94aca7128a20ae09" style="display: inline-block; white-space: nowrap; text-decoration: none;"><div xmlns="http://www.w3.org/1999/xhtml">AT</div></div>
+            </foreignObject>
+        </g><g xmlns="http://www.w3.org/2000/svg" p:type="Shape" xmlns:p="http://www.evolus.vn/Namespace/Pencil" p:def="Evolus.Common:RichTextBoxV2" p:sc="HTML Texts" id="c8f4e7d7f03f43839ec9fd97a1772d76" transform="matrix(1,0,0,1,51,36)"><p:metadata><p:property name="width"><![CDATA[200,0]]></p:property><p:property name="fixedWidth"><![CDATA[false]]></p:property><p:property name="textContent"><![CDATA[AT]]></p:property><p:property name="textFont"><![CDATA[Arial|normal|normal|10px|none]]></p:property><p:property name="textColor"><![CDATA[#FF0000FF]]></p:property><p:property name="customStyle"><![CDATA[
+                ]]></p:property></p:metadata>
+
+            <foreignObject x="0" y="0" width="13" height="14" p:name="htmlObject" id="bb9e1a4c6721425ba9c238abda6fc7c3" style="color: rgb(255, 0, 0); opacity: 1; font-family: Arial; font-size: 10px; font-weight: normal; font-style: normal; text-decoration: none;">
+                <div xmlns="http://www.w3.org/1999/xhtml" p:name="textDiv" id="afc90dca8c01433b9ac2555b92cab11c" style="display: inline-block; white-space: nowrap; text-decoration: none;"><div xmlns="http://www.w3.org/1999/xhtml">AT</div></div>
+            </foreignObject>
+        </g></Content></Page></Pages></Document>

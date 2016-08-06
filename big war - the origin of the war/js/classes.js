@@ -130,7 +130,7 @@ function bullet(x, y, anim, type, name) {
 	this.y = y;
 	this.anim = anim;
 	this.speed = 8;
-	this.time = 60;
+	this.time = 80;
 	this.type = type;
 	this.name = name;
 	this.drawBol = true;
@@ -191,6 +191,7 @@ function gameObject(name, img, type, prof, x, y, map, speed, health, ataca, relo
 	this.drawBol = true;
 	this.faer = false;
 	this.target = {bull: false, en: 0, pl: 0};
+	this.endLoop = true;
 
 	this.health = health;
 	this._health = health;
@@ -341,9 +342,15 @@ function build(name, img, x, y, radius, time, map, type, canFaer, reload, ataca,
 		        	this.timeOut = 0;
 		        	if(this.name == "army") {
 		        		if(gameConfig[0].position == "free") {
-		        	        objectsGame.push(new gameObject("tank", objectImages[2], "player", "dis", this.x + 64, this.y, idMap, 2, 100, 30, 40));
+		        	        objectsGame.push(new gameObject("tank", objectImages[2], "player", "dis", this.x + 64, this.y, idMap, objsProp.player.tank.speed, objsProp.player.tank.health, objsProp.player.tank.ataca, objsProp.player.tank.reload));
 		        	    }else {
-		        	    	objectsGame.push(new gameObject("tank", objectImages[2], "player", "dis", this.x + 64, this.y, levelsMaps[select_level].map[0].name, 2, 100, 30, 40));
+		        	    	objectsGame.push(new gameObject("tank", objectImages[2], "player", "dis", this.x + 64, this.y, levelsMaps[select_level].map[0].name, objsProp.player.tank.speed, objsProp.player.tank.health, objsProp.player.tank.ataca, objsProp.player.tank.reload));
+		        	    }
+		            }else if(this.name == "armyHard") {
+		        		if(gameConfig[0].position == "free") {
+		        	        objectsGame.push(new gameObject("tank_hard", objectImages[3], "player", "dis", this.x + 64, this.y, idMap, objsProp.player.tank_hard.speed, objsProp.player.tank_hard.health, objsProp.player.tank_hard.ataca, objsProp.player.tank_hard.reload));
+		        	    }else {
+		        	    	objectsGame.push(new gameObject("tank_hard", objectImages[3], "player", "dis", this.x + 64, this.y, levelsMaps[select_level].map[0].name, objsProp.player.tank_hard.speed, objsProp.player.tank_hard.health, objsProp.player.tank_hard.ataca, objsProp.player.tank_hard.reload));
 		        	    }
 		            }
 		        }
