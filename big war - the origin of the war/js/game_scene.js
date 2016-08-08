@@ -5,13 +5,16 @@
 
 
 const SPEED_MAP = 10;
-const NUM_MAIN = 5;
+const NUM_MAIN = 6;
+const NUM_MAIN_TWO = 1;
+
+var maxPlayer = 45;
 
 var levelsPar = [
-    {level: 0, size: 50, dif: "none", tum: true},
-    {level: 1, size: 30, dif: "easy", tum: true},
-    {level: 2, size: 50, dif: "easy", tum: true},
-    {level: 3, size: 50, dif: "easy", tum: true},
+    {level: 0, size: 50, dif: "none", tum: true, forgets: ["none"]},
+    {level: 1, size: 30, dif: "easy", tum: true, forgets: [{type: "lout", num: 3, end: false}, {type: "enemyKill", num: 20, end: false}]},
+    {level: 2, size: 50, dif: "easy", tum: true, forgets: [{type: "lout", num: 5, end: false}, {type: "enemyKill", num: 150, end: false}]},
+    {level: 3, size: 50, dif: "easy", tum: true, forgets: [{type: "lout", num: 8, end: false}, {type: "enemyKill", num: 300, end: false}]},
     {level: 4, size: 50, dif: "easy", tum: true},
     {level: 5, size: 60, dif: "normal", tum: true},
     {level: 6, size: 70, dif: "normal", tum: true},
@@ -24,9 +27,12 @@ var levelsPar = [
 ];
 
 var viewMain = true;
+var viewMainTwo = false;
 var viewSpesial = false;
 
 var tutorial = false;
+
+var yText = 100;
 
 var viewMiniMap = true;
 
@@ -41,11 +47,29 @@ var numKillEnemy = 0;
 var numKillPlayer = 0;
 
 //Main Global-Virabels
+var NUM_MUSIK = 6;
+var played =  Math.floor(Math.random() * (NUM_MUSIK - 1));
+var playMusik = [];
 var musikPlay = true;
+for(let q = 1; q < NUM_MUSIK; q++) {
 var musik = new Audio();
-musik.src = "audio/ms_1.mp3";
-musik.loop = true;
-musik.play();
+musik.src = "audio/ms_" + q + ".mp3";
+musik.loop = false;
+playMusik.push(musik);
+}
+playMusik[played].play();
+
+playMusik[played].onended = function () {
+	let rand = Math.floor(Math.random() * (NUM_MUSIK - 1));
+    playMusik[rand].play();
+    played = rand;
+
+    playMusik[played].onended = function () {
+	let rand = Math.floor(Math.random() * (NUM_MUSIK - 1));
+    playMusik[rand].play();
+    played = rand;
+    }
+}
 
 var selectsEdit = [];
 var selectsBuilds = [];
@@ -53,7 +77,9 @@ var selectsBuilds = [];
 var _gameOver = false;
 var _gameVictory = false;
 
-var add;
+var add, addHl;
+var addHealth = 0;
+
 var pause = false;
 var lastTime = 10;
 
@@ -162,6 +188,8 @@ function drawScene() {
 	    	                ctx.drawImage(bordersInfo[1], buildsGame[j].x - buildsGame[j].radius - movAddX, buildsGame[j].y - buildsGame[j].radius - movAddY, 64, 64);
 	    	            }else if(buildsGame[j].name == "armyHard") {
 	    	                ctx.drawImage(bordersInfo[2], buildsGame[j].x - buildsGame[j].radius - movAddX, buildsGame[j].y - buildsGame[j].radius - movAddY, 64, 64);
+	    	            }else if(buildsGame[j].name == "armyFast") {
+	    	                ctx.drawImage(bordersInfo[3], buildsGame[j].x - buildsGame[j].radius - movAddX, buildsGame[j].y - buildsGame[j].radius - movAddY, 64, 64);
 	    	            }
 	            }
 	        }
@@ -178,6 +206,9 @@ function drawScene() {
 	        collisionsObjects();
 	        moveObjects();
 	        killObjects();
+	        checkMissions();
+
+	        regHealthObjs();
 
 	        moveEnemy();
 	    }
@@ -199,15 +230,10 @@ function drawScene() {
 	    ctx.restore();
 
 	    //Left menu
-	    if(viewMain == true || viewSpesial == true) {
+	    if(viewMain == true || viewSpesial == true || viewMainTwo == true) {
 	    for(let d = 0; d < buildings.length; d++) {
 	    	ctx.save();
 	    	ctx.fillStyle = "#9D6B0F";
-
-	    	ctx.fillRect(20, yRec, 64, 64);
-
-	    	ctx.fillStyle = "#fff";
-	    	ctx.font = "25px Arial";
 
 	    	if(buildings[d].select == true) {
 	    		ctx.strokeStyle = "red";
@@ -215,22 +241,38 @@ function drawScene() {
 	    		ctx.strokeStyle = "#fff";
 	    	}
 
-	    	if(viewMain == true && d <= NUM_MAIN) {
-	    	    ctx.drawImage(buildImages[d], 20, yRec);
-	        }
+	    	if(viewMain == true && d < NUM_MAIN) {
+	    		ctx.fillRect(20, yRec, 64, 64);
 
-	    	ctx.strokeRect(20, yRec, 64, 64);
+	    		ctx.fillStyle = "#fff";
+	    	    ctx.font = "25px Arial";
+	    	    ctx.textAlign = "center";
 
-	    	ctx.textAlign = "center";
+	    		ctx.drawImage(buildImages[d], 20, yRec);
+	    		ctx.strokeRect(20, yRec, 64, 64);
+	    		ctx.fillText(d, 50, yRec + 20);
 
-	    	ctx.fillText(d, 50, yRec + 20);
+	    	    ctx.fillStyle = "yellow";
+	    	    ctx.font = "20px cursive";
+	    		ctx.fillText(buildings[d].price + "$", 50, yRec + 60);
+	    	}else if(viewMainTwo == true && d < NUM_MAIN_TWO) {
+	    		ctx.fillRect(20, yRec, 64, 64);
 
-	    	ctx.fillStyle = "yellow";
-	    	ctx.font = "20px cursive";
+	    		ctx.fillStyle = "#fff";
+	    	    ctx.font = "25px Arial";
+	    	    ctx.textAlign = "center";
 
-	    	if(viewMain == true && d <= NUM_MAIN) {
-	    	    ctx.fillText(buildings[d].price + "$", 50, yRec + 60);
-	        }
+	    	    d += NUM_MAIN;
+	    		ctx.drawImage(buildImages[d], 20, yRec);
+	    		d -= NUM_MAIN;
+	    		ctx.strokeRect(20, yRec, 64, 64);
+	    		ctx.fillText(d, 50, yRec + 20);
+
+	    	    ctx.fillStyle = "yellow";
+	    	    ctx.font = "20px cursive";
+	    		ctx.fillText(buildings[d].price + "$", 50, yRec + 60);
+	    	}
+
 
 	    	ctx.restore();
 
@@ -263,6 +305,12 @@ function drawScene() {
 	    	ctx.fillText("+"+levelsMaps[select_level].map[0].playerData.addMoney.toLocaleString() + "$/сек", WIDTH - 8, 64);
 	    }
 	    ctx.textAlign = "center";
+	    if(gameConfig[0].leng == "en") {
+	        ctx.fillText("Your army:", WIDTH/2, 30);
+	    }else {
+	    	ctx.fillText("Ваша армия:", WIDTH/2, 30);
+	    }
+	    ctx.fillText(numPlayer + "/" + maxPlayer, WIDTH/2, 64);
 	    ctx.fillStyle = "red";
 	    ctx.fillText(levelsMaps[select_level].map[0].playerData.laut - 1, WIDTH/2 + 20, HEIGHT - 10);
 	    ctx.fillStyle = "yellow";
@@ -273,32 +321,51 @@ function drawScene() {
 	    }
 	    ctx.restore();
 
-	    if(_gameOver == true) {
-	    	ctx.save();
-	        ctx.textAlign = "center";
-	        ctx.fillStyle = "red";
-	        ctx.font = "120px cursive";
-	        ctx.fillText("Game over!", WIDTH/2, HEIGHT/2);
-	        ctx.restore();
-	    }else if(_gameVictory == true) {
-	    	ctx.save();
-	        ctx.textAlign = "center";
-	        ctx.fillStyle = "red";
-	        ctx.font = "120px cursive";
-	        ctx.fillText("Victory!", WIDTH/2, HEIGHT/2);
-	        ctx.restore();
-	    }
-
 	    //Pause
 	    if(pause == true) {
 	    	ctx.save();
 	    	ctx.textAlign = "center";
 	    	if(gameConfig[0].leng == "en") {
-	    		ctx.fillText("Pause", WIDTH/2, 60);
+	    		ctx.fillText("Pause", WIDTH/2, HEIGHT/2);
 	    	}else if(gameConfig[0].leng == "ru") {
-	    		ctx.fillText("Пауза", WIDTH/2, 60);
+	    		ctx.fillText("Пауза", WIDTH/2, HEIGHT/2);
 	    	}
 	    	ctx.restore();
+	    }
+
+	    yText = 100;
+	    for(let l = 0; l < levelsPar[select_level].forgets.length; l++) {
+	    	let text = "";
+	    	if(levelsPar[select_level].forgets[l].type == "lout") {
+	    		if(gameConfig[0].leng == "ru") {
+	    		    text = "Доживите до " + levelsPar[select_level].forgets[l].num + " волны.";
+	    	    }else {
+	    	    	text = "Before they reach " + levelsPar[select_level].forgets[l].num + " waves.";
+	    	    }
+	    	}else if(levelsPar[select_level].forgets[l].type == "enemyKill") {
+	    		if(gameConfig[0].leng == "ru") {
+	    		    text = "Уничтожте " + (levelsPar[select_level].forgets[l].num - numKillEnemy) + " врагов.";
+	    	    }else {
+	    	    	text = "Destroy " + (levelsPar[select_level].forgets[l].num - numKillEnemy) + " enemies.";
+	    	    }
+	    	}
+
+	    	ctx.save();
+	    	if(levelsPar[select_level].forgets[l].end == true) {
+	    		ctx.fillStyle = "#00FF40";
+	    		if(gameConfig[0].leng == "en") {
+	    			text = "Completed!";
+	    		}else {
+	    			text = "Завершено!";
+	    		}
+	    	}else {
+	    		ctx.fillStyle = "#FF9136";
+	    	}
+	    	ctx.font = "20px cursive";
+	    	ctx.textAlign = "right";
+	    	ctx.fillText(text, WIDTH - 10, yText);
+	    	ctx.restore();
+	    	yText += 40;
 	    }
 
 	    //Mini map
@@ -311,7 +378,39 @@ function drawScene() {
 	    	pause = true;
 	    	stopGame = true;
 
-	    	ctx.drawImage(otherImages[3], WIDTH/2 - 830/2, HEIGHT/2 - 447/2);
+	    	if(gameConfig[0].leng == "en") {
+	    	    ctx.drawImage(otherImages[3], WIDTH/2 - 830/2, HEIGHT/2 - 447/2);
+	        }else {
+	        	ctx.drawImage(otherImages[4], WIDTH/2 - 830/2, HEIGHT/2 - 447/2);
+	        }
+	    }
+
+	    if(_gameOver == true) {
+	    	pause = true;
+	    	stopGame = true;
+	    	ctx.save();
+	        ctx.textAlign = "center";
+	        ctx.fillStyle = "red";
+	        ctx.font = "120px cursive";
+	        if(gameConfig[0].leng == "en") {
+	            ctx.fillText("Defeat!", WIDTH/2, HEIGHT/2);
+	        }else {
+	        	ctx.fillText("Поражение!", WIDTH/2, HEIGHT/2);
+	        }
+	        ctx.restore();
+	    }else if(_gameVictory == true) {
+	    	pause = true;
+	    	stopGame = true;
+	    	ctx.save();
+	        ctx.textAlign = "center";
+	        ctx.fillStyle = "#00FF40";
+	        ctx.font = "120px cursive";
+	        if(gameConfig[0].leng == "en") {
+	            ctx.fillText("Victory!", WIDTH/2, HEIGHT/2);
+	        }else {
+	        	ctx.fillText("Победа!", WIDTH/2, HEIGHT/2);
+	        }
+	        ctx.restore();
 	    }
 	    
 	}else if(gameConfig[0].position == "free" || gameConfig[0].endLoad == "free") {
@@ -465,6 +564,7 @@ function drawScene() {
 	    	ctx.fillText("+"+mapsGame[idMap].playerData.addMoney.toLocaleString() + "$/сек", WIDTH - 8, 64);
 	    }
 	    ctx.textAlign = "center";
+	    ctx.fillText("Your army:", WIDTH/2, 32);
 	    ctx.fillStyle = "red";
 	    ctx.fillText(mapsGame[idMap].playerData.laut - 1, WIDTH/2 + 20, HEIGHT - 10);
 	    ctx.fillStyle = "yellow";
@@ -598,6 +698,12 @@ function drawScene() {
 	}
 }
 
+setInterval(function () {
+	for(let s = 0; s < objectsGame.length; s++) {
+		objectsGame[s].iter();
+	}
+}, 180);
+
 
 //Update
 function updateScene() {
@@ -633,10 +739,8 @@ function updateScene() {
     }
 
     for(let r = 0; r < objectsGame.length; r++) {
-    	if(objectsGame[r].type == "enemy") {
-    		numEnemy += 1;
-    	}else if(objectsGame[r].type == "player") {
-    		numPlayer += 1;
+    	if(objectsGame[r].animEnd == true) {
+    		objectsGame.splice(r, 1);
     	}
     }
 }
@@ -648,6 +752,18 @@ function addMoneyPlayer() {
 			mapsGame[idMap].playerData.money += mapsGame[idMap].playerData.addMoney;
 		}else if(gameConfig[0].position == "level") {
 			levelsMaps[select_level].map[0].playerData.money += levelsMaps[select_level].map[0].playerData.addMoney;
+		}
+	}, 1000);
+  }
+}
+
+function regHealthObjs() {
+	if(addHl == undefined || addHl == null) {
+	addHl = setInterval(function () {
+		for(let o = 0; o < objectsGame.length; o++) {
+			if(objectsGame[o].type == "player" && objectsGame[o].health < objectsGame[o]._health) {
+				objectsGame[o].health += addHealth;
+			}
 		}
 	}, 1000);
   }
@@ -725,10 +841,18 @@ if(stopGame == false) {
 		}
 	}
   }else if(gameConfig[0].position == "free" || gameConfig[0].position == "level") {
+  	let num = 0;
   	if(viewMain == true) {
-  	for(let i = 1; i < NUM_MAIN; i++) {
+  		num = NUM_MAIN;
+  	}else if(viewMainTwo == true) {
+  		num = NUM_MAIN_TWO;
+  	}
+  	for(let i = 1; i < num + 1; i++) {
 		if(keyCode == keyCodes[i].code) {
 			i--;
+			if(viewMainTwo == true) {
+				i += NUM_MAIN;
+			}
 			if(buildings[i].select == true) {
 				buildings[i].select = false;
 				return;
@@ -739,9 +863,11 @@ if(stopGame == false) {
 				buildings[i].select = true;
 				preBuild.empty = false;
 			i++;
+			if(viewMainTwo == true) {
+				i -= NUM_MAIN;
+			}
 		}
 	  }
-    }//----
   }
 
   //builds
@@ -750,14 +876,14 @@ if(stopGame == false) {
   		viewMain = false;
   	}else if(viewMain == false) {
   		viewMain = true;
-  		viewSpesial = false;
+  		viewMainTwo = false;
   	}
   }
   if(keyCode == 88) {
-  	if(viewSpesial == true) {
-  		viewSpesial = false;
-  	}else if(viewSpesial == false) {
-  		viewSpesial = true;
+  	if(viewMainTwo == true) {
+  		viewMainTwo = false;
+  	}else if(viewMainTwo == false) {
+  		viewMainTwo = true;
   		viewMain = false;
   	}
   }
@@ -1250,6 +1376,12 @@ if(gameConfig[0].position == "free") {
 
   					        continue loop4;
   					    }
+  					    if(q!=o && objBull[b].name == "bazeEnemy") {
+  					        buildsGame[o].health -= objBazeEnemy.ataca;
+  					        objBull.splice(b, 1);
+
+  					        continue loop4;
+  					    }
   				    }
   				}
   			}
@@ -1272,20 +1404,50 @@ if(gameConfig[0].position == "free") {
 }
 }
 
+function checkMissions() {
+	for(let m = 0; m < levelsPar[select_level].forgets.length; m++) {
+		if(levelsPar[select_level].forgets[m].type == "lout") {
+			if((levelsMaps[select_level].map[0].playerData.laut - 1) >= levelsPar[select_level].forgets[m].num) {
+				levelsPar[select_level].forgets[m].end = true;
+			}
+		}else if(levelsPar[select_level].forgets[m].type == "enemyKill") {
+			if(numKillEnemy >= levelsPar[select_level].forgets[m].num) {
+				levelsPar[select_level].forgets[m].end = true;
+			}
+		}
+
+		if(endsMissions() == true) {
+			gameVictory("mission");
+		}
+	}
+}
+
+function endsMissions() {
+	for(let m = 0; m < levelsPar[select_level].forgets.length; m++) {
+		if(levelsPar[select_level].forgets[m].end == false) {
+			return false;
+		}
+	}
+	return true;
+}
+
 
 //Kill objects
 function killObjects() {
 	for(let r = 0; r < objectsGame.length; r++) {
 		if(objectsGame[r].health <= 0) {
-			if(objectsGame[r].type == "enemy") {
+			if(objectsGame[r].type == "enemy" && objectsGame[r].boom == false) {
 				numEnemy -= 1;
 				numKillEnemy += 1;
-			}else if(objectsGame[r].type == "player") {
+			}else if(objectsGame[r].type == "player" && objectsGame[r].boom == false) {
 				numPlayer -= 1;
 				numKillPlayer += 1;
 			}
 
-			objectsGame.splice(r, 1);
+			if(musikPlay == true) {
+			    objectsGame[r].boom1.play();
+		    }
+			objectsGame[r].boom = true;
 		}
 	}
 	for(let b = 0; b < buildsGame.length; b++) {
@@ -1296,6 +1458,8 @@ function killObjects() {
 			    	}else if(gameConfig[0].position == "level" && buildsGame[b].addRes.name == "money") {
 			    		levelsMaps[select_level].map[0].playerData.addMoney -= buildsGame[b].addRes.num;
 			    	}
+			    }else if(buildsGame[b].name == "healthReg") {
+			    	addHealth -= buildsGame[b].addRes.num;
 			    }
 
 			    buildsGame.splice(b, 1);
@@ -1304,19 +1468,21 @@ function killObjects() {
 	if(objBaze.health <= 0) {
 		stopGame = true;
 		pause = true;
-		gameOver();
+		gameOver("baze");
 	}else if(objBazeEnemy.health <= 0) {
 		delete objBaze;
 		stopGame = true;
 		pause = true;
-		gameVictory();
+		gameVictory("baze");
 	}
 }
 
-function gameOver() {
+function gameOver(type) {
 	_gameOver = true;
-	movAddX = -64;
-	movAddY = -64;
+	if(type == "baze") {
+	    movAddX = -64;
+	    movAddY = -64;
+    }
 	musikPlay = false;
 	musik.pause();
 	setTimeout(function () {
@@ -1324,12 +1490,18 @@ function gameOver() {
 	}, 5000);
 }
 
-function gameVictory() {
+function gameVictory(type) {
 	_gameVictory = true;
-	movAddX = objBazeEnemy.x - 384;
-	movAddY = objBazeEnemy.y - 256;
+	if(type == "baze") {
+	    movAddX = objBazeEnemy.x - 384;
+	    movAddY = objBazeEnemy.y - 256;
+    }
+
+    if(gameConfig[0].position == "level") {
+    	levels[select_level].open = true;
+    }
 	musikPlay = false;
-	musik.pause();
+	playMusik[played].pause();
 	setTimeout(function () {
 		window.location.reload();
 	}, 5000);
@@ -1378,7 +1550,7 @@ function timerLauts() {
 		          mapsGame[idMap].playerData.time -= 1;
 	          }else {
 	          	mapsGame[idMap].playerData.time = lastTime + 20;
-	          	lastTime = lastTime + 20;
+	          	lastTime = lastTime + 35;
 	          	mapsGame[idMap].playerData.laut += 1;
 	          	createEnemy();
 	          }
@@ -1388,7 +1560,7 @@ function timerLauts() {
 		          levelsMaps[select_level].map[0].playerData.time -= 1;
 	          }else {
 	          	levelsMaps[select_level].map[0].playerData.time = lastTime + 20;
-	          	lastTime = lastTime + 20;
+	          	lastTime = lastTime + 35;
 	          	levelsMaps[select_level].map[0].playerData.laut += 1;
 	          	createEnemy();
 	          }

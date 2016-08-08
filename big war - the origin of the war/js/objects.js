@@ -17,26 +17,42 @@ var objBaze = {
 	timeOut: 0,
 	_timeOut: 50,
 	num: 0,
-	health: 1000,
-	_health: 1000,
+	health: 6400,
+	_health: 6400,
 	type: "player",
 	canFaer: false,
 
 	draw: function() {
 		if(this.x - this.radius - movAddX <= WIDTH + viewDis && this.x - this.radius - movAddX >= -viewDis && this.y - this.radius - movAddY <= HEIGHT + viewDis && this.y - this.radius - movAddY >= -viewDis) {
 		    ctx.drawImage(objectImages[0], this.x - this.radius - movAddX, this.y - this.radius - movAddY);
+
 		    ctx.save();
+		    ctx.fillStyle = "#0AAC2B";
+		    ctx.strokeStyle = "#fff";
+
+
+		    ctx.fillRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 74, this.health/(this._health/64), 5);
+		    ctx.strokeRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 74, this._health/(this._health/64), 5);
+
+		    ctx.restore();
+	    }
+
+	    if(this.health <= 0) {
+		    	this.health = 0;
+		    }
+
+	    ctx.save();
 		    ctx.font = "20px cursive";
 		    ctx.textAlign = "center";
 		    if(this.num > 0) {
 		    	ctx.strokeStyle = "#fff";
 		        ctx.fillText(this.num, this.x - this.radius - movAddX + 34, this.y - this.radius - movAddY + 40);
 		        ctx.fillStyle = "blue";
-		        ctx.fillRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 64, this.timeOut, 5);
-		        ctx.strokeRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 64, this._timeOut, 5);
+		        ctx.fillRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 66, this.timeOut/(this._timeOut/64), 5);
+		        ctx.strokeRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 66, this._timeOut/(this._timeOut/64), 5);
 		        if(this.timeOut < this._timeOut && stopGame == false) {
 		        	this.timeOut += 0.5;
-		        }else if(this.timeOut >= this._timeOut) {
+		        }else if(this.timeOut >= this._timeOut && numPlayer < maxPlayer && stopGame == false) {
 		        	this.num -= 1;
 		        	this.timeOut = 0;
 		        	if(gameConfig[0].position == "free") {
@@ -44,17 +60,11 @@ var objBaze = {
 		            }else {
 		            	objectsGame.push(new gameObject("robot", objectImages[1], "player", "bliz", this.x + 64, this.y, levelsMaps[select_level].map[0].name,  objsProp.player.robot.speed, objsProp.player.robot.health, objsProp.player.robot.ataca, objsProp.player.robot.reload));
 		            }
+		            numPlayer += 1;
 		        }
 		    }
 		    ctx.restore();
 
-		    ctx.save();
-		    ctx.fillStyle = "#0AAC2B";
-		    ctx.strokeStyle = "#fff";
-		    ctx.fillRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 74, this.health/15, 5);
-		    ctx.strokeRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 74, this._health/15, 5);
-		    ctx.restore();
-	    }
 		if(gameConfig[0].position == "free") {
 			for(let i = 0; i < mapsGame[idMap].map.length; i++) {
 				for(let j = 0; j < mapsGame[idMap].map.length; j++) {
@@ -90,7 +100,7 @@ var objBazeEnemy = {
 	reload: 30,
 	_reload: 30,
 	drawBol: true,
-	ataca: 5,
+	ataca: 60,
 
 	draw: function() {
 		if(this.x - movAddX <= WIDTH + viewDis && this.x - movAddX >= -viewDis && this.y - movAddY <= HEIGHT + viewDis && this.y - movAddY >= -viewDis && this.drawBol == true) {
@@ -99,10 +109,21 @@ var objBazeEnemy = {
 		    ctx.save();
 		    ctx.fillStyle = "red";
 		    ctx.strokeStyle = "#fff";
-		    ctx.fillRect(this.x - movAddX + 5, this.y - movAddY + 74, this.health/15, 5);
-		    ctx.strokeRect(this.x - movAddX + 5, this.y - movAddY + 74, this._health/15, 5);
+		    ctx.fillRect(this.x - movAddX + 5, this.y - movAddY + 74, this.health/(this._health/64), 5);
+		    ctx.strokeRect(this.x - movAddX + 5, this.y - movAddY + 74, this._health/(this._health/64), 5);
 		    ctx.restore();
 	    }
+
+	    if(this.health <= 0) {
+		    	this.health = 0;
+		    }
+
+	    if(gameConfig[0].position == "level") {
+		    	if(select_level != 4) {
+		    		this.health = this._health;
+		    		this.ataca = 80;
+		    	}
+		    }
 
 	    if(this.canFaer == true && stopGame == false) {
 		    	if(this.reload >= this._reload) {
@@ -149,23 +170,64 @@ var objBazeEnemy = {
 
 
 var miniMap = {
-	width: 200,
-	heigth: 200,
-	x: 696,
-	y: 312,
+	width: 192,
+	heigth: 192,
+	x: 704,
+	y: 320,
+
+	size: 8,
 
 	draw: function () {
+		if(gameConfig[0].position == "level") {
+			this.size = this.width/levelsPar[select_level].size;
+		}
 		ctx.save();
 		ctx.fillStyle = "#9D6B0F";
 		ctx.textAlign = "right";
-		ctx.fillRect(872, 290, 25, 25);
+		ctx.fillRect(872, 300, 25, 25);
 		ctx.fillStyle = "#fff";
 		ctx.font = "20px Arial";
-		ctx.fillText("M", 892, 308);
+		ctx.fillText("M", 892, 318);
 		ctx.fillStyle = "green";
 		ctx.fillRect(this.x, this.y, this.width, this.heigth);
 		ctx.strokeStyle = "#fff";
-		ctx.strokeRect(697, 313, this.width, this.heigth);
+		ctx.strokeRect(705, 321, this.width, this.heigth);
+		if(gameConfig[0].position == "level") {
+			for(let w = 0; w < levelsPar[select_level].size; w++) {
+				for(let q = 0; q < levelsPar[select_level].size; q++) {
+					ctx.save();
+
+					if(levelsMaps[select_level].map[0].map[w][q].tum == true) {
+					    ctx.fillStyle = "#000";
+				    }else if(levelsMaps[select_level].map[0].map[w][q].img == 1 || levelsMaps[select_level].map[0].map[w][q].img == 5) {
+				    	ctx.fillStyle = "#AC8A00";
+				    }else if(levelsMaps[select_level].map[0].map[w][q].img == 2 || levelsMaps[select_level].map[0].map[w][q].img == 6) {
+				    	ctx.fillStyle = "#806807";
+				    }else if(levelsMaps[select_level].map[0].map[w][q].img == 3 || levelsMaps[select_level].map[0].map[w][q].img == 7 || levelsMaps[select_level].map[0].map[w][q].img == 9) {
+				    	ctx.fillStyle = "#454545";
+				    }else if(levelsMaps[select_level].map[0].map[w][q].img == 4) {
+				    	ctx.fillStyle = "#E2C445";
+				    }else if(levelsMaps[select_level].map[0].map[w][q].img == 8) {
+				    	ctx.fillStyle = "blue";
+				    }
+
+				    for(let a = 0; a < objectsGame.length; a++) {
+				    	if(objectsGame[a].x - objectsGame[a].radius  >= 64 * w && objectsGame[a].x - objectsGame[a].radius <= 64 * w + 64 &&  objectsGame[a].y - objectsGame[a].radius >= 64 * q && objectsGame[a].y - objectsGame[a].radius <= 64 * q + 64) {
+				    		if(levelsMaps[select_level].map[0].map[w][q].tum == false) {
+				    			if(objectsGame[a].type == "player") {
+				    		        ctx.fillStyle = "lightgreen";
+				    		    }else {
+				    		    	ctx.fillStyle = "red";
+				    		    }
+				    	    }
+				    	}
+				    }
+
+					ctx.fillRect(this.size*w + this.x + 1, this.size*q + this.y + 1, this.size, this.size);
+					ctx.restore();
+			    }
+			}
+		}
 		ctx.restore();
 	}
 }

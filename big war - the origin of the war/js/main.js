@@ -11,7 +11,7 @@
 
 //Constants:
 const TILE_SIZE = 64;
-const NUM_MENU = 2, NUM_BUTTONS = 9, NUM_GROUND = 10, NUM_BORDERS = 3, NUM_BUILDS = 4, NUM_ENEMY = 1, NUM_OBJS = 3;
+const NUM_MENU = 2, NUM_BUTTONS = 9, NUM_GROUND = 10, NUM_BORDERS = 4, NUM_BUILDS = 7, NUM_ENEMY = 1, NUM_OBJS = 4, NUM_BOOM = 1;
 const WIDTH = (TILE_SIZE*14), HEIGHT = (TILE_SIZE*8);
 
 //Canvas
@@ -19,7 +19,7 @@ var canvas = document.getElementById("canvas"), ctx = canvas.getContext("2d");
 canvas.width = WIDTH; canvas.height = HEIGHT;
 
 //Time for save_data.js
-var timeSave = 800;
+var timeSave = 700;
 
 //Menu Images in menuImages
 //Buttons Images in buttonImages
@@ -77,6 +77,12 @@ for(let num = 0; num < NUM_ENEMY; num++) {
 	var objImg3 = new Image();
     objImg3.src = "img/enemy_"+num+".png";
     objectImagesEnemy.push(objImg3);
+}
+
+for(let num = 0; num < NUM_BOOM; num++) {
+	var objImg3 = new Image();
+    objImg3.src = "img/boom_"+num+".png";
+    boomImages.push(objImg3);
 }
 
 
@@ -149,8 +155,12 @@ othrObj.src = "img/bull_0.png";
 otherImages.push(othrObj);
 
 var tutImg = new Image();
-tutImg.src = "img/tutorial.png";
+tutImg.src = "img/tut_en.png";
 otherImages.push(tutImg);
+
+var tutImg2 = new Image();
+tutImg2.src = "img/tut_ru.png";
+otherImages.push(tutImg2);
 
 //Start Game func
 function startGame() {
@@ -189,7 +199,7 @@ function startGame() {
 		        }
 		    }
 		    for(let y = 0; y < levels.length; y++) {
-		    	levels.open = dat[2].levels[y].open;
+		    	levels[y].open = dat[2].levels[y].open;
 		    }
 		console.log("load save!");
 	}else {
@@ -205,6 +215,7 @@ function loadGameData(item) {
     }
 }
 
+//deleteSaves();
 function deleteSaves() {
 	localStorage.clear();
 }
@@ -432,8 +443,8 @@ function drawMenu() {
 	    			ctx.fillText('http://meregames.ru', WIDTH/2 - 80, 210);
 	    			ctx.fillText("Developer:", WIDTH/2 - 40, 250);
 	    			ctx.fillText('Kraynov Rodion', WIDTH/2 - 70, 280);
-	    			ctx.fillText("Artist:", WIDTH/2 - 30, 310);
-	    			ctx.fillText('Kraynov Vitaliy', WIDTH/2 - 70, 330);
+	    			ctx.fillText("Artist:", WIDTH/2 - 25, 310);
+	    			ctx.fillText('Kraynov Vitaliy', WIDTH/2 - 65, 330);
 	    			ctx.restore();
 	    		}else if(gameConfig[0].leng == "ru") {
 	    			ctx.save();
@@ -447,7 +458,7 @@ function drawMenu() {
 	    			ctx.fillText('http://meregames.ru', WIDTH/2 - 80, 210);
 	    			ctx.fillText("Разработчик:", WIDTH/2 - 55, 250);
 	    			ctx.fillText('Родион Крайнов', WIDTH/2 - 70, 280);
-	    			ctx.fillText("Художник:", WIDTH/2 - 30, 310);
+	    			ctx.fillText("Художник:", WIDTH/2 - 37, 310);
 	    			ctx.fillText('Крайнов Виталий', WIDTH/2 - 70, 330);
 	    			ctx.restore();
 	    		}
@@ -757,12 +768,12 @@ function moveEvent(e) {
 		    		if(x >= buildsGame[num].x - buildsGame[num].radius - movAddX && x <= buildsGame[num].x - buildsGame[num].radius - movAddX + 64 && y >= buildsGame[num].y - buildsGame[num].radius - movAddY && y <= buildsGame[num].y - buildsGame[num].radius - movAddY + 64 && stopGame == false) {
 				        if(gameConfig[0].position == "free" || gameConfig[0].position == "level") {
 				        	if(buildsGame[num].map == idMap && gameConfig[0].position == "free") {
-					            if(buildsGame[num].name == "army" || buildsGame[num].name == "armyHard") {
+					            if(buildsGame[num].name == "army" || buildsGame[num].name == "armyHard" || buildsGame[num].name == "armyFast") {
 					      	        viewBorders[p].view = true;
 					                return;
 					            }
 					      }else if(buildsGame[num].map == levelsMaps[select_level].map[0].name && gameConfig[0].position == "level"){
-					      	if(buildsGame[num].name == "army" || buildsGame[num].name == "armyHard") {
+					      	if(buildsGame[num].name == "army" || buildsGame[num].name == "armyHard" || buildsGame[num].name == "armyFast") {
 					      	    viewBorders[p].view = true;
 					            return;
 					        }
@@ -834,6 +845,10 @@ function clickEvent(e) {
 				if(checkPosMouse(x, y, levels[i].x, levels[i].y - 65, 65, 65) && levels[i].open == true) {
 					select_level = levels[i].level;
 					if(select_level == 1) {
+						objBaze.health = 1000;
+						objBaze._health = 1000;
+					}
+					if(select_level == 1) {
 						tutorial = true;
 					}
 					gameConfig[0].endLoad = "level";
@@ -904,6 +919,18 @@ function clickEvent(e) {
 				    levelsMaps[select_level].map[0].playerData.money -= objsProp.player.tank_hard.price;
 			    }
 			    }
+			  }else if(buildsGame[ar].name == "armyFast") {
+		    			if(gameConfig[0].position == "free") {
+				if(mapsGame[idMap].playerData.money >= objsProp.player.tank_fast.price) {
+					buildsGame[ar].num += 1;
+				    mapsGame[idMap].playerData.money -= objsProp.player.tank_fast.price;
+			    }
+			    }else if(gameConfig[0].position == "level") {
+			    	if(levelsMaps[select_level].map[0].playerData.money >= objsProp.player.tank_fast.price) {
+					buildsGame[ar].num += 1;
+				    levelsMaps[select_level].map[0].playerData.money -= objsProp.player.tank_fast.price;
+			    }
+			    }
 			  }
 		    }
 		    }
@@ -912,14 +939,13 @@ function clickEvent(e) {
 		    	if(buildings[d].select == true) {
 		    		for(let r = 0; r < buildsGame.length; r++) {
 		    			if(preBuild.empty == true  && stopGame == false) {
+		    				if(gameConfig[0].position == "free") {
 		    				if(mapsGame[idMap].playerData.money >= buildings[d].price) {
 		    					preBuild.x += buildings[d].radius;
 		    					preBuild.y += buildings[d].radius;
-		    					if(gameConfig[0].position == "free") {
-		    				        buildsGame.push(new build(buildings[d].name, buildImages[d], preBuild.x + movAddX, preBuild.y + movAddY, buildings[d].radius, buildings[d].time, idMap, "player", buildings[d].faer, buildings[d].reload, buildings[d].ataca, buildings[d].health, buildings[d].addRes));
-		    				    }else {
-		    				    	buildsGame.push(new build(buildings[d].name, buildImages[d], preBuild.x + movAddX, preBuild.y + movAddY, buildings[d].radius, buildings[d].time, levelsMaps[select_level].map[0].name, "player", buildings[d].faer, buildings[d].reload, buildings[d].ataca, buildings[d].health, buildings[d].addRes));
-		    				    }
+
+		    				    buildsGame.push(new build(buildings[d].name, buildImages[d], preBuild.x + movAddX, preBuild.y + movAddY, buildings[d].radius, buildings[d].time, idMap, "player", buildings[d].faer, buildings[d].reload, buildings[d].ataca, buildings[d].health, buildings[d].addRes));
+
 		    				    viewBorders.push({name: buildings[d].name, view: false});
 		    				    if(buildings[d].name == "factory_1") {
 		    				    	if(gameConfig[0].position == "free") {
@@ -929,17 +955,37 @@ function clickEvent(e) {
 		    				        }
 		    				    }
 		    				    buildings[d].select = false;
-		    				    if(gameConfig[0].position == "free") {
-		    				        mapsGame[idMap].playerData.money -= buildings[d].price;
-		    				    }else {
-		    				    	levelsMaps[select_level].map[0].playerData.money -= buildings[d].price;
-		    				    }
+		    				    mapsGame[idMap].playerData.money -= buildings[d].price;
+
 		    				    return;
 		    			    }
-		    		}
+		    		}else if(gameConfig[0].position == "level"){
+		    				if(levelsMaps[select_level].map[0].playerData.money >= buildings[d].price) {
+		    					preBuild.x += buildings[d].radius;
+		    					preBuild.y += buildings[d].radius;
+
+		    				    buildsGame.push(new build(buildings[d].name, buildImages[d], preBuild.x + movAddX, preBuild.y + movAddY, buildings[d].radius, buildings[d].time, levelsMaps[select_level].map[0].name, "player", buildings[d].faer, buildings[d].reload, buildings[d].ataca, buildings[d].health, buildings[d].addRes));
+
+		    				    viewBorders.push({name: buildings[d].name, view: false});
+		    				    if(buildings[d].name == "factory_1") {
+		    				    	if(gameConfig[0].position == "free") {
+		    				    	   mapsGame[idMap].playerData.addMoney += buildings[d].addRes.num;
+		    				        }else {
+		    				        	levelsMaps[select_level].map[0].playerData.addMoney += buildings[d].addRes.num;
+		    				        }
+		    				    }else if(buildings[d].name == "healthReg") {
+		    				    	addHealth += buildings[d].addRes.num;
+		    				    }
+		    				    buildings[d].select = false;
+		    				    levelsMaps[select_level].map[0].playerData.money -= buildings[d].price;
+
+		    				    return;
+		    			    }
+		}
 		    	}
 		  }
 		    }
+		}
 
 			for(let n = 0; n < objectsGame.length; n++) {
 				if(gameConfig[0].position == "free") {

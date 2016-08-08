@@ -73,6 +73,7 @@ var buttonImages = [];
 var groundImages = [];
 var objectImages = [];
 var objectImagesEnemy = [];
+var boomImages = [];
 var otherImages = [];
 
 
@@ -81,10 +82,10 @@ var objsProp = {
 	//Player
 	player: {
 		robot: {
-			reload: 35,
+			reload: 45,
 			speed: 1,
 			ataca: 12,
-			health: 55,
+			health: 128,
 			price: 50
 		},
 
@@ -92,7 +93,7 @@ var objsProp = {
 			reload: 70,
 			speed: 2,
 			ataca: 17,
-			health: 70,
+			health: 50,
 			price: 75
 		},
 
@@ -100,8 +101,16 @@ var objsProp = {
 			reload: 75,
 			speed: 1,
 			ataca: 20,
-			health: 150,
+			health: 256,
 			price: 150
+		},
+
+		tank_fast: {
+			reload: 25,
+			speed: 4,
+			ataca: 10,
+			health: 30,
+			price: 200
 		}
 	},
 
@@ -111,7 +120,7 @@ var objsProp = {
 			reload: 70,
 			speed: 2,
 			ataca: 16,
-			health: 65
+			health: 192
 		}
 	}
 };

@@ -1,5 +1,6 @@
 //@ Save Data in Big War: The origin of the war
 
+
 var dataForSave = [];
 
 var saveGame = setInterval(function () {

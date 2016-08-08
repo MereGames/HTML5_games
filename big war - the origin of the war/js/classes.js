@@ -193,8 +193,41 @@ function gameObject(name, img, type, prof, x, y, map, speed, health, ataca, relo
 	this.target = {bull: false, en: 0, pl: 0};
 	this.endLoop = true;
 
+	this.gun1 = new Audio("audio/gun1.mp3");
+    this.gun1.loop = false;
+
+    this.boom1 = new Audio("audio/boom1.mp3");
+    this.boom1.loop = false;
+
+	this.boom = false;
+	this.animEnd = false;
+	this.animBoomY = 0;
+	this.animBoomX = 0;
+
 	this.health = health;
 	this._health = health;
+
+
+	this.iter = function () {
+		if(this.animBoomX == 0 && this.animBoomY == 64) {
+		    this.animEnd = true;
+		}
+
+		if(this.boom == true) {
+			 for(let e = 0; e < 1; e++) {
+	if(this.animBoomY == 64) {
+		this.animBoomY = 0;
+		return;
+	}
+	if(this.animBoomX == 64) {
+		this.animBoomX = 0;
+		this.animBoomY += 64;
+		return;
+	}
+	this.animBoomX += 64;
+  }
+		}
+},
 
 	this.draw = function () {
 		if(this.x - this.radius - movAddX <= WIDTH + viewDis && this.x - this.radius - movAddX >= -viewDis && this.y - this.radius - movAddY <= HEIGHT + viewDis && this.y - this.radius - movAddY >= -viewDis && this.drawBol == true) {
@@ -206,25 +239,29 @@ function gameObject(name, img, type, prof, x, y, map, speed, health, ataca, relo
 		    	ctx.fillStyle = "#0AAC2B";
 		    }
 		    ctx.strokeStyle = "#fff";
-		    if(this.health >= 300) {
-		        ctx.fillRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 55, this.health/10, 5);
-		        ctx.strokeRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 55, this._health/10, 5);
-		    }else if(this.health >= 150){
-		    	ctx.fillRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 55, this.health/5, 5);
-		        ctx.strokeRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 55, this._health/5, 5);
-		    }else if(this.health >= 70){
-		    	ctx.fillRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 55, this.health/3, 5);
-		        ctx.strokeRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 55, this._health/3, 5);
-		    }else {
-		    	ctx.fillRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 55, this.health/2, 5);
-		        ctx.strokeRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 55, this._health/2, 5);
-		    }
+
+		    ctx.fillRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 55, this.health/(this._health/64), 5);
+		    ctx.strokeRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 55, this._health/(this._health/64), 5);
+
 		    ctx.restore();
 		    if(this.select == true) {
 		    	ctx.strokeStyle = "red";
 			    ctx.strokeRect(this.x - this.radius - movAddX, this.y - this.radius - movAddY, 64, 64);
 		    }
+
+		    if(this.boom == true) {
+		    	ctx.drawImage(boomImages[0], this.animBoomX, this.animBoomY, 64, 64, this.x - this.radius - movAddX - 32, this.y - this.radius - movAddY - 32, 128, 128);
+		    }
 	    }
+
+	    if(this.health <= 0) {
+		    this.health = 0;
+		}
+
+		if(this.health >= this._health) {
+			this.health = this._health;
+		}
+
 
 	    if(this.faer == true && stopGame == false) {
 		    	if(this.reload >= this._reload) {
@@ -236,6 +273,9 @@ function gameObject(name, img, type, prof, x, y, map, speed, health, ataca, relo
 		    	    	objBull.push(new bullet(this.x - this.radius + 32, this.y - this.radius + 64, this.animation, this.type, this.name));
 		    	    }else if(this.animation == 192) {
 		    	    	objBull.push(new bullet(this.x - this.radius + 32, this.y - this.radius, this.animation, this.type, this.name));
+		    	    }
+		    	    if(musikPlay == true) {
+		    	        this.gun1.play();
 		    	    }
 		    	    this.reload = 0;
 		        }
@@ -316,10 +356,14 @@ function build(name, img, x, y, radius, time, map, type, canFaer, reload, ataca,
 		    ctx.save();
 		    ctx.fillStyle = "#0AAC2B";
 		    ctx.strokeStyle = "#fff";
-		    ctx.fillRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 74, this.health/3, 5);
-		    ctx.strokeRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 74, this._health/3, 5);
+		    ctx.fillRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 74, this.health/(this._health/64), 5);
+		    ctx.strokeRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 74, this._health/(this._health/64), 5);
 		    ctx.restore();
 	    }
+
+	    if(this.health <= 0) {
+		     this.health = 0;
+		}
 
 	    ctx.save();
 		    ctx.font = "20px cursive";
@@ -328,16 +372,13 @@ function build(name, img, x, y, radius, time, map, type, canFaer, reload, ataca,
 		    	ctx.strokeStyle = "#fff";
 		        ctx.fillText(this.num, this.x - this.radius - movAddX + 34, this.y - this.radius - movAddY + 40);
 		        ctx.fillStyle = "blue";
-		        if(this._timeOut >= 60) {
-		            ctx.fillRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 64, this.timeOut/1.5, 5);
-		            ctx.strokeRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 64, this._timeOut/1.5, 5);
-		        }else {
-		        	ctx.fillRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 64, this.timeOut, 5);
-		            ctx.strokeRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 64, this._timeOut, 5);
-		        }
+
+		        ctx.fillRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 66, this.timeOut/(this._timeOut/64), 5);
+		        ctx.strokeRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 66, this._timeOut/(this._timeOut/64), 5);
+
 		        if(this.timeOut < this._timeOut && stopGame == false) {
 		        	this.timeOut += 0.5;
-		        }else if(this.timeOut >= this._timeOut && stopGame == false) {
+		        }else if(this.timeOut >= this._timeOut && stopGame == false && numPlayer < maxPlayer) {
 		        	this.num -= 1;
 		        	this.timeOut = 0;
 		        	if(this.name == "army") {
@@ -352,7 +393,14 @@ function build(name, img, x, y, radius, time, map, type, canFaer, reload, ataca,
 		        	    }else {
 		        	    	objectsGame.push(new gameObject("tank_hard", objectImages[3], "player", "dis", this.x + 64, this.y, levelsMaps[select_level].map[0].name, objsProp.player.tank_hard.speed, objsProp.player.tank_hard.health, objsProp.player.tank_hard.ataca, objsProp.player.tank_hard.reload));
 		        	    }
+		            }else if(this.name == "armyFast") {
+		        		if(gameConfig[0].position == "free") {
+		        	        objectsGame.push(new gameObject("tank_fast", objectImages[4], "player", "dis", this.x + 64, this.y, idMap, objsProp.player.tank_fast.speed, objsProp.player.tank_fast.health, objsProp.player.tank_fast.ataca, objsProp.player.tank_fast.reload));
+		        	    }else {
+		        	    	objectsGame.push(new gameObject("tank_fast", objectImages[4], "player", "dis", this.x + 64, this.y, levelsMaps[select_level].map[0].name, objsProp.player.tank_fast.speed, objsProp.player.tank_fast.health, objsProp.player.tank_fast.ataca, objsProp.player.tank_fast.reload));
+		        	    }
 		            }
+		            numPlayer += 1;
 		        }
 		    }
 		    ctx.restore();
