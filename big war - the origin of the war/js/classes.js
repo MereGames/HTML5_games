@@ -130,7 +130,7 @@ function bullet(x, y, anim, type, name) {
 	this.y = y;
 	this.anim = anim;
 	this.speed = 8;
-	this.time = 80;
+	this.time = 150;
 	this.type = type;
 	this.name = name;
 	this.drawBol = true;

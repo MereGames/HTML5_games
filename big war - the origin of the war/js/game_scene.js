@@ -11,11 +11,11 @@ const NUM_MAIN_TWO = 1;
 var maxPlayer = 45;
 
 var levelsPar = [
-    {level: 0, size: 50, dif: "none", tum: true, forgets: ["none"]},
+    {level: 0, size: 40, dif: "none", tum: true, forgets: ["none"]},
     {level: 1, size: 30, dif: "easy", tum: true, forgets: [{type: "lout", num: 3, end: false}, {type: "enemyKill", num: 20, end: false}]},
-    {level: 2, size: 50, dif: "easy", tum: true, forgets: [{type: "lout", num: 5, end: false}, {type: "enemyKill", num: 150, end: false}]},
-    {level: 3, size: 50, dif: "easy", tum: true, forgets: [{type: "lout", num: 8, end: false}, {type: "enemyKill", num: 300, end: false}]},
-    {level: 4, size: 50, dif: "easy", tum: true},
+    {level: 2, size: 40, dif: "easy", tum: true, forgets: [{type: "lout", num: 5, end: false}, {type: "enemyKill", num: 150, end: false}, {type: "money", num: 10000, end: false}]},
+    {level: 3, size: 40, dif: "easy", tum: true, forgets: [{type: "lout", num: 8, end: false}, {type: "enemyKill", num: 300, end: false}]},
+    {level: 4, size: 40, dif: "easy", tum: true},
     {level: 5, size: 60, dif: "normal", tum: true},
     {level: 6, size: 70, dif: "normal", tum: true},
     {level: 7, size: 70, dif: "normal", tum: true},
@@ -354,6 +354,12 @@ function drawScene() {
 	    	    }else {
 	    	    	text = "Destroy " + (levelsPar[select_level].forgets[l].num - numKillEnemy) + " enemies";
 	    	    }
+	    	}else if(levelsPar[select_level].forgets[l].type == "money") {
+	    		if(gameConfig[0].leng == "ru") {
+	    		    text = "Накопите " + (levelsPar[select_level].forgets[l].num.toLocaleString()) + "$";
+	    	    }else {
+	    	    	text = "Accumulate " + (levelsPar[select_level].forgets[l].num.toLocaleString()) + "$";
+	    	    }
 	    	}
 
 	    	ctx.save();
@@ -469,6 +475,12 @@ function drawScene() {
 	              if(viewBorders[o].view == true) {
 	            		if(buildsGame[j].name == "army") {
 	    	                ctx.drawImage(bordersInfo[1], buildsGame[j].x - buildsGame[j].radius - movAddX, buildsGame[j].y - buildsGame[j].radius - movAddY, 64, 64);
+	    	            }else if(buildsGame[j].name == "armyHard") {
+	    	                ctx.drawImage(bordersInfo[2], buildsGame[j].x - buildsGame[j].radius - movAddX, buildsGame[j].y - buildsGame[j].radius - movAddY, 64, 64);
+	    	            }else if(buildsGame[j].name == "armyFast") {
+	    	                ctx.drawImage(bordersInfo[3], buildsGame[j].x - buildsGame[j].radius - movAddX, buildsGame[j].y - buildsGame[j].radius - movAddY, 64, 64);
+	    	            }else if(buildsGame[j].name == "armyTwo") {
+	    	                ctx.drawImage(bordersInfo[4], buildsGame[j].x - buildsGame[j].radius - movAddX, buildsGame[j].y - buildsGame[j].radius - movAddY, 64, 64);
 	    	            }
 	            }
 	        }
@@ -504,15 +516,10 @@ function drawScene() {
 	    ctx.restore();
 
 	    //Left menu
-	    if(viewMain == true || viewSpesial == true) {
+	    if(viewMain == true || viewSpesial == true || viewMainTwo == true) {
 	    for(let d = 0; d < buildings.length; d++) {
 	    	ctx.save();
 	    	ctx.fillStyle = "#9D6B0F";
-
-	    	ctx.fillRect(20, yRec, 64, 64);
-
-	    	ctx.fillStyle = "#fff";
-	    	ctx.font = "25px Arial";
 
 	    	if(buildings[d].select == true) {
 	    		ctx.strokeStyle = "red";
@@ -520,22 +527,48 @@ function drawScene() {
 	    		ctx.strokeStyle = "#fff";
 	    	}
 
-	    	if(viewMain == true && d <= NUM_MAIN) {
-	    	    ctx.drawImage(buildImages[d], 20, yRec);
-	        }
+	    	if(viewMain == true && d < NUM_MAIN) {
+	    		ctx.fillRect(20, yRec, 64, 64);
 
-	    	ctx.strokeRect(20, yRec, 64, 64);
+	    		ctx.fillStyle = "#fff";
+	    	    ctx.font = "25px Arial";
+	    	    ctx.textAlign = "center";
 
-	    	ctx.textAlign = "center";
+	    		ctx.drawImage(buildImages[d], 20, yRec);
+	    		ctx.strokeRect(20, yRec, 64, 64);
+	    		ctx.fillText(d, 50, yRec + 20);
 
-	    	ctx.fillText(d, 50, yRec + 20);
+	    	    ctx.fillStyle = "yellow";
+	    	    ctx.font = "20px cursive";
+	    		ctx.fillText(buildings[d].price + "$", 50, yRec + 60);
+	    	}else if(viewMainTwo == true && d < NUM_MAIN_TWO && select_level != 1) {
+	    		ctx.fillRect(20, yRec, 64, 64);
 
-	    	ctx.fillStyle = "yellow";
-	    	ctx.font = "20px cursive";
+	    		ctx.fillStyle = "#fff";
+	    	    ctx.font = "25px Arial";
+	    	    ctx.textAlign = "center";
 
-	    	if(viewMain == true && d <= NUM_MAIN) {
-	    	    ctx.fillText(buildings[d].price + "$", 50, yRec + 60);
-	        }
+	    	    d += NUM_MAIN;
+	    		ctx.drawImage(buildImages[d], 20, yRec);
+	    		d -= NUM_MAIN;
+	    		ctx.strokeRect(20, yRec, 64, 64);
+	    		ctx.fillText(d, 50, yRec + 20);
+
+	    	    ctx.fillStyle = "yellow";
+	    	    ctx.font = "20px cursive";
+	    	    d += NUM_MAIN;
+	    		ctx.fillText(buildings[d].price + "$", 50, yRec + 60);
+	    		d -= NUM_MAIN;
+	    	}else if(viewMainTwo == true && d < 1) {
+	    		ctx.fillRect(20, yRec, 64, 64);
+
+	    		ctx.fillStyle = "#fff";
+	    	    ctx.font = "20px Arial";
+	    	    ctx.textAlign = "center";
+
+	    	    ctx.fillText("2lvl", 50, 65);
+	    	}
+
 
 	    	ctx.restore();
 
@@ -568,7 +601,12 @@ function drawScene() {
 	    	ctx.fillText("+"+mapsGame[idMap].playerData.addMoney.toLocaleString() + "$/сек", WIDTH - 8, 64);
 	    }
 	    ctx.textAlign = "center";
-	    ctx.fillText("Your army:", WIDTH/2, 32);
+	    if(gameConfig[0].leng == "en") {
+	        ctx.fillText("Your army:", WIDTH/2, 30);
+	    }else {
+	    	ctx.fillText("Ваша армия:", WIDTH/2, 30);
+	    }
+	    ctx.fillText(numPlayer + "/" + maxPlayer, WIDTH/2, 64);
 	    ctx.fillStyle = "red";
 	    ctx.fillText(mapsGame[idMap].playerData.laut - 1, WIDTH/2 + 20, HEIGHT - 10);
 	    ctx.fillStyle = "yellow";
@@ -593,6 +631,11 @@ function drawScene() {
 	        ctx.font = "120px cursive";
 	        ctx.fillText("Victory!", WIDTH/2, HEIGHT/2);
 	        ctx.restore();
+	    }
+
+	    //Mini map
+	    if(viewMiniMap == true) {
+	    	miniMap.draw();
 	    }
 
 	    //Pause
@@ -880,8 +923,10 @@ if(stopGame == false) {
   	let num = 0;
   	if(viewMain == true) {
   		num = NUM_MAIN;
-  	}else if(viewMainTwo == true) {
+  	}else if(viewMainTwo == true && select_level != 1) {
   		num = NUM_MAIN_TWO;
+  	}else {
+  		num = 0;
   	}
   	for(let i = 1; i < num + 1; i++) {
 		if(keyCode == keyCodes[i].code) {
@@ -1450,6 +1495,10 @@ function checkMissions() {
 			if(numKillEnemy >= levelsPar[select_level].forgets[m].num) {
 				levelsPar[select_level].forgets[m].end = true;
 			}
+		}else if(levelsPar[select_level].forgets[m].type == "money" && levelsPar[select_level].forgets[m].end == false) {
+			if(levelsMaps[select_level].map[0].playerData.money >= levelsPar[select_level].forgets[m].num) {
+				levelsPar[select_level].forgets[m].end = true;
+			}
 		}
 
 		if(endsMissions() == true) {
@@ -1542,8 +1591,9 @@ function gameVictory(type) {
 //Enemy
 function createEnemy() {
 	if(gameConfig[0].position == "free") {
-	for(let k = 0; k < mapsGame[idMap].playerData.laut * 10; k++) {
+	for(let k = 0; k < mapsGame[idMap].playerData.laut * 5; k++) {
 	    objectsGame.push(new gameObject("tank_enemy", objectImagesEnemy[0], "enemy", "dis", objBazeEnemy.x + 128, objBazeEnemy.y + 128, idMap, objsProp.enemy.tank_enemy.speed, objsProp.enemy.tank_enemy.health, objsProp.enemy.tank_enemy.ataca, objsProp.enemy.tank_enemy.reload));
+	    objectsGame.push(new gameObject("tankHard_enemy", objectImagesEnemy[0], "enemy", "dis", objBazeEnemy.x + 128, objBazeEnemy.y + 128, idMap, objsProp.enemy.tankHard_enemy.speed, objsProp.enemy.tankHard_enemy.health, objsProp.enemy.tankHard_enemy.ataca, objsProp.enemy.tankHard_enemy.reload));
 	    numEnemy+=1;
     }
     for(let l = 0; l < objectsGame.length; l++) {
@@ -1555,6 +1605,9 @@ function createEnemy() {
   }else if(gameConfig[0].position == "level") {
   	for(let k = 0; k < levelsMaps[select_level].map[0].playerData.laut * 10; k++) {
 	    objectsGame.push(new gameObject("tank_enemy", objectImagesEnemy[0], "enemy", "dis", objBazeEnemy.x + 128, objBazeEnemy.y + 128, levelsMaps[select_level].map[0].name, objsProp.enemy.tank_enemy.speed, objsProp.enemy.tank_enemy.health, objsProp.enemy.tank_enemy.ataca, objsProp.enemy.tank_enemy.reload));
+	    if(select_level != 1) {
+	        objectsGame.push(new gameObject("tankHard_enemy", objectImagesEnemy[1], "enemy", "dis", objBazeEnemy.x + 128, objBazeEnemy.y + 128, levelsMaps[select_level].map[0].name, objsProp.enemy.tankHard_enemy.speed, objsProp.enemy.tankHard_enemy.health, objsProp.enemy.tankHard_enemy.ataca, objsProp.enemy.tankHard_enemy.reload));
+	    }
 	    numEnemy+=1;
 	    for(let l = 0; l < objectsGame.length; l++) {
 	    	if(objectsGame[l].type == "enemy") {

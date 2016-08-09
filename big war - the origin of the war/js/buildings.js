@@ -13,5 +13,5 @@ var buildings = [
     {name: "armyHard", price: 1860, select: false, radius: 64*3, time: 120, faer: false, reload: 0, ataca: 0, health: 480, addRes: {name: "noee", num: 0}},
     {name: "armyFast", price: 1200, select: false, radius: 64*3, time: 90, faer: false, reload: 60, ataca: 0, health: 360, addRes: {name: "none", num: 0}},
     {name: "healthReg", price: 5000, select: false, radius: 64*3, time: 0, faer: false, reload: 0, ataca: 0, health: 450, addRes: {name: "health", num: 5}},
-    {name: "armyTwo", price: 3000, select: false, radius: 64*3, time: 140, faer: false, reload: 0, ataca: 0, health: 560, addRes: {name: "noen", num: 0}}
+    {name: "armyTwo", price: 6200, select: false, radius: 64*3, time: 160, faer: false, reload: 0, ataca: 0, health: 860, addRes: {name: "noen", num: 0}}
 ];

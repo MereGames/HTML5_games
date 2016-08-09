@@ -228,6 +228,45 @@ var miniMap = {
 					ctx.restore();
 			    }
 			}
+		}else if(gameConfig[0].position == "free") {
+			for(let w = sizeMap; w-=1;) {
+				for(let q = sizeMap; q-=1;) {
+					ctx.save();
+
+					if(mapsGame[idMap].map[w][q].tum == true) {
+					    ctx.fillStyle = "#000";
+				    }else if(mapsGame[idMap].map[w][q].img == 1 || mapsGame[idMap].map[w][q].img == 5) {
+				    	ctx.fillStyle = "#AC8A00";
+				    }else if(mapsGame[idMap].map[w][q].img == 2 || mapsGame[idMap].map[w][q].img == 6) {
+				    	ctx.fillStyle = "#806807";
+				    }else if(mapsGame[idMap].map[w][q].img == 3 || mapsGame[idMap].map[w][q].img == 7 || mapsGame[idMap].map[w][q].img == 9) {
+				    	ctx.fillStyle = "#454545";
+				    }else if(mapsGame[idMap].map[w][q].img == 4) {
+				    	ctx.fillStyle = "#E2C445";
+				    }else if(mapsGame[idMap].map[w][q].img == 8) {
+				    	ctx.fillStyle = "blue";
+				    }
+
+				    if(numPlayer > 0 || numEnemy > 0) {
+				    for(let a = numPlayer + numEnemy; a-=1;) {
+				    	if(objectsGame[a].x - objectsGame[a].radius  >= 64 * w && objectsGame[a].x - objectsGame[a].radius <= 64 * w + 64 &&  objectsGame[a].y - objectsGame[a].radius >= 64 * q && objectsGame[a].y - objectsGame[a].radius <= 64 * q + 64) {
+				    		if(mapsGame[idMap].map[w][q].tum == false) {
+				    			if(objectsGame[a].type == "player") {
+				    		        ctx.fillStyle = "lightgreen";
+				    		    }else {
+				    		    	ctx.fillStyle = "red";
+				    		    }
+				    	    }
+				    	}
+				    }
+				  }
+
+				  //if(this.size*w <= this.width && this.size*q <= this.heigth) {
+					ctx.fillRect(this.size*w + this.x + 1, this.size*q + this.y + 1, this.size, this.size);
+				  //}
+					ctx.restore();
+			    }
+			}
 		}
 		ctx.restore();
 	}
