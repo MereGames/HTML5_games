@@ -24,7 +24,7 @@ var tranTexts = [
                {name: "settings", tran: "Настройки"},
                {name: "mapEditor", tran: "Редактор карт"},
                {name: "freeGame", tran: "Свободная игра"},
-               {name: "author", tran: "Автор"},
+               {name: "author", tran: "Авторы"},
                {name: "cross", tran: ""},
                {name: "leftLeng", tran: ""},
                {name: "rightLeng", tran: ""},
@@ -47,7 +47,7 @@ var tranTexts = [
     		   {name: "settings", tran: "Sittings"},
     		   {name: "mapEditor", tran: "Map editor"},
     		   {name: "freeGame", tran: "Free game"},
-    		   {name: "author", tran: "Author"},
+    		   {name: "author", tran: "Authors"},
     		   {name: "cross", tran: ""},
     		   {name: "leftLeng", tran: ""},
                {name: "rightLeng", tran: ""},
@@ -82,10 +82,10 @@ var objsProp = {
 	//Player
 	player: {
 		robot: {
-			reload: 45,
+			reload: 55,
 			speed: 1,
 			ataca: 12,
-			health: 128,
+			health: 70,
 			price: 50
 		},
 
@@ -93,23 +93,31 @@ var objsProp = {
 			reload: 70,
 			speed: 2,
 			ataca: 17,
-			health: 50,
-			price: 75
+			health: 120,
+			price: 80
 		},
 
 		tank_hard: {
-			reload: 75,
+			reload: 80,
 			speed: 1,
-			ataca: 20,
+			ataca: 33,
 			health: 256,
 			price: 150
 		},
 
 		tank_fast: {
-			reload: 25,
+			reload: 15,
 			speed: 4,
-			ataca: 10,
-			health: 30,
+			ataca: 6,
+			health: 45,
+			price: 40
+		},
+
+		tank_two: {
+			reload: 80,
+			speed: 2,
+			ataca: 6,
+			health: 320,
 			price: 200
 		}
 	},
@@ -120,7 +128,7 @@ var objsProp = {
 			reload: 70,
 			speed: 2,
 			ataca: 16,
-			health: 192
+			health: 125
 		}
 	}
 };

@@ -178,9 +178,6 @@ var miniMap = {
 	size: 8,
 
 	draw: function () {
-		if(gameConfig[0].position == "level") {
-			this.size = this.width/levelsPar[select_level].size;
-		}
 		ctx.save();
 		ctx.fillStyle = "#9D6B0F";
 		ctx.textAlign = "right";
@@ -193,8 +190,8 @@ var miniMap = {
 		ctx.strokeStyle = "#fff";
 		ctx.strokeRect(705, 321, this.width, this.heigth);
 		if(gameConfig[0].position == "level") {
-			for(let w = 0; w < levelsPar[select_level].size; w++) {
-				for(let q = 0; q < levelsPar[select_level].size; q++) {
+			for(let w = sizeMap; w-=1;) {
+				for(let q = sizeMap; q-=1;) {
 					ctx.save();
 
 					if(levelsMaps[select_level].map[0].map[w][q].tum == true) {
@@ -211,7 +208,8 @@ var miniMap = {
 				    	ctx.fillStyle = "blue";
 				    }
 
-				    for(let a = 0; a < objectsGame.length; a++) {
+				    if(numPlayer > 0 || numEnemy > 0) {
+				    for(let a = numPlayer + numEnemy; a-=1;) {
 				    	if(objectsGame[a].x - objectsGame[a].radius  >= 64 * w && objectsGame[a].x - objectsGame[a].radius <= 64 * w + 64 &&  objectsGame[a].y - objectsGame[a].radius >= 64 * q && objectsGame[a].y - objectsGame[a].radius <= 64 * q + 64) {
 				    		if(levelsMaps[select_level].map[0].map[w][q].tum == false) {
 				    			if(objectsGame[a].type == "player") {
@@ -222,8 +220,11 @@ var miniMap = {
 				    	    }
 				    	}
 				    }
+				  }
 
+				  //if(this.size*w <= this.width && this.size*q <= this.heigth) {
 					ctx.fillRect(this.size*w + this.x + 1, this.size*q + this.y + 1, this.size, this.size);
+				  //}
 					ctx.restore();
 			    }
 			}

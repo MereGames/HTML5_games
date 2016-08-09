@@ -11,7 +11,7 @@
 
 //Constants:
 const TILE_SIZE = 64;
-const NUM_MENU = 2, NUM_BUTTONS = 9, NUM_GROUND = 10, NUM_BORDERS = 4, NUM_BUILDS = 7, NUM_ENEMY = 1, NUM_OBJS = 4, NUM_BOOM = 1;
+const NUM_MENU = 2, NUM_BUTTONS = 9, NUM_GROUND = 10, NUM_BORDERS = 5, NUM_BUILDS = 7, NUM_ENEMY = 1, NUM_OBJS = 5, NUM_BOOM = 1;
 const WIDTH = (TILE_SIZE*14), HEIGHT = (TILE_SIZE*8);
 
 //Canvas
@@ -199,7 +199,7 @@ function startGame() {
 		        }
 		    }
 		    for(let y = 0; y < levels.length; y++) {
-		    	levels[y].open = dat[2].levels[y].open;
+		    	levels[y].open = dat[2].levelsMp[y].open;
 		    }
 		console.log("load save!");
 	}else {
@@ -340,6 +340,13 @@ function drawMenu() {
 	    }else if(gameConfig[0].position == "freeGame") {
 		    ctx.drawImage(menuImages[0], 0, 0, WIDTH, HEIGHT);
 
+		    if(gameConfig[0].leng == "ru") {
+		    	objButtons[10].font = "23px Arial";
+		        objButtons[17].font = "25px Arial";
+		    }else {
+		    	objButtons[10].font = "30px Arial";
+		        objButtons[17].font = "30px Arial";
+		    }
 		    objButtons[10].draw();
 		    objButtons[17].draw();
 
@@ -768,12 +775,12 @@ function moveEvent(e) {
 		    		if(x >= buildsGame[num].x - buildsGame[num].radius - movAddX && x <= buildsGame[num].x - buildsGame[num].radius - movAddX + 64 && y >= buildsGame[num].y - buildsGame[num].radius - movAddY && y <= buildsGame[num].y - buildsGame[num].radius - movAddY + 64 && stopGame == false) {
 				        if(gameConfig[0].position == "free" || gameConfig[0].position == "level") {
 				        	if(buildsGame[num].map == idMap && gameConfig[0].position == "free") {
-					            if(buildsGame[num].name == "army" || buildsGame[num].name == "armyHard" || buildsGame[num].name == "armyFast") {
+					            if(buildsGame[num].name == "army" || buildsGame[num].name == "armyHard" || buildsGame[num].name == "armyFast" || buildsGame[num].name == "armyTwo") {
 					      	        viewBorders[p].view = true;
 					                return;
 					            }
 					      }else if(buildsGame[num].map == levelsMaps[select_level].map[0].name && gameConfig[0].position == "level"){
-					      	if(buildsGame[num].name == "army" || buildsGame[num].name == "armyHard" || buildsGame[num].name == "armyFast") {
+					      	if(buildsGame[num].name == "army" || buildsGame[num].name == "armyHard" || buildsGame[num].name == "armyFast" || buildsGame[num].name == "armyTwo") {
 					      	    viewBorders[p].view = true;
 					            return;
 					        }
@@ -845,12 +852,13 @@ function clickEvent(e) {
 				if(checkPosMouse(x, y, levels[i].x, levels[i].y - 65, 65, 65) && levels[i].open == true) {
 					select_level = levels[i].level;
 					if(select_level == 1) {
-						objBaze.health = 1000;
-						objBaze._health = 1000;
-					}
-					if(select_level == 1) {
+						objBaze.health = 3000;
+						objBaze._health = 3000;
 						tutorial = true;
 					}
+					sizeMap = levelsPar[select_level].size;
+					sizeMissions = levelsPar[select_level].forgets.length;
+					miniMap.size = (miniMap.width/sizeMap);
 					gameConfig[0].endLoad = "level";
 					loadLocation(timesLoad[2].time);
 				}
@@ -862,6 +870,8 @@ function clickEvent(e) {
 				if(checkPosMouse(x, y, objButtons[i].x, objButtons[i].y, objButtons[i].width, objButtons[i].height)) {
 					if(i >= endButton) {
 					    idMap = i - endButton;
+					    sizeMap = mapsGame[idMap].map.length;
+					    sizeMissions = levelsPar[select_level].forgets.length;
 					    console.log(JSON.stringify(mapsGame[idMap]));
 					    objButtons[i].activ();
 					    for(let r = 0; r < mapsGame[idMap].map.length; r++) {
@@ -929,6 +939,18 @@ function clickEvent(e) {
 			    	if(levelsMaps[select_level].map[0].playerData.money >= objsProp.player.tank_fast.price) {
 					buildsGame[ar].num += 1;
 				    levelsMaps[select_level].map[0].playerData.money -= objsProp.player.tank_fast.price;
+			    }
+			    }
+			  }else if(buildsGame[ar].name == "armyTwo") {
+		    			if(gameConfig[0].position == "free") {
+				if(mapsGame[idMap].playerData.money >= objsProp.player.tank_two.price) {
+					buildsGame[ar].num += 1;
+				    mapsGame[idMap].playerData.money -= objsProp.player.tank_two.price;
+			    }
+			    }else if(gameConfig[0].position == "level") {
+			    	if(levelsMaps[select_level].map[0].playerData.money >= objsProp.player.tank_two.price) {
+					buildsGame[ar].num += 1;
+				    levelsMaps[select_level].map[0].playerData.money -= objsProp.player.tank_two.price;
 			    }
 			    }
 			  }

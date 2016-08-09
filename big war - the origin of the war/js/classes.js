@@ -349,6 +349,35 @@ function build(name, img, x, y, radius, time, map, type, canFaer, reload, ataca,
 	this.ataca = ataca;
 	this.addRes = addRes;
 
+	this.boom1 = new Audio("audio/boom1.mp3");
+    this.boom1.loop = false;
+
+	this.boom = false;
+	this.animEnd = false;
+	this.animBoomY = 0;
+	this.animBoomX = 0;
+
+	this.iter = function () {
+		if(this.animBoomX == 0 && this.animBoomY == 64) {
+		    this.animEnd = true;
+		}
+
+		if(this.boom == true) {
+			 for(let e = 0; e < 1; e++) {
+	if(this.animBoomY == 64) {
+		this.animBoomY = 0;
+		return;
+	}
+	if(this.animBoomX == 64) {
+		this.animBoomX = 0;
+		this.animBoomY += 64;
+		return;
+	}
+	this.animBoomX += 64;
+  }
+		}
+};
+
 	this.draw = function () {
 		if(this.x - this.radius - movAddX <= WIDTH + viewDis && this.x - this.radius - movAddX >= -viewDis && this.y - this.radius - movAddY <= HEIGHT + viewDis && this.y - this.radius - movAddY >= -viewDis) {
 		    ctx.drawImage(img, this.x - this.radius - movAddX, this.y - this.radius - movAddY);
@@ -359,6 +388,10 @@ function build(name, img, x, y, radius, time, map, type, canFaer, reload, ataca,
 		    ctx.fillRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 74, this.health/(this._health/64), 5);
 		    ctx.strokeRect(this.x - this.radius - movAddX + 5, this.y - this.radius - movAddY + 74, this._health/(this._health/64), 5);
 		    ctx.restore();
+
+		    if(this.boom == true) {
+		    	ctx.drawImage(boomImages[0], this.animBoomX, this.animBoomY, 64, 64, this.x - this.radius - movAddX - 32, this.y - this.radius - movAddY - 32, 128, 128);
+		    }
 	    }
 
 	    if(this.health <= 0) {
@@ -399,7 +432,14 @@ function build(name, img, x, y, radius, time, map, type, canFaer, reload, ataca,
 		        	    }else {
 		        	    	objectsGame.push(new gameObject("tank_fast", objectImages[4], "player", "dis", this.x + 64, this.y, levelsMaps[select_level].map[0].name, objsProp.player.tank_fast.speed, objsProp.player.tank_fast.health, objsProp.player.tank_fast.ataca, objsProp.player.tank_fast.reload));
 		        	    }
+		            }else if(this.name == "armyTwo") {
+		        		if(gameConfig[0].position == "free") {
+		        	        objectsGame.push(new gameObject("tank_two", objectImages[5], "player", "dis", this.x + 64, this.y, idMap, objsProp.player.tank_two.speed, objsProp.player.tank_two.health, objsProp.player.tank_two.ataca, objsProp.player.tank_two.reload));
+		        	    }else {
+		        	    	objectsGame.push(new gameObject("tank_two", objectImages[5], "player", "dis", this.x + 64, this.y, levelsMaps[select_level].map[0].name, objsProp.player.tank_two.speed, objsProp.player.tank_two.health, objsProp.player.tank_two.ataca, objsProp.player.tank_two.reload));
+		        	    }
 		            }
+
 		            numPlayer += 1;
 		        }
 		    }

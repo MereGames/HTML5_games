@@ -11,6 +11,6 @@ var updateData = setInterval(function () {
 	dataForSave = [
         {leng: gameConfig[0].leng},
         {gameMaps: mapsGame, dev: dev},
-        {levels: levels}
+        {levelsMp: levels}
     ];
 }, 100);
