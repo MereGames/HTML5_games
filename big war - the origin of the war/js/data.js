@@ -131,10 +131,10 @@ var objsProp = {
 			health: 125
 		},
     tankHard_enemy: {
-      reload: 300,
+      reload: 250,
       speed: 1,
       ataca: 110,
-      health: 230
+      health: 260
     }
 	}
 };

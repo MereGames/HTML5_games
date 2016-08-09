@@ -13,7 +13,7 @@ var maxPlayer = 45;
 var levelsPar = [
     {level: 0, size: 40, dif: "none", tum: true, forgets: ["none"]},
     {level: 1, size: 30, dif: "easy", tum: true, forgets: [{type: "lout", num: 3, end: false}, {type: "enemyKill", num: 20, end: false}]},
-    {level: 2, size: 40, dif: "easy", tum: true, forgets: [{type: "lout", num: 5, end: false}, {type: "enemyKill", num: 150, end: false}, {type: "money", num: 10000, end: false}]},
+    {level: 2, size: 40, dif: "easy", tum: true, forgets: [{type: "lout", num: 5, end: false}, {type: "enemyKill", num: 200, end: false}, {type: "money", num: 8500, end: false}]},
     {level: 3, size: 40, dif: "easy", tum: true, forgets: [{type: "lout", num: 8, end: false}, {type: "enemyKill", num: 300, end: false}]},
     {level: 4, size: 40, dif: "easy", tum: true},
     {level: 5, size: 60, dif: "normal", tum: true},
