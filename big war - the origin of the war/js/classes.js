@@ -136,11 +136,10 @@ function bullet(x, y, anim, type, name) {
 	this.drawBol = true;
 
 	this.draw = function () {
-		if(this.drawBol == true) {
+		if(this.x - movAddX <= WIDTH + viewDis && this.x - movAddX >= -viewDis && this.y - movAddY <= HEIGHT + viewDis && this.y - movAddY >= -viewDis && this.drawBol == true) {
 		    ctx.drawImage(otherImages[2], this.x - movAddX, this.y - movAddY, 7, 7);
-	    }
 
-		if(gameConfig[0].position == "free"){
+		    if(gameConfig[0].position == "free") {
 			for(let i = 0; i < mapsGame[idMap].map.length; i++) {
 				for(let j = 0; j < mapsGame[idMap].map.length; j++) {
 						if(this.x >= 64 * i && this.x <= 64 * i + 64 &&  this.y >= 64 * j && this.y <= 64 * j + 64) {
@@ -165,6 +164,7 @@ function bullet(x, y, anim, type, name) {
 				}
 			}
 		}
+	    }
 	}
 }
 
@@ -209,7 +209,7 @@ function gameObject(name, img, type, prof, x, y, map, speed, health, ataca, relo
 
 
 	this.iter = function () {
-		if(this.animBoomX == 0 && this.animBoomY == 64) {
+		if(this.animBoomX == 0 && this.animBoomY == 64 && this.boom == true) {
 		    this.animEnd = true;
 		}
 

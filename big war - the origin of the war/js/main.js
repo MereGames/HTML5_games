@@ -233,13 +233,8 @@ function logoGame() {
 		clearInterval(iterLogo);
 		ctx.clearRect(0, 0, WIDTH, HEIGHT);
 
-		if(loadingGame[0].loadMain == true){
-			gameConfig[0].position = "menu";
-		}else {
-			gameConfig[0].position = "loading";
-			gameConfig[0].endLoad = "menu";
-			loadLocation(timesLoad[1].time);
-		}
+		gameConfig[0].endLoad = "menu";
+		loadLocation(timesLoad[1].time);
 	}, 1300);
 }
 

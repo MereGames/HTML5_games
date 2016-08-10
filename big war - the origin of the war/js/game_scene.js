@@ -13,17 +13,17 @@ var maxPlayer = 45;
 var levelsPar = [
     {level: 0, size: 40, dif: "none", tum: true, forgets: ["none"]},
     {level: 1, size: 30, dif: "easy", tum: true, forgets: [{type: "lout", num: 3, end: false}, {type: "enemyKill", num: 20, end: false}]},
-    {level: 2, size: 40, dif: "easy", tum: true, forgets: [{type: "lout", num: 5, end: false}, {type: "enemyKill", num: 200, end: false}, {type: "money", num: 8500, end: false}]},
+    {level: 2, size: 40, dif: "easy", tum: true, forgets: [{type: "lout", num: 4, end: false}, {type: "enemyKill", num: 120, end: false}, {type: "money", num: 6500, end: false}]},
     {level: 3, size: 40, dif: "easy", tum: true, forgets: [{type: "lout", num: 8, end: false}, {type: "enemyKill", num: 300, end: false}]},
     {level: 4, size: 40, dif: "easy", tum: true},
-    {level: 5, size: 60, dif: "normal", tum: true},
-    {level: 6, size: 70, dif: "normal", tum: true},
-    {level: 7, size: 70, dif: "normal", tum: true},
-    {level: 8, size: 70, dif: "normal", tum: true},
-    {level: 9, size: 70, dif: "normal", tum: true},
-    {level: 10, size: 80, dif: "hard", tum: true},
-    {level: 11, size: 80, dif: "hard", tum: true},
-    {level: 12, size: 80, dif: "hard", tum: true}
+    {level: 5, size: 50, dif: "normal", tum: true},
+    {level: 6, size: 50, dif: "normal", tum: true},
+    {level: 7, size: 50, dif: "normal", tum: true},
+    {level: 8, size: 50, dif: "normal", tum: true},
+    {level: 9, size: 50, dif: "normal", tum: true},
+    {level: 10, size: 50, dif: "hard", tum: true},
+    {level: 11, size: 50, dif: "hard", tum: true},
+    {level: 12, size: 50, dif: "hard", tum: true}
 ];
 
 var viewMain = true;
@@ -32,9 +32,11 @@ var viewSpesial = false;
 
 var tutorial = false;
 
+var iterEvents = null;
+
 var yText = 100;
 
-var viewMiniMap = true;
+var viewMiniMap = false;
 
 var yRec = 30;
 
@@ -137,23 +139,20 @@ for(let num = 0; num < 12; num++) {
 //Draw
 function drawScene() {
 	if(gameConfig[0].position == "level" || gameConfig[0].endLoad == "level") {
-		for(let k = sizeMap; k-=1;) {
-			for(let l = sizeMap; l-=1;) {
+		for(let k = 0; k < sizeMap; k+=1) {
+			for(let l = 0; l < sizeMap; l+=1) {
 				if(levelsMaps[select_level].map[0].map[k][l].tum == true && TILE_SIZE * k - movAddX > -viewDis && TILE_SIZE * k - movAddX < WIDTH + viewDis && TILE_SIZE * l - movAddY > -viewDis && TILE_SIZE * l - movAddY < HEIGHT + viewDis) {
 					ctx.save();
 					ctx.fillStyle = "#000";
 					ctx.globalAlpha = 1;
 					ctx.fillRect(TILE_SIZE * k - movAddX, TILE_SIZE * l - movAddY, TILE_SIZE, TILE_SIZE);
-					ctx.fillRect(TILE_SIZE * (k-1) - movAddX, TILE_SIZE * (l-1) - movAddY, TILE_SIZE, TILE_SIZE);
 					ctx.restore();
 				}else if(TILE_SIZE * k - movAddX > -viewDis && TILE_SIZE * k - movAddX < WIDTH + viewDis && TILE_SIZE * l - movAddY > -viewDis && TILE_SIZE * l - movAddY < HEIGHT + viewDis){
 					//------------------------------------------------------
 					if(levelsMaps[select_level].map[0].map[k][l].img == 8 || levelsMaps[select_level].map[0].map[k][l].img == 9) {
 					    ctx.drawImage(groundImages[levelsMaps[select_level].map[0].map[k][l].img], animatGrX, animatGrY, 64, 64, TILE_SIZE * k - movAddX, TILE_SIZE * l - movAddY, TILE_SIZE, TILE_SIZE);
-					    ctx.drawImage(groundImages[levelsMaps[select_level].map[0].map[k][l].img], animatGrX, animatGrY, 64, 64, TILE_SIZE * (k-1) - movAddX, TILE_SIZE * (l-1) - movAddY, TILE_SIZE, TILE_SIZE);
 				    }else {
 				    	ctx.drawImage(groundImages[levelsMaps[select_level].map[0].map[k][l].img], TILE_SIZE * k - movAddX, TILE_SIZE * l - movAddY, TILE_SIZE, TILE_SIZE);
-				    	ctx.drawImage(groundImages[levelsMaps[select_level].map[0].map[k][l].img], TILE_SIZE * (k-1) - movAddX, TILE_SIZE * (l-1) - movAddY, TILE_SIZE, TILE_SIZE);
 				    }
 				}
 		    }
@@ -202,11 +201,15 @@ function drawScene() {
 
 	    //Update
 	    if(gameConfig[0].pre_position != "_menu" && stopGame == false) {
+	    	if(iterEvents == null || iterEvents == undefined) {
+	    		iterEvents = setInterval(function () {
+	                killObjects();
+
+	                checkMissions();
+	    		}, 300);
+	        }
 	        collisionsObjects();
 	        moveObjects();
-	        killObjects();
-
-	        checkMissions();
 	    }
 
 	    for(let a = 0; a < objBull.length; a++) {
@@ -494,9 +497,13 @@ function drawScene() {
 
 	    //Update
 	    if(gameConfig[0].pre_position != "_menu" && stopGame == false) {
+	        if(iterEvents == null || iterEvents == undefined) {
+	    		iterEvents = setInterval(function () {
+	                killObjects();
+	    		}, 200);
+	        }
 	        collisionsObjects();
 	        moveObjects();
-	        killObjects();
 	    }
 
 	    for(let a = 0; a < objBull.length; a++) {
@@ -822,7 +829,7 @@ function oneSecUpPlayer() {
 		}
 
 		//Timer
-		if(gameConfig[0].position == "free" && numPlayer + numEnemy > 0) {
+		if(gameConfig[0].position == "free") {
 		      if(mapsGame[idMap].playerData.time > 0) {
 		          mapsGame[idMap].playerData.time -= 1;
 	          }else {
@@ -1002,9 +1009,7 @@ if(keyCode == 77) {
 
 //Move objects
 function moveObjects() {
-	for(let r = 0; r < numPlayer + numEnemy; r++) {
-		if(gameConfig[0].position == "free") {
-		if(objectsGame[r].map == idMap) {
+	for(let r = 0; r < objectsGame.length; r++) {
 			if(objectsGame[r].x - movAddX - objectsGame[r].radius < objectsGame[r].point.x - movAddX) {
 				objectsGame[r].x += objectsGame[r].speed;
 				objectsGame[r].animation = 0;
@@ -1021,27 +1026,7 @@ function moveObjects() {
 				objectsGame[r].y -= objectsGame[r].speed;
 				objectsGame[r].animation = 192;
 			}
-		}
-	  }else {
-	  	if(objectsGame[r].map == levelsMaps[select_level].map[0].name) {
-			if(objectsGame[r].x - movAddX - objectsGame[r].radius < objectsGame[r].point.x - movAddX) {
-				objectsGame[r].x += objectsGame[r].speed;
-				objectsGame[r].animation = 0;
 
-			}else if(objectsGame[r].x - movAddX - objectsGame[r].radius > objectsGame[r].point.x - movAddX) {
-				objectsGame[r].x -= objectsGame[r].speed;
-				objectsGame[r].animation = 128;
-			}
-
-			if(objectsGame[r].y - objectsGame[r].radius < objectsGame[r].point.y) {
-				objectsGame[r].y += objectsGame[r].speed;
-				objectsGame[r].animation = 64;
-			}else if(objectsGame[r].y - objectsGame[r].radius > objectsGame[r].point.y) {
-				objectsGame[r].y -= objectsGame[r].speed;
-				objectsGame[r].animation = 192;
-			}
-		}
-	  }
 	}
 	for(let t = 0; t < objBull.length; t++) {
 		objBull[t].time -= 1;
@@ -1063,7 +1048,7 @@ function moveObjects() {
 
 	if(iterRot == null || iterRot == undefined) {
 		iterRot = setInterval(function () {
-			for(let v = 0; v < numPlayer + numEnemy; v++) {
+			for(let v = 0; v < objectsGame.length; v++) {
 				if(objectsGame[v].faer == false && stopGame == false) {
 					if(objectsGame[v].animation != 192) {
 						objectsGame[v].animation += 64;
@@ -1076,7 +1061,7 @@ function moveObjects() {
 	}
 	if(iterMov == null || iterMov == undefined) {
 		iterMov = setInterval(function () {
-			for(let v = 0; v < numPlayer + numEnemy; v++) {
+			for(let v = 0; v < objectsGame.length; v++) {
 				if(objectsGame[v].faer == false && stopGame == false && objectsGame[v].type == "enemy") {
 					if(numMoveEnemy == 0) {
 						objectsGame[v].point.x += 64;
@@ -1097,8 +1082,8 @@ function moveObjects() {
 	}
 
 	loop9:
-	for(let q = 0; q < numPlayer + numEnemy; q++) {
-		for(let a = 0; a < numPlayer + numEnemy; a++) {
+	for(let q = 0; q < objectsGame.length; q++) {
+		for(let a = 0; a < objectsGame.length; a++) {
 			if(objectsGame[q].type == "player" && objectsGame[a].type == "enemy") {
 				if(objectsGame[q].endLoop == true) {
 				    objectsGame[q].faer = false;
@@ -1122,7 +1107,7 @@ function moveObjects() {
 	}
 
 	loop8:
-	for(let q = 0; q < numPlayer + numEnemy; q++) {
+	for(let q = 0; q < objectsGame.length; q++) {
 			if(objectsGame[q].type == "player" && objBazeEnemy.type == "enemy") {
 
 				if(objectsGame[q].endLoop == true) {
@@ -1148,7 +1133,7 @@ function moveObjects() {
 	}
 
 	loop5:
-	for(let q = 0; q < numPlayer + numEnemy; q++) {
+	for(let q = 0; q < objectsGame.length; q++) {
 			if(objectsGame[q].type == "enemy" && objBaze.type == "player") {
 				if(objectsGame[q].endLoop == true) {
 				    objectsGame[q].faer = false;
@@ -1172,7 +1157,7 @@ function moveObjects() {
 	}
 
 	loop2:
-	for(let q = 0; q < numPlayer + numEnemy; q++) {
+	for(let q = 0; q < objectsGame.length; q++) {
 		for(let a = 0; a < buildsGame.length; a++) {
 			if(objectsGame[q].type == "enemy" && buildsGame[a].type == "player") {
 				if(objectsGame[q].endLoop == true) {
@@ -1198,7 +1183,7 @@ function moveObjects() {
 	}
 
 	loop1:
-	for(let q = 0; q < numPlayer + numEnemy; q++) {
+	for(let q = 0; q < objectsGame.length; q++) {
 		for(let a = 0; a < objectsGame.length; a++) {
 			if(objectsGame[q].type == "enemy" && objectsGame[a].type == "player") {
 				if(objectsGame[q].endLoop == true) {
@@ -1243,7 +1228,7 @@ function moveObjects() {
 		}
 	}
 
-	for(let g = 0; g < numPlayer + numEnemy; g++) {
+	for(let g = 0; g < objectsGame.length; g++) {
 		objectsGame[g].endLoop = true;
 	}
 }
@@ -1254,9 +1239,9 @@ function collisionsObjects() {
 	if(gameConfig[0].position == "level") {
 		map = levelsMaps[select_level].map[0].name;
 	}
-	if(numPlayer + numEnemy > 0) {
-	for(let n = 0; n < numPlayer + numEnemy; n++) {
-		for(let r = 0; r < numPlayer + numEnemy; r++) {
+	//if(objectsGame.length > 0) {
+	for(let n = 0; n < objectsGame.length; n++) {
+		for(let r = 0; r < objectsGame.length; r++) {
 			if(objectsGame[n].map == map && objectsGame[r].map == map) {
 		    if(objectsGame[n].x == objectsGame[r].x && objectsGame[n].y == objectsGame[r].y && n != r) {
 
@@ -1340,7 +1325,7 @@ if(gameConfig[0].position == "free") {
 	}
   }
 }else if(gameConfig[0].position == "level"){
-	for(let u = 0; u < numPlayer + numEnemy; u++) {
+	for(let u = 0; u < objectsGame.length; u++) {
 	  for(let i = 0; i < sizeMap; i++) {
 		for(let j = 0; j < sizeMap; j++) {
 			if(TILE_SIZE*i == objectsGame[u].x - objectsGame[u].radius && TILE_SIZE*j == objectsGame[u].y - objectsGame[u].radius) {
@@ -1367,7 +1352,7 @@ if(gameConfig[0].position == "free") {
 }
 
   for(let p = 0; p < buildsGame.length; p++) {
-  	for(let r = 0; r < numPlayer + numEnemy; r++) {
+  	for(let r = 0; r < objectsGame.length; r++) {
   		if(buildsGame[p].map == map) {
   		if(objectsGame[r].x - objectsGame[r].radius == buildsGame[p].x - buildsGame[p].radius && objectsGame[r].y - objectsGame[r].radius == buildsGame[p].y - buildsGame[p].radius || objectsGame[r].x - objectsGame[r].radius == objBaze.x - objBaze.radius && objectsGame[r].y - objectsGame[r].radius == objBaze.y - objBaze.radius) {
   			objectsGame[r].point.x += 64;
@@ -1378,7 +1363,7 @@ if(gameConfig[0].position == "free") {
   }
 
   loop3:
-  for(let o = 0; o < numPlayer + numEnemy; o++) {
+  for(let o = 0; o < objectsGame.length; o++) {
 	 for(let b = 0; b < objBull.length; b++) {
   		if(objBull[b].x >= objectsGame[o].x - objectsGame[o].radius && objBull[b].x <= objectsGame[o].x + 64 - objectsGame[o].radius && objectsGame[o].map == map) {
   			if(objBull[b].y >= objectsGame[o].y - objectsGame[o].radius && objBull[b].y <= objectsGame[o].y + 64 - objectsGame[o].radius) {
@@ -1463,7 +1448,7 @@ if(gameConfig[0].position == "free") {
 
   					        continue loop4;
   					    }
-  				    }
+  				    
   				}
   			}
   		}else if(objBull[b].x >= objBazeEnemy.x && objBull[b].x <= objBazeEnemy.x + 64) {
@@ -1519,7 +1504,7 @@ function endsMissions() {
 
 //Kill objects
 function killObjects() {
-	for(let r = 0; r < numPlayer + numEnemy; r++) {
+	for(let r = 0; r < objectsGame.length; r++) {
 		if(objectsGame[r].health <= 0) {
 			if(objectsGame[r].type == "enemy" && objectsGame[r].boom == false) {
 				numEnemy -= 1;

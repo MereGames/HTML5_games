@@ -110,7 +110,7 @@ var objsProp = {
 			speed: 4,
 			ataca: 6,
 			health: 30,
-			price: 100
+			price: 105
 		},
 
 		tank_two: {
@@ -118,23 +118,23 @@ var objsProp = {
 			speed: 2,
 			ataca: 45,
 			health: 500,
-			price: 350
+			price: 270
 		}
 	},
 
 	//Enemy
 	enemy: {
 		tank_enemy: {
-			reload: 70,
+			reload: 75,
 			speed: 2,
 			ataca: 16,
-			health: 125
+			health: 110
 		},
     tankHard_enemy: {
-      reload: 250,
+      reload: 150,
       speed: 1,
-      ataca: 110,
-      health: 260
+      ataca: 74,
+      health: 430
     }
 	}
 };
