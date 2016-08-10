@@ -11,7 +11,7 @@
 
 //Constants:
 const TILE_SIZE = 64;
-const NUM_MENU = 2, NUM_BUTTONS = 9, NUM_GROUND = 10, NUM_BORDERS = 5, NUM_BUILDS = 7, NUM_ENEMY = 2, NUM_OBJS = 5, NUM_BOOM = 1;
+const NUM_MENU = 2, NUM_BUTTONS = 9, NUM_GROUND = 10, NUM_BORDERS = 5, NUM_BUILDS = 9, NUM_ENEMY = 2, NUM_OBJS = 5, NUM_BOOM = 1;
 const WIDTH = (TILE_SIZE*14), HEIGHT = (TILE_SIZE*8);
 
 //Canvas
@@ -215,7 +215,7 @@ function loadGameData(item) {
     }
 }
 
-//deleteSaves();
+deleteSaves();
 function deleteSaves() {
 	localStorage.clear();
 }
@@ -554,10 +554,10 @@ function lengGame(leng) {
 //Music off and on
 function musikOnOff(type) {
 	if(type == "off") {
-		musik.pause();
+		playMusik[played].pause();
 		musikPlay = false;;
 	}else {
-		musik.play();
+		playMusik[played].play();
 		musikPlay = true;
 	}
 }
@@ -690,9 +690,9 @@ function moveEvent(e) {
 
 
 									if(mapsGame[idMap].map[i][j].img == 9) {
-										if(buildings[d].name != "factory_1") {
+										if(buildings[d].name != "factory_1" || buildings[d].name == "factory_2") {
 										    preBuild.empty = false;
-									    }else if(buildings[d].name == "factory_1"){
+									    }else if(buildings[d].name == "factory_1" || buildings[d].name == "factory_2"){
 									    	preBuild.empty = true;
 									    	return;
 									    }
@@ -700,9 +700,9 @@ function moveEvent(e) {
 									if(mapsGame[idMap].map[i][j].img == 8 || mapsGame[idMap].map[i][j].img == 3 || mapsGame[idMap].map[i][j].img == 7 || mapsGame[idMap].map[i][j].img == 1 || mapsGame[idMap].map[i][j].img == 2 || mapsGame[idMap].map[i][j].img == 5 || mapsGame[idMap].map[i][j].img == 6) {
 										preBuild.empty = false;
 									}
-									if(buildings[d].name == "factory_1") {
+									if(buildings[d].name == "factory_1" || buildings[d].name == "factory_2") {
 										preBuild.empty = false;
-										if(mapsGame[idMap].map[i][j].img == 9 || mapsGame[idMap].map[i][j].img == 3) {
+										if(mapsGame[idMap].map[i][j].img == 9 || mapsGame[idMap].map[i][j].img == 3 || levelsMaps[select_level].map[0].map[i][j].img == 7) {
 											preBuild.empty = true;
 										}
 									}
@@ -739,9 +739,9 @@ function moveEvent(e) {
 									}
 
 									if(levelsMaps[select_level].map[0].map[i][j].img == 9) {
-										if(buildings[d].name != "factory_1") {
+										if(buildings[d].name != "factory_1" || buildings[d].name == "factory_2") {
 										    preBuild.empty = false;
-									    }else if(buildings[d].name == "factory_1"){
+									    }else if(buildings[d].name == "factory_1" || buildings[d].name == "factory_2"){
 									    	preBuild.empty = true;
 									    	return;
 									    }
@@ -749,9 +749,9 @@ function moveEvent(e) {
 									if(levelsMaps[select_level].map[0].map[i][j].img == 8 || levelsMaps[select_level].map[0].map[i][j].img == 3 || levelsMaps[select_level].map[0].map[i][j].img == 7 || levelsMaps[select_level].map[0].map[i][j].img == 1 || levelsMaps[select_level].map[0].map[i][j].img == 2 || levelsMaps[select_level].map[0].map[i][j].img == 5 || levelsMaps[select_level].map[0].map[i][j].img == 6) {
 										preBuild.empty = false;
 									}
-									if(buildings[d].name == "factory_1") {
+									if(buildings[d].name == "factory_1" || buildings[d].name == "factory_2") {
 										preBuild.empty = false;
-										if(levelsMaps[select_level].map[0].map[i][j].img == 9 || levelsMaps[select_level].map[0].map[i][j].img == 3) {
+										if(levelsMaps[select_level].map[0].map[i][j].img == 9 || levelsMaps[select_level].map[0].map[i][j].img == 3 || levelsMaps[select_level].map[0].map[i][j].img == 7) {
 											preBuild.empty = true;
 										}
 									}
@@ -964,7 +964,7 @@ function clickEvent(e) {
 		    				    buildsGame.push(new build(buildings[d].name, buildImages[d], preBuild.x + movAddX, preBuild.y + movAddY, buildings[d].radius, buildings[d].time, idMap, "player", buildings[d].faer, buildings[d].reload, buildings[d].ataca, buildings[d].health, buildings[d].addRes));
 
 		    				    viewBorders.push({name: buildings[d].name, view: false});
-		    				    if(buildings[d].name == "factory_1") {
+		    				    if(buildings[d].name == "factory_1" || buildings[d].name == "factory_2") {
 		    				    	if(gameConfig[0].position == "free") {
 		    				    	   mapsGame[idMap].playerData.addMoney += buildings[d].addRes.num;
 		    				        }else {
@@ -984,7 +984,7 @@ function clickEvent(e) {
 		    				    buildsGame.push(new build(buildings[d].name, buildImages[d], preBuild.x + movAddX, preBuild.y + movAddY, buildings[d].radius, buildings[d].time, levelsMaps[select_level].map[0].name, "player", buildings[d].faer, buildings[d].reload, buildings[d].ataca, buildings[d].health, buildings[d].addRes));
 
 		    				    viewBorders.push({name: buildings[d].name, view: false});
-		    				    if(buildings[d].name == "factory_1") {
+		    				    if(buildings[d].name == "factory_1" || buildings[d].name == "factory_2") {
 		    				    	if(gameConfig[0].position == "free") {
 		    				    	   mapsGame[idMap].playerData.addMoney += buildings[d].addRes.num;
 		    				        }else {
@@ -995,6 +995,8 @@ function clickEvent(e) {
 		    				    }
 		    				    buildings[d].select = false;
 		    				    levelsMaps[select_level].map[0].playerData.money -= buildings[d].price;
+
+		    				    numBuilds += 1;
 
 		    				    return;
 		    			    }

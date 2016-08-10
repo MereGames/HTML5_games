@@ -6,7 +6,7 @@
 
 const SPEED_MAP = 10;
 const NUM_MAIN = 6;
-const NUM_MAIN_TWO = 1;
+const NUM_MAIN_TWO = 3;
 
 var maxPlayer = 45;
 
@@ -14,8 +14,8 @@ var levelsPar = [
     {level: 0, size: 40, dif: "none", tum: true, forgets: ["none"]},
     {level: 1, size: 30, dif: "easy", tum: true, forgets: [{type: "lout", num: 3, end: false}, {type: "enemyKill", num: 20, end: false}]},
     {level: 2, size: 40, dif: "easy", tum: true, forgets: [{type: "lout", num: 4, end: false}, {type: "enemyKill", num: 120, end: false}, {type: "money", num: 6500, end: false}]},
-    {level: 3, size: 40, dif: "easy", tum: true, forgets: [{type: "lout", num: 8, end: false}, {type: "enemyKill", num: 300, end: false}]},
-    {level: 4, size: 40, dif: "easy", tum: true},
+    {level: 3, size: 40, dif: "easy", tum: true, forgets: [{type: "lout", num: 5, end: false}, {type: "enemyKill", num: 220, end: false}, {type: "money", num: 10500, end: false}, {type: "builds", num: 7, end: false}]},
+    {level: 4, size: 40, dif: "easy", tum: true, forgets: [{type: "lout", num: 4, end: false}, {type: "enemyKill", num: 340, end: false}, {type: "money", num: 16400, end: false}, {type: "builds", num: 12, end: false}, {type: "boss", num: 1, end: false}]},
     {level: 5, size: 50, dif: "normal", tum: true},
     {level: 6, size: 50, dif: "normal", tum: true},
     {level: 7, size: 50, dif: "normal", tum: true},
@@ -43,6 +43,10 @@ var yRec = 30;
 //nums objs
 var numEnemy = 0;
 var numPlayer = 0;
+
+var numBuilds = 0;
+
+var numBoss = 0;
 
 //killenemy player
 var numKillEnemy = 0;
@@ -254,7 +258,7 @@ function drawScene() {
 	    	    ctx.fillStyle = "yellow";
 	    	    ctx.font = "20px cursive";
 	    		ctx.fillText(buildings[d].price + "$", 50, yRec + 60);
-	    	}else if(viewMainTwo == true && d < NUM_MAIN_TWO && select_level != 1) {
+	    	}else if(viewMainTwo == true && d < NUM_MAIN_TWO && select_level >= 3) {
 	    		ctx.fillRect(20, yRec, 64, 64);
 
 	    		ctx.fillStyle = "#fff";
@@ -279,7 +283,7 @@ function drawScene() {
 	    	    ctx.font = "20px Arial";
 	    	    ctx.textAlign = "center";
 
-	    	    ctx.fillText("2lvl", 50, 65);
+	    	    ctx.fillText("3lvl", 50, 65);
 	    	}
 
 
@@ -362,6 +366,18 @@ function drawScene() {
 	    		    text = "Накопите " + (levelsPar[select_level].forgets[l].num.toLocaleString()) + "$";
 	    	    }else {
 	    	    	text = "Accumulate " + (levelsPar[select_level].forgets[l].num.toLocaleString()) + "$";
+	    	    }
+	    	}else if(levelsPar[select_level].forgets[l].type == "builds") {
+	    		if(gameConfig[0].leng == "ru") {
+	    		    text = "Постройте " + (levelsPar[select_level].forgets[l].num.toLocaleString() - numBuilds) + " зданий";
+	    	    }else {
+	    	    	text = "Construct " + (levelsPar[select_level].forgets[l].num.toLocaleString() - numBuilds) + " buildings";
+	    	    }
+	    	}else if(levelsPar[select_level].forgets[l].type == "boss") {
+	    		if(gameConfig[0].leng == "ru") {
+	    		    text = "Убейте " + (levelsPar[select_level].forgets[l].num.toLocaleString() - numBoss) + " боссов";
+	    	    }else {
+	    	    	text = "Kill " + (levelsPar[select_level].forgets[l].num.toLocaleString() - numBoss) + " bosses";
 	    	    }
 	    	}
 
@@ -796,7 +812,7 @@ function updateScene() {
 
     for(let r = 0; r < buildsGame.length; r++) {
     	if(buildsGame[r].animEnd == true) {
-    		if(buildsGame[r].name == "factory_1") {
+    		if(buildsGame[r].name == "factory_1" || buildsGame[r].name == "factory_2") {
 			    	if(gameConfig[0].position == "free" && buildsGame[r].addRes.name == "money") {
 			    		mapsGame[idMap].playerData.addMoney -= buildsGame[r].addRes.num;
 			    	}else if(gameConfig[0].position == "level" && buildsGame[r].addRes.name == "money") {
@@ -930,7 +946,7 @@ if(stopGame == false) {
   	let num = 0;
   	if(viewMain == true) {
   		num = NUM_MAIN;
-  	}else if(viewMainTwo == true && select_level != 1) {
+  	}else if(viewMainTwo == true && select_level >= 3) {
   		num = NUM_MAIN_TWO;
   	}else {
   		num = 0;
@@ -1484,6 +1500,10 @@ function checkMissions() {
 			if(levelsMaps[select_level].map[0].playerData.money >= levelsPar[select_level].forgets[m].num) {
 				levelsPar[select_level].forgets[m].end = true;
 			}
+		}else if(levelsPar[select_level].forgets[m].type == "builds" && levelsPar[select_level].forgets[m].end == false) {
+			if(numBuilds >= levelsPar[select_level].forgets[m].num) {
+				levelsPar[select_level].forgets[m].end = true;
+			}
 		}
 
 		if(endsMissions() == true) {
@@ -1527,6 +1547,9 @@ function killObjects() {
 			        buildsGame[b].boom1.play();
 		        }
 
+		        if(buildsGame[b].boom == false) {
+		           numBuilds -= 1;
+		        }
 			    buildsGame[b].boom = true;
 		}
 	}

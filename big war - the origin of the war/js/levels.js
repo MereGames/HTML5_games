@@ -7,9 +7,9 @@
 var select_level = 0;
 var levels = [
     {level: 1, open: true, x: 90, y: 450, over: false},
-    {level: 2, open: false, x: 160, y: 330, over: false},
-    {level: 3, open: false, x: 140, y: 174, over: false},
-    {level: 4, open: false, x: 245, y: 82, over: false},
+    {level: 2, open: true, x: 160, y: 330, over: false},
+    {level: 3, open: true, x: 140, y: 174, over: false},
+    {level: 4, open: true, x: 245, y: 82, over: false},
     {level: 5, open: false, x: 380, y: 153, over: false},
     {level: 6, open: false, x: 390, y: 295, over: false},
     {level: 7, open: false, x: 458, y: 435, over: false},

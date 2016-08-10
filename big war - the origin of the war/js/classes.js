@@ -7,6 +7,9 @@ var addDev = 0.07;
 
 var objBull = [];
 
+var butsSong = new Audio('audio/buts.mp3');
+butsSong.loop = false;
+
 //Class button
 var button = function (name, x, y, xt, yt, width, height, text, font, action, typeAction, type, img, over) {
 	this.x = x;
@@ -21,6 +24,8 @@ var button = function (name, x, y, xt, yt, width, height, text, font, action, ty
 	this.over = over;
 	this.name = name;
 
+	this.played = false;
+
 	this.text = text;
 	this.action = action;
 	this.typeAction = typeAction;
@@ -30,7 +35,16 @@ var button = function (name, x, y, xt, yt, width, height, text, font, action, ty
 	this.draw = function () {
 		if(this.type == "menu") {
 			ctx.save();
-			(this.over == true || this.over == 'true') ? ctx.globalAlpha = 0.5 : ctx.globalAlpha = 1;
+			if(this.over == true || this.over == 'true') {
+				ctx.globalAlpha = 0.5;
+				if(this.played == false) {
+					butsSong.play();
+				}
+				this.played = true;
+			}else {
+				ctx.globalAlpha = 1;
+				this.played = false;
+			}
 			if(this.over == false) {
 			    ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
 		    }else {

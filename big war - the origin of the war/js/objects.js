@@ -17,8 +17,8 @@ var objBaze = {
 	timeOut: 0,
 	_timeOut: 50,
 	num: 0,
-	health: 6400,
-	_health: 6400,
+	health: 7400,
+	_health: 7400,
 	type: "player",
 	canFaer: false,
 
