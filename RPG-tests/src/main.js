@@ -10,11 +10,15 @@
 const TEST_GAME = true;
 var startLocat = "game";
 var startId = 0;
+var startWorld = 1;
 
 //detect and devises --- #
 var userAg = detect.parse(navigator.userAgent);
 var deviceJs = device.noConflict();
 isMobile = false;
+
+//For saves.js
+var saveTime = 2000;
 
 var loadComlit = false;
 var drawScane = false;
@@ -219,7 +223,7 @@ function drawBrushText() {
 		    align: "center",
 		    color: "red",
 		    font: "cursive",
-		    text: (i==0) ? mainPlayer.dameg : (i==1) ? mainPlayer.skilGmg : (i==2) ? mainPlayer.defent : mainPlayer.health,
+		    text: (i==0) ? mainPlayer.dameg : (i==1) ? mainPlayer.skilDmg : (i==2) ? mainPlayer.defent : mainPlayer.health,
 	    });
 	}
 }
@@ -230,6 +234,7 @@ function checkEnter() {
 		//Load scane
 		gameData.nextScaneId = 0;
 		gameData.nextScaneName = "game";
+		gameData.nextWorld = 1;
 		gameData.newPlayer = false;
 		drawScane = false;
 		mainPlayer.name = inputText;
@@ -283,8 +288,8 @@ game.newLoop('loadingScane', function () {
 
 	//Load and dell
 	if(loadComlit == false) {
-	    deletPath(gameData.totalScaneName, gameData.totalScaneId);
-	    loadPath(gameData.nextScaneName, gameData.nextScaneId);
+	    deletPath(gameData.totalScaneName, gameData.totalScaneId, gameData.totalWorld);
+	    loadPath(gameData.nextScaneName, gameData.nextScaneId, gameData.nextWorld);
 	    loadComlit = true;
     }
 
@@ -300,7 +305,7 @@ game.newLoop('loadingScane', function () {
 		if(gameData.nextScaneName == "menu") {
 		    mainPlayer.setPosition(point(gameWidth/2 - rectMenu.w/2 + 70, gameHeight/2 - mainPlayer.h/2 + 20));
 	    }else {
-	    	mainPlayer.setPosition(point(gameWidth/2 - mainPlayer.w, gameHeight/2 + mainPlayer.h));
+	    	mainPlayer.setPosition(point(gameWidth/2 - mainPlayer.w, gameHeight/2 + mainPlayer.h - 90));
 	    }
 
 	    //Timer
@@ -498,6 +503,7 @@ system.addEvent("onload", "loadPage", function () {
 if(gameData.newPlayer == true) {
     gameData.nextScaneId = startId;
     gameData.nextScaneName = startLocat;
+    gameData.nextWorld = startWorld;
 }
 
 //Version PointJS

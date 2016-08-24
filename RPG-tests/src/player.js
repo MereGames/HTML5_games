@@ -24,9 +24,20 @@ var mainPlayer = game.newAnimationObject({
 mainPlayer.setUserData({
 	//Baze
 	health: 10,
+	maxHealth: 10,
+	engMana: 20,
+	maxEngMana: 30,
+	superMana: 50,
+	maxSuperMana: 100,
+
+	level: 1,
+	opit: 43,
+	needOpit: 150,
+
+	//Stat
 	defent: 4,
 	dameg: 8,
-	skilGmg: 2,
+	skilDmg: 2,
 	speed: 6,
 	name: "player",
 
@@ -58,15 +69,26 @@ mainPlayer.setUserData({
 		//UPdat
 
 		//User img
-		if(photoUser != null) {
-			userImg.setPositionS(point(0, 0));
-			userImg.draw();
-		}
+		brush.drawImageS({
+			file: photoUser,
+			x: 5, y: 5,
+			w: 100, h: 100
+		});
+
 		//UI
+		widSTR = 200;
 		for(let p = arrUIPlayer.length; p--;) {
-			arrUIPlayer[p].setPositionS(point(0, 0));
-			arrUIPlayer[p].setPositionS(point(0, 0));
-			//Draw bg stat
+			arrUIPlayer[p].setPositionS(point(0 + arrUIPlayer[p].addX, 0 + arrUIPlayer[p].addY));
+
+			//lines width
+			if(arrUIPlayer[p].id == 9 || arrUIPlayer[p].id == 5 || arrUIPlayer[p].id == 7) {
+				let id = arrUIPlayer[p].id;
+				arrUIPlayer[p].w = (id == 9) ? (this.health/this.maxHealth)*280 : (id == 7) ? (this.engMana/this.maxEngMana)*240 : (this.superMana/this.maxSuperMana)*200;
+			}else if(arrUIPlayer[p].id == 11) {
+				arrUIPlayer[p].w = (this.opit/this.needOpit)*(gameWidth - 20);
+			}
+
+		    //Draw bg stat
 		    arrUIPlayer[p].draw();
 		}
 
@@ -79,8 +101,36 @@ mainPlayer.setUserData({
 			font: "cursive",
 			align: "center"
 		});
+
+		//Draw level
+		brush.drawTextS({
+			size: 20,
+			x: gameWidth/2, y: gameHeight - 50,
+			color: "orange",
+			text: this.level + " Уровень",
+			font: "cursive",
+			align: "center"
+		});
+
+		//Text sts
+		for(let i = 4; i--;) {
+			textStat(i);
+		}
 	}
 });
+
+//Draw text
+function textStat(id) {
+	    brush.drawTextS({
+		    size: (id!=3) ? 13 : 8,
+		    x: (id!=3) ? widSTR : gameWidth/2, y: (id!=3) ? 20*id+10 : gameHeight - 20,
+		    color: (id!=3) ? "#fff" : "#000",
+		    text: (id==0) ? mainPlayer.health + "/" + mainPlayer.maxHealth : (id==1) ? mainPlayer.engMana + "/" + mainPlayer.maxEngMana : (id==2) ? mainPlayer.superMana + "/" + mainPlayer.maxSuperMana : mainPlayer.opit + "/" + mainPlayer.needOpit,
+		    font: "cursive",
+		    align: "center"
+	    });
+	    widSTR += 40;
+}
 
 
 //Move player
@@ -105,7 +155,7 @@ function movePlayer() {
 
 	if(key.isDown("UP") && mainPlayer.y > gameHeight/2 - 50) {
 		mainPlayer.move(v2d(0, -mainPlayer.speed));
-	}else if(key.isDown("DOWN") && mainPlayer.y < gameHeight - mainPlayer.h) {
+	}else if(key.isDown("DOWN") && mainPlayer.y < gameHeight - mainPlayer.h - 50) {
 		mainPlayer.move(v2d(0, mainPlayer.speed));
 	}
 }

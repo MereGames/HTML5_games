@@ -10,6 +10,7 @@
 var menuIconsObjs = [];
 const NUM_ICONS = 4;
 const NUM_SCANES = 1;
+const NUM_UI = 1;
 
 var arrPlusMenu = [];
 var arrMinusMenu = [];
@@ -20,9 +21,14 @@ var menuBg = {};
 var rectMenu = {};
 var inputObj = {};
 var blankObj = {};
+var userImg = {};
+
+var dataMap = {};
 
 //For Plus and Minus
 var addY = -60; var addX = 47;
+
+var widSTR = 200;
 
 
 
@@ -41,18 +47,25 @@ function deletPath(path, id) {
 	    rectMenu = {};
 	    inputObj = {};
 	    blankObj = {};
+	    dataMap = {};
     }else if(path == "game") {
     	arrUIPlayer = [];
+    	userImg = {};
+    	dataMap = {};
     }
 }
 
 //load path ---------
-function loadPath(path, id) {
+function loadPath(path, id, world) {
 	//Scane
     scaneGame = game.newImageObject({
 	    x: 0, y: 0,
 	    w: gameWidth, h: gameHeight,
-	    file: "maps/img/scane_" + id + ".png"
+	    file: "maps/world_" + world + "/img/scane_" + id + ".png"
+    });
+    OOP.readJSON("maps/world_" + world + "/data/scane_" + id + ".json", function (obj) {
+    	dataMap = obj;
+    	maxSizeMap = dataMap.maxSize;
     });
 
     //Menu load
@@ -119,24 +132,77 @@ function loadPath(path, id) {
         });
     }else if(path == "game") {
     	//Bg  main stat
-    	for(let i = 1; i--;) {
+    	for(let i = NUM_UI; i--;) {
     		let ui = game.newImageObject({
     			x: 0, y: 0,
     			file: "img/ui_"+i+".png",
     			w: 111, h: 162
     		});
+    		ui.setUserData({
+    			addX: 0,
+    			addY: 0
+    		});
 
     		arrUIPlayer.push(ui);
     	}
+    	//Stat lines
+    	widSTR = 200;
+    	for(let i = 3; i--;) {
+    		let strokStat = game.newRectObject({
+    			x: 0, y: 0,
+    			w: widSTR, h: 15,
+    			strokeColor: "#fff",
+    			fillColor: "#666",
+    			strokeWidth: 2
+    		});
+    		strokStat.setUserData({
+    			addX: 105,
+    			addY: 20*i + 10
+    		});
 
-    	//User img
-    	if(photoUser != null) {
-    	    var userImg = game.newImageObject({
-    		    file: photoUser,
-			    x: 5, y: 5,
-			    w: 100, h: 100
-    	    });
-        }
+    		let rectStat = game.newRectObject({
+    			x: 0, y: 0,
+    			w: widSTR, h: 13,
+    			fillColor: (i==0) ? "red" : (i==1) ? "blue" : ("orange")
+    		});
+    		rectStat.setUserData({
+    			addX: 105,
+    			addY: 20*i + 12
+    		});
+
+    		arrUIPlayer.push(rectStat);
+    		arrUIPlayer.push(strokStat);
+    		widSTR += 40;
+    	}
+
+    	//level player
+    	let lvlBarSt = game.newRectObject({
+    		x: 10, y: gameHeight - 20,
+    		w: gameWidth - 20, h: 10,
+    		strokeColor: "#fff", strokeWidth: 2,
+    	});
+    	lvlBarSt.setUserData({
+    		addX: 10,
+    		addY: gameHeight - 20
+    	});
+    	let lvlBar = game.newRectObject({
+    		x: 10, y: gameHeight - 20,
+    		w: gameWidth - 20, h: 10,
+    		fillColor: "#BAAA24"
+    	});
+    	lvlBar.setUserData({
+    		addX: 10,
+    		addY: gameHeight - 20
+    	});
+    	//Save in arr
+    	arrUIPlayer.push(lvlBarSt);
+    	arrUIPlayer.push(lvlBar);
+
+
+    	//user img
+    	if(photoUser == null) {
+    		photoUser = "img/uer_img.jpg";
+    	}
     }
 
     //

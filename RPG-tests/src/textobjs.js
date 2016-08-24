@@ -18,6 +18,7 @@ var textMsgObj = game.newTextObject({
 	color: "red",
 	text: ""
 });
+
 textMsgObj.setUserData({
 	drawTXT: function (text) {
 		this.text = text;
